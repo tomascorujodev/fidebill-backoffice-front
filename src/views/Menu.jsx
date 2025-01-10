@@ -28,7 +28,7 @@ export default function Menu() {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/agregar-cliente">
+                            <Link className="nav-link" to="/cliente">
                                 Clientes
                             </Link>
                         </li>

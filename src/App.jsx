@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Menu from './views/Menu'
-import Clientes from './views/Clientes'
+import ViewClientes from './views/ViewClientes'
 import Puntos from './views/Puntos'
+import FormAgregarCliente from './views/FormAgregarCliente'
 
 
 function App() {
@@ -14,9 +15,12 @@ function App() {
       </div>
       <BrowserRouter>
         <Routes>
-          <Route path='inicio' element={<Menu></Menu>}></Route>
-          <Route path='agregar-cliente' element={<Clientes></Clientes>}></Route>
+          <Route element={<Navbar/>}>
+          <Route path='/' element={<Menu></Menu>}></Route>
+          <Route path='cliente' element={<ViewClientes></ViewClientes>}></Route>
+          <Route path='agregar-cliente' element={<FormAgregarCliente></FormAgregarCliente>}></Route>
           <Route path="puntos" element={<Puntos />} />
+          </Route>
         </Routes>
       </BrowserRouter> 
     </>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AgregarCliente() {
+export default function FormAgregarCliente() {
   const [cliente, setCliente] = useState({
     nombre: "",
     apellido: "",

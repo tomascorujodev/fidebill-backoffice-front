@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function Clientes() {
+export default function ViewClientes() {
   const [cliente, setCliente] = useState({
     nombre: "",
     apellido: "",
@@ -59,6 +60,8 @@ export default function Clientes() {
     }
   };
 
+
+
   return (
     <>
     <div className="container">
@@ -98,9 +101,9 @@ export default function Clientes() {
           </tr>
         </tbody>
         <br />
-        <button className="btn btn-outline-success" type="submit">
+        <Link className="btn btn-outline-success" to="/cliente/agregar-cliente">
             Agregar cliente
-        </button>
+        </Link>
     </table>
     </div>
     </>
