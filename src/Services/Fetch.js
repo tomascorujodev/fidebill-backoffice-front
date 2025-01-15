@@ -1,4 +1,4 @@
-const backendurl = "http://localhost:5068/";
+const backendurl = "http://localhost:5046/";
 
 export async function GET(url, data){
     const objString = '?' + new URLSearchParams(data).toString();

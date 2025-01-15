@@ -1,66 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { GET } from "../Services/Fetch";
 
 export default function ViewClientes() {
-  const [cliente, setCliente] = useState({
-    nombre: "",
-    apellido: "",
-    documento: "",
-    fecha_nacimiento: "",
-    genero: "Masculino",
-    email: "",
-    telefono: "",
-    tipo_cliente_id: 1,
-    puntos: 0,
-    puntos_pesos: 0.0,
-    fecha_alta: new Date().toISOString().split("T")[0],
-    mas_datos: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCliente({ ...cliente, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://tu-backend.com/api/clientes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cliente),
-      });
-
-      if (response.ok) {
-        alert("Cliente agregado exitosamente");
-        setCliente({
-          nombre: "",
-          apellido: "",
-          documento: "",
-          fecha_nacimiento: "",
-          genero: "Masculino",
-          email: "",
-          telefono: "",
-          tipo_cliente_id: 1,
-          puntos: 0,
-          puntos_pesos: 0.0,
-          fecha_alta: new Date().toISOString().split("T")[0],
-          mas_datos: "",
-          password: "",
-        });
-      } else {
-        alert("Error al agregar el cliente");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al conectar con el servidor");
+  const [clientes, setClientes] = useState([]);
+  const [page, setPage] = useState(1);
+  useEffect(() =>{
+    // let request = {
+    //   pagina: `${page}`
+    // }
+    async function getClients(){
+      let clients = await GET("clientes/obtenerclientes");
+      console.log(await clients.json())
     }
-  };
-
-
+    getClients();
+  }, [])
 
   return (
     <>
@@ -72,7 +26,7 @@ export default function ViewClientes() {
               </button>
       </form>
       <br />
-      <table class="table">
+      <table className="table">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -96,7 +50,7 @@ export default function ViewClientes() {
           </tr>
           <tr>
             <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
+            <td colSpan="2">Larry the Bird</td>
             <td>@twitter</td>
           </tr>
         </tbody>

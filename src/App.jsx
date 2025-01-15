@@ -15,12 +15,10 @@ function App() {
       </div>
       <BrowserRouter>
         <Routes>
-          <Route element={<Navbar/>}>
           <Route path='/' element={<Menu></Menu>}></Route>
           <Route path='cliente' element={<ViewClientes></ViewClientes>}></Route>
           <Route path='agregar-cliente' element={<FormAgregarCliente></FormAgregarCliente>}></Route>
           <Route path="puntos" element={<Puntos />} />
-          </Route>
         </Routes>
       </BrowserRouter> 
     </>
