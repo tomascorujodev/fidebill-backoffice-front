@@ -1,102 +1,94 @@
 import { useState } from "react";
+import { POST } from "../Services/Fetch";
 
 export default function FormAgregarCliente() {
-  const [cliente, setCliente] = useState({
-    nombre: "",
-    apellido: "",
-    documento: "",
-    fecha_nacimiento: "",
-    genero: "Masculino",
-    email: "",
-    telefono: "",
-    tipo_cliente_id: 1,
-    puntos: 0,
-    puntos_pesos: 0.0,
-    fecha_alta: new Date().toISOString().split("T")[0],
-    mas_datos: "",
-    password: "",
+const [cliente, setCliente] = useState({
+    Nombre: "",
+    Apellido: "",
+    Documento: "",
+    FechaNacimiento: "",
+    Genero: "Masculino",
+    Email: "",
+    Direccion: "",
+    Telefono: "",
+    TipoCliente: "Responsable Inscripto"
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCliente({ ...cliente, [name]: value });
+    setCliente((prevCliente) => ({
+      ...prevCliente,
+      [name]: value
+    }));
+    console.log(cliente);
   };
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e){
     e.preventDefault();
-    try {
-      const response = await fetch("http://tu-backend.com/api/clientes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cliente),
-      });
+    console.log("Cliente agregado:", cliente);
+    let request = {
+      ...cliente
+    }
+    let rsp;
+    try{
+      rsp = await POST("clientes/crearcliente", request);
+      console.log(rsp)
+    }catch{
 
-      if (response.ok) {
-        alert("Cliente agregado exitosamente");
-        setCliente({
-          nombre: "",
-          apellido: "",
-          documento: "",
-          fecha_nacimiento: "",
-          genero: "Masculino",
-          email: "",
-          telefono: "",
-          tipo_cliente_id: 1,
-          puntos: 0,
-          puntos_pesos: 0.0,
-          fecha_alta: new Date().toISOString().split("T")[0],
-          mas_datos: "",
-          password: "",
-        });
-      } else {
-        alert("Error al agregar el cliente");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al conectar con el servidor");
     }
   };
+
 
   return (
     <>
     <div className="container">
-      
       <h3>Agregar Cliente</h3>
       <div className="container">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre</label>
-          <input type="text" className="form-control" id="nombre" name="nombre" value={cliente.nombre} onChange={handleChange} required />
+          <label htmlFor="Nombre" className="form-label">Nombre</label>
+          <input type="text" className="form-control" id="Nombre" name="Nombre" value={cliente.nombre} onChange={handleChange} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="apellido" className="form-label">Apellido</label>
-          <input type="text" className="form-control" id="apellido" name="apellido" value={cliente.apellido} onChange={handleChange} required />
+          <label htmlFor="Apellido" className="form-label">Apellido</label>
+          <input type="text" className="form-control" id="Apellido" name="Apellido" value={cliente.apellido} onChange={handleChange} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="documento" className="form-label">Documento</label>
-          <input type="text" className="form-control" id="documento" name="documento" value={cliente.documento} onChange={handleChange} required />
+          <label htmlFor="Documento" className="form-label">Documento</label>
+          <input type="text" className="form-control" id="Documento" name="Documento" value={cliente.documento} onChange={handleChange} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="fecha_nacimiento" className="form-label">Fecha de Nacimiento</label>
-          <input type="date" className="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value={cliente.fecha_nacimiento} onChange={handleChange} />
+          <label htmlFor="FechaNacimiento" className="form-label">Fecha de Nacimiento</label>
+          <input type="date" className="form-control" id="FechaNacimiento" name="FechaNacimiento" value={cliente.fecha_nacimiento} onChange={handleChange} />
         </div>
         <div className="mb-3">
-          <label htmlFor="genero" className="form-label">Género</label>
-          <select className="form-select" id="genero" name="genero" value={cliente.genero} onChange={handleChange}>
+          <label htmlFor="Genero" className="form-label">Género</label>
+          <select className="form-select" id="Genero" name="Genero" value={cliente.genero} onChange={handleChange}>
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
             <option value="Otro">Otro</option>
           </select>
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
-          <input type="email" className="form-control" id="email" name="email" value={cliente.email} onChange={handleChange} required />
+          <label htmlFor="Email" className="form-label">Email</label>
+          <input type="email" className="form-control" id="Email" name="Email" value={cliente.email} onChange={handleChange} required />
         </div>
         <div className="mb-3">
-          <label htmlFor="telefono" className="form-label">Teléfono</label>
-          <input type="text" className="form-control" id="telefono" name="telefono" value={cliente.telefono} onChange={handleChange} />
+          <label htmlFor="Direccion" className="form-label">Dirección</label>
+          <input type="text" className="form-control" id="Direccion" name="Direccion" value={cliente.direccion} onChange={handleChange} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="Telefono" className="form-label">Teléfono</label>
+          <input type="text" className="form-control" id="Telefono" name="Telefono" value={cliente.telefono} onChange={handleChange} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="TipoCliente" className="form-label">Tipo Cliente</label>
+          <select className="form-select" id="TipoCliente" name="TipoCliente" value={cliente.tipoCliente} onChange={handleChange}>
+            <option value="Responsable Inscripto">Responsable Inscripto</option>
+            <option value="Consumidor Final">Consumidor Final</option>
+            <option value="Consumidor Final<">Monotributista</option>
+            <option value="Excento">Excento</option>
+          </select>
         </div>
         <button type="submit" className="btn btn-primary">Agregar</button>
       </form>

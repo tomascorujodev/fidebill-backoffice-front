@@ -1,28 +1,25 @@
-import { useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Menu from './views/Menu'
-import ViewClientes from './views/ViewClientes'
-import Puntos from './views/Puntos'
-import FormAgregarCliente from './views/FormAgregarCliente'
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Menu from "./views/Menu";
+import ViewClientes from "./views/ViewClientes";
+import ViewPuntos from "./views/ViewPuntos";
+import FormAgregarCliente from "./views/FormAgregarCliente";
+import BackOffice from "./Layout/Backoffice";
+import ViewCompras from "./views/ViewCompras";
 
 function App() {
-
   return (
-    <>
-      <div className="container">
-        <h1>Fidebill</h1>
-      </div>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Menu></Menu>}></Route>
-          <Route path='cliente' element={<ViewClientes></ViewClientes>}></Route>
-          <Route path='agregar-cliente' element={<FormAgregarCliente></FormAgregarCliente>}></Route>
-          <Route path="puntos" element={<Puntos />} />
-        </Routes>
-      </BrowserRouter> 
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route element={<BackOffice />}>
+          <Route path="/" element={<Menu></Menu>}></Route>
+          <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
+          <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
+          <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
+          <Route path="puntos" element={<ViewPuntos />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

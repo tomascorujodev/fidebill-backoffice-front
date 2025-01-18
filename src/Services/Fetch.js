@@ -8,10 +8,14 @@ export async function GET(url, data){
         headers:{
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-    }).then((res) => res).catch((err)=>console.log(err));
+    })
+    .then((res) => res)
+    .catch((err)=>console.log(err));
 }
 
 export async function POST(url, data){
+    console.log(data);
+    console.log(JSON.stringify(data))
     return await fetch (backendurl + url, {
         method: 'POST',
         mode: 'cors',
