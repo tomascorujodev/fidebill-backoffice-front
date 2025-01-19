@@ -5,6 +5,7 @@ import ViewPuntos from "./views/ViewPuntos";
 import FormAgregarCliente from "./views/FormAgregarCliente";
 import BackOffice from "./Layout/Backoffice";
 import ViewCompras from "./views/ViewCompras";
+import ViewSoporte from "./views/ViewSoporte";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
           <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
           <Route path="puntos" element={<ViewPuntos />} />
+          <Route path="ayuda" element={<ViewSoporte />} /> {/* Nueva ruta para soporte */}
+        
         </Route>
       </Routes>
     </BrowserRouter>
