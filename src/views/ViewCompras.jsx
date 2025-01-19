@@ -78,16 +78,19 @@ export default function ViewCompras() {
   return (
     <>
       <div className="container">
-        <input
-          className="form-control me-2"
-          type="search"
-          onChange={e => setBusqueda(e.target.value)}
-          placeholder="Buscar compra"
-          aria-label="Buscar compra"
-        />
+      <div className="card p-4">
+        <h2>Compras</h2>
+        <br />
+          <input
+            className="form-control me-2"
+            type="search"
+            onChange={e => setBusqueda(e.target.value)}
+            placeholder="Buscar compra"
+            aria-label="Buscar compra"
+          />
+        </div>
         {mensaje && <div className="alert alert-info mt-3">{mensaje}</div>}
-        <h1 style={{ textAlign: "center" }}>Compras</h1>
-        <Pagination currentPage={page} onPageChange={setPage} />
+        <br />
         <table className="table">
           <thead>
             <tr>
