@@ -63,7 +63,7 @@ export default function ViewCompras() {
         <div className="card p-4">
           <h2>Gestión de Clientes</h2>
           <h3 className="text-end">
-          <Link className="btn btn-outline-success" to="/cliente/agregar-cliente"> 
+          <Link   className="btn btn-success btn-lg px-3 py-1" to="/cliente/agregar-cliente"> 
             Agregar cliente
           </Link>
           </h3>
