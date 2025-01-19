@@ -60,16 +60,26 @@ export default function ViewCompras() {
   return (
     <>
       <div className="container">
-        <input
-          className="form-control me-2"
-          type="search"
-          onChange={e => setBusqueda(e.target.value)}
-          placeholder="Buscar cliente"
-          aria-label="Buscar cliente"
-        />
+        <div className="card p-4">
+          <h2>Gestión de Clientes</h2>
+          <h3 className="text-end">
+          <Link   className="btn btn-success btn-lg px-3 py-1" to="/cliente/agregar-cliente"> 
+            Agregar cliente
+          </Link>
+          </h3>
+          <br />
+
+          <input
+            className="form-control me-2"
+            type="search"
+            onChange={e => setBusqueda(e.target.value)}
+            placeholder="Buscar cliente"
+            aria-label="Buscar cliente"
+          />
+        </div>
+
         {mensaje && <div className="alert alert-info mt-3">{mensaje}</div>}
-        <h1 style={{textAlign: "center"}}>Clientes</h1>
-      <Pagination currentPage={page} onPageChange={setPage} />
+        <br />
         <table className="table">
           <thead>
             <tr>
@@ -99,10 +109,8 @@ export default function ViewCompras() {
           </tbody>
         </table>
         <Pagination currentPage={page} onPageChange={setPage} />
-        <Link className="btn btn-outline-success" to="/cliente/agregar-cliente">
-          Agregar cliente
-        </Link>
       </div>
+      <br />
     </>
   );
 }

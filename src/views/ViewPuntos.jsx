@@ -112,21 +112,26 @@ export default function ViewPuntos() {
 
   return (
     <div className="container mt-2">
-      <h2>Gestión de Puntos</h2>
-      <div className="mb-3">
-        <label htmlFor="documento" className="form-label">
-          Documento del Cliente
-        </label>
-        <input
-          type="text"
-          className="form-control"
-          id="documento"
-          value={documento}
-          onChange={e => setDocumento(e.target.value)}
-        />
-        <button className="btn btn-primary mt-2" onClick={buscarCliente}>
-          Buscar Cliente
-        </button>
+      <div className="card p-4">
+        <h2>Gestión de Puntos</h2>
+        <br />
+        <div className="mb-3">
+          <label htmlFor="documento" className="form-label">
+            Documento del Cliente
+          </label>
+          <br />
+          <input
+            type="text"
+            className="form-control"
+            id="documento"
+            value={documento}
+            onChange={e => setDocumento(e.target.value)}
+          />
+          <br />
+          <button className="btn btn-primary mt-2" onClick={buscarCliente}>
+            Buscar Cliente
+          </button>
+      </div>
         {mensaje && (
           <div className={`alert alert-info mt-3 ${fadeClass}`}>{mensaje}</div>
         )}

@@ -31,7 +31,8 @@ const [cliente, setCliente] = useState({});
   return (
     <>
     <div className="container">
-      <h3>Agregar Cliente</h3>
+      <div className="card p-4">
+      <h2>Agregar Cliente</h2>
       <div className="container">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -82,6 +83,8 @@ const [cliente, setCliente] = useState({});
         <button type="submit" className="btn btn-primary">Agregar</button>
       </form>
       </div>
+      </div>
+      <br />
     </div>
     </>
   );
