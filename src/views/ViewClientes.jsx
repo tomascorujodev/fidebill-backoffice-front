@@ -61,7 +61,7 @@ export default function ViewCompras() {
     <>
       <div className="container">
         <div className="card p-4">
-          <h2>Clientes</h2>
+          <h2>Gestión de Clientes</h2>
           <h3 className="text-end">
           <Link className="btn btn-outline-success" to="/cliente/agregar-cliente"> 
             Agregar cliente
@@ -106,9 +106,9 @@ export default function ViewCompras() {
                 <td>{cliente.puntos}</td>
               </tr>
             ))}
-          <Pagination currentPage={page} onPageChange={setPage} />
           </tbody>
         </table>
+        <Pagination currentPage={page} onPageChange={setPage} />
       </div>
       <br />
     </>
