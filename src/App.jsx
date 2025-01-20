@@ -6,20 +6,34 @@ import FormAgregarCliente from "./views/FormAgregarCliente";
 import BackOffice from "./Layout/Backoffice";
 import ViewCompras from "./views/ViewCompras";
 import ViewSoporte from "./views/ViewSoporte";
+import ViewLogin from "./views/ViewLogin";
+import { useEffect, useState } from "react";
+import ViewCanjes from "./views/ViewCanjes";
 
 function App() {
+  const [isLogedIn, setIsLogedIn] = useState(false);
+  useEffect(() => {
+    let token = localStorage.getItem("token"); 
+  if(token){
+    setIsLogedIn(true);
+  }
+  }, [])
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<BackOffice />}>
-          <Route path="/" element={<Menu></Menu>}></Route>
-          <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
-          <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
-          <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
-          <Route path="puntos" element={<ViewPuntos />} />
-          <Route path="ayuda" element={<ViewSoporte />} /> {/* Nueva ruta para soporte */}
-        
-        </Route>
+        {isLogedIn ?
+          <Route element={<BackOffice />}>
+            <Route path="/" element={<Menu></Menu>}></Route>
+            <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
+            <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
+            <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
+            <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
+            <Route path="puntos" element={<ViewPuntos />} />
+            <Route path="ayuda" element={<ViewSoporte />} />
+          </Route>
+          :
+          <Route path="/*" element={<ViewLogin setIsLogedIn={setIsLogedIn}></ViewLogin>}></Route>
+        }
       </Routes>
     </BrowserRouter>
   );

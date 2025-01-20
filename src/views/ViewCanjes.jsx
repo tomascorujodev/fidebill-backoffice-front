@@ -5,7 +5,7 @@ import Pagination from "../Components/Pagination";
 import StatusLabel from "../Components/StatusLabel";
 import Button from "../Components/Button";
 
-export default function ViewCompras() {
+export default function ViewCanjes() {
   const [compras, setCompras] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -23,7 +23,7 @@ export default function ViewCompras() {
 
   async function obtenerCompras() {
     try {
-      let response = await GET("puntos/obtenercompras", { page: page });
+      let response = await GET("puntos/obtenercanjes", { page: page });
       if (response) {
         switch (response.status) {
           case 200:
@@ -99,8 +99,7 @@ export default function ViewCompras() {
               <th scope="col">Documento</th>
               <th scope="col">Fecha y hora</th>
               <th scope="col">Estado</th>
-              <th scope="col">Monto</th>
-              <th scope="col">Puntos agregados</th>
+              <th scope="col">Puntos canjeados</th>
               <th scope="col">Puntos</th>
             </tr>
           </thead>
@@ -110,17 +109,16 @@ export default function ViewCompras() {
                 <td>{compra.nombre}</td>
                 <td>{compra.apellido}</td>
                 <td>{compra.documento}</td>
-                <td>{convertirFechaArgentina(compra?.fechaCompra)}</td>
-                <td>{<StatusLabel status={compra.estadoCompra} />}</td>
-                <td>{compra.monto}</td>
-                <td>{compra.puntosAgregados}</td>
+                <td>{convertirFechaArgentina(compra?.fechaCanje)}</td>
+                <td>{<StatusLabel status={compra.estadoCanje} />}</td>
+                <td>{compra.puntosUtilizados}</td>
                 <td>{compra.puntos}</td>
                 <td>
                   <Button
                     text={"Cancelar"}
                     className="btn btn-danger"
                     onClick={() => setShowModal(compra.idCompra)}
-                    disabled={compra.estadoCompra === 0 || (compra.puntos < compra.puntosAgregados)}
+                    disabled={compra.estadoCanje === 0}
                   />
                 </td>
               </tr>

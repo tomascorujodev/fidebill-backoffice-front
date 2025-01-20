@@ -30,6 +30,9 @@ export default function ViewCompras() {
           case 204:
             setMensaje("No hay clientes cargados");
             return;
+          case 401:
+            setMensaje("Usuario y contraseña incorrectos.");
+            return;
           case 500:
             setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
             return;
@@ -46,8 +49,8 @@ export default function ViewCompras() {
 
   async function filtarClientes() {
     try {
-      let clients = await GET("clientes/buscarclientes", { page: page , busqueda: busqueda});
-      if (clients) {  
+      let clients = await GET("clientes/buscarclientes", { page: page, busqueda: busqueda });
+      if (clients) {
         setMensaje("");
         clients = await clients.json();
         setClientes(clients.clientes);
@@ -56,19 +59,18 @@ export default function ViewCompras() {
       setMensaje("Hubo un problema al intentar obtener los clientes");
     }
   }
-  
+
   return (
     <>
       <div className="container">
-        <div className="card p-4">
-          <h2>Gestión de Clientes</h2>
-          <h3 className="text-end">
-          <Link   className="btn btn-success btn-lg px-3 py-1" to="/cliente/agregar-cliente"> 
-            Agregar cliente
-          </Link>
-          </h3>
+        <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card p-4 mb-4">
+          <div className="d-flex justify-content-between align-items-center">
+            <h2>Gestión de Clientes</h2>
+            <Link className="btn btn-success btn-lg px-3 py-1" to="/cliente/agregar-cliente">
+              Agregar cliente
+            </Link>
+          </div>
           <br />
-
           <input
             className="form-control me-2"
             type="search"

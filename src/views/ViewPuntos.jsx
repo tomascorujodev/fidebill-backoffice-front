@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GET, POST } from "../Services/Fetch";
 import Card from "../Components/Card";
 import Button from "../Components/Button";
-import "../assets/CSS/ViewPuntos.css"
+import "../assets/CSS/ViewPuntos.css";
 
 export default function ViewPuntos() {
   const [documento, setDocumento] = useState("");
@@ -11,7 +11,7 @@ export default function ViewPuntos() {
   const [montoCompra, setMontoCompra] = useState(0);
   const [cantidadPuntos, setCantidadPuntos] = useState(0);
   const [mensaje, setMensaje] = useState("");
-  const [fadeClass, setFadeClass] = useState("fade-out"); 
+  const [fadeClass, setFadeClass] = useState("fade-out");
 
   useEffect(() => {
     setMontoCompra(0);
@@ -23,10 +23,10 @@ export default function ViewPuntos() {
       setFadeClass("fade-out");
       setTimeout(() => {
         setFadeClass("fade-out hide");
-        setTimeout(()=>{
+        setTimeout(() => {
           setMensaje("");
           setFadeClass("fade-out");
-        }, 1000)
+        }, 1000);
       }, 10000);
     }
   }, [mensaje]);
@@ -112,72 +112,75 @@ export default function ViewPuntos() {
 
   return (
     <div className="container mt-2">
-      <div className="card p-4">
+      <div style={{ boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem" }} className="card p-4">
         <h2>Gestión de Puntos</h2>
         <br />
-        <div className="mb-3">
-          <label htmlFor="documento" className="form-label">
-            Documento del Cliente
-          </label>
-          <br />
+        <label htmlFor="documento" className="form-label">
+          Documento del Cliente
+        </label>
+        <div className="d-flex mb-4">
           <input
             type="text"
-            className="form-control"
+            className="form-control w-75"
             id="documento"
             value={documento}
             onChange={e => setDocumento(e.target.value)}
           />
-          <br />
-          <button className="btn btn-primary mt-2" onClick={buscarCliente}>
+          <button style={{ minHeight: "2rem",maxHeight: "4rem" }} className="btn btn-primary ms-2" onClick={buscarCliente}>
             Buscar Cliente
           </button>
-      </div>
-        {mensaje && (
-          <div className={`alert alert-info mt-3 ${fadeClass}`}>{mensaje}</div>
-        )}
-        {cliente &&  
-          <div className="mt-4 ">
+        </div>
+        {cliente && (
+          <span>
             <h5 className="card-title mb-4">
               {cliente.nombre} {cliente.apellido}, DNI: {cliente.documento}
             </h5>
-            <button className={`btn p-3 me-4 ${opcionPuntos === 1 ? 'btn-success active' : 'btn-outline-success'}`} onClick={() => {setOpcionPuntos(1)}}>
+            <button
+              className={`btn p-3 me-4 ${opcionPuntos === 1 ? "btn-success active" : "btn-outline-success"}`}
+              onClick={() => {
+                setOpcionPuntos(1);
+              }}
+            >
               Cargar Puntos
             </button>
-            <button className={`btn p-3 ${opcionPuntos === 2 ? 'btn-warning active' : 'btn-outline-warning'}`} onClick={() => {setOpcionPuntos(2)}}>
-              Canjear Puntos  
+            <button
+              className={`btn p-3 ${opcionPuntos === 2 ? "btn-warning active" : "btn-outline-warning"}`}
+              onClick={() => {
+                setOpcionPuntos(2);
+              }}
+            >
+              Canjear Puntos
             </button>
-          </div>
-        }
+          </span>
+        )}
+
+        {mensaje && <div className={`alert alert-info mt-3 ${fadeClass}`}>{mensaje}</div>}
       </div>
 
-      {
-        opcionPuntos !== 0 && (
+      {opcionPuntos !== 0 && (
         <>
-          {
-            opcionPuntos === 1 &&
-            <Card 
-              title={cliente.nombre + " " + cliente.apellido} 
-              subtitle={"Puntos disponibles: " + cliente.puntos } 
-              label={"Ingrese el monto de la compra"} 
+          {opcionPuntos === 1 && (
+            <Card
+              title={cliente.nombre + " " + cliente.apellido}
+              subtitle={"Puntos disponibles: " + cliente.puntos}
+              label={"Ingrese el monto de la compra"}
               setValue={setMontoCompra}
             >
-              <Button text={"Cargar Compra"} onClick={cargarPuntos}/>
+              <Button text={"Cargar Compra"} onClick={cargarPuntos} />
             </Card>
-          }
-          {
-            opcionPuntos === 2 &&
-              <Card 
-                title={cliente.nombre + " " + cliente.apellido}
-                subtitle={"Puntos disponibles: " + cliente.puntos }
-                label={"Ingrese los puntos a canjear"}
-                setValue={setCantidadPuntos} 
-              >
-                <Button text={"Canjear Puntos"} className="btn-warning" onClick={canjearPuntos}/>
-              </Card>  
-          }
+          )}
+          {opcionPuntos === 2 && (
+            <Card
+              title={cliente.nombre + " " + cliente.apellido}
+              subtitle={"Puntos disponibles: " + cliente.puntos}
+              label={"Ingrese los puntos a canjear"}
+              setValue={setCantidadPuntos}
+            >
+              <Button text={"Canjear Puntos"} className="btn-warning" onClick={canjearPuntos} />
+            </Card>
+          )}
         </>
-        )
-      }      
+      )}
     </div>
   );
 }
