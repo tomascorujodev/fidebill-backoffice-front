@@ -1,7 +1,5 @@
 export const RegexValidations = {
-    nombre: /^[a-zA-Z\s]{2,}$/, 
-
-    apellido: /^[a-zA-Z\s]{2,}$/, 
+    soloLetras: /^[a-zA-Z\s]{2,}$/,
 
     documento: /^[0-9]+$/, 
 

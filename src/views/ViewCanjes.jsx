@@ -79,7 +79,7 @@ export default function ViewCanjes() {
     <>
       <div className="container">
       <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card p-4">
-        <h2>Historial de Compras</h2>
+        <h2>Historial de Canjes</h2>
         <br />
           <input
             className="form-control me-2"

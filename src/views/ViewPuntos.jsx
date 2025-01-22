@@ -12,22 +12,25 @@ export default function ViewPuntos() {
   const [cantidadPuntos, setCantidadPuntos] = useState(0);
   const [mensaje, setMensaje] = useState("");
   const [fadeClass, setFadeClass] = useState("fade-out");
-
+  const [effectId, setEffectId] = useState(null);
   useEffect(() => {
     setMontoCompra(0);
     setCantidadPuntos(0);
   }, [opcionPuntos]);
 
   useEffect(() => {
+    if(effectId){
+      clearTimeout(effectId)
+    }
     if (mensaje) {
       setFadeClass("fade-out");
-      setTimeout(() => {
+      setEffectId(setTimeout(() => {
         setFadeClass("fade-out hide");
         setTimeout(() => {
           setMensaje("");
           setFadeClass("fade-out");
         }, 1000);
-      }, 10000);
+      }, 10000))
     }
   }, [mensaje]);
 
@@ -99,7 +102,7 @@ export default function ViewPuntos() {
         }
         setDocumento(cliente.documento);
         buscarCliente();
-        setMensaje(`Se cargaron ${cantidadPuntos} puntos correctamente.`);
+        setMensaje(`Se canjearon ${cantidadPuntos} puntos correctamente.`);
         setMontoCompra(0);
         setCantidadPuntos(0);
       } catch (error) {
@@ -165,6 +168,7 @@ export default function ViewPuntos() {
               subtitle={"Puntos disponibles: " + cliente.puntos}
               label={"Ingrese el monto de la compra"}
               setValue={setMontoCompra}
+              value={montoCompra}
             >
               <Button text={"Cargar Compra"} onClick={cargarPuntos} />
             </Card>
@@ -175,6 +179,7 @@ export default function ViewPuntos() {
               subtitle={"Puntos disponibles: " + cliente.puntos}
               label={"Ingrese los puntos a canjear"}
               setValue={setCantidadPuntos}
+              value={cantidadPuntos}
             >
               <Button text={"Canjear Puntos"} className="btn-warning" onClick={canjearPuntos} />
             </Card>

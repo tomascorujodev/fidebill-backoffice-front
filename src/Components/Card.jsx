@@ -1,4 +1,4 @@
-export default function Card({title, subtitle, label, setValue, children={} }) {
+export default function Card({title, subtitle, label, setValue, value = 0, children={} }) {
   return (
     <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card mt-4 mb-4">
       <div className="card-body">
@@ -16,6 +16,7 @@ export default function Card({title, subtitle, label, setValue, children={} }) {
             className="form-control"
             id="cardinput"
             onChange={e => setValue(e.target.value)}
+            value={value}
           />
         </div>
         {children}

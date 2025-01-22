@@ -53,11 +53,11 @@ export default function Navbar() {
                 Compras
               </Link>
             </li>
-            <li>
-              <Link className="dropdown-item" to="/canjes">
+            {/* <li>
+              <Link className="dropdown-item" to="/canjes" disabled>
                 Canjes
               </Link>
-            </li>
+            </li> */}
           </ul>
         </li>
         <li className="nav-item">

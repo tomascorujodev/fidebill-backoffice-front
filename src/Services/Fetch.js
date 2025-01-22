@@ -1,5 +1,5 @@
-// const backendurl = "http://localhost:5046/";
-const backendurl = "https://fidebill-cqbradhucreue7bv.canadacentral-01.azurewebsites.net/";
+const backendurl = "http://localhost:5046/";
+// const backendurl = "https://fidebill-cqbradhucreue7bv.canadacentral-01.azurewebsites.net/";
 
 export async function GET(url, data){
     const objString = '?' + new URLSearchParams(data).toString();
@@ -7,7 +7,7 @@ export async function GET(url, data){
         method: 'GET',
         mode: 'cors',
         headers:{
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
     })
     .then((res) => res)
@@ -22,7 +22,7 @@ export async function POST(url, data){
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(data)
         })

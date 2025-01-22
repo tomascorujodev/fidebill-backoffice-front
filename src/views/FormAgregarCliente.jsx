@@ -1,91 +1,251 @@
 import { useState } from "react";
 import { POST } from "../Services/Fetch";
+import { Modal, Button } from "react-bootstrap";
 
-export default function FormAgregarCliente() {
-const [cliente, setCliente] = useState({});
+const FormularioRegistro = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    Nombre: "",
+    Apellido: "",
+    Documento: "",
+    FechaNacimiento: "",
+    Genero: "Masculino",
+    TipoCliente: "Consumidor Final",
+    Email: "",
+    Direccion: "",
+    Telefono: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleChange = (e) => {
+  const validaciones = {
+    Nombre: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/,
+    Apellido: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/,
+    Documento: /^[0-9]{7,9}$/,
+    Genero: /^(Masculino|Femenino|Otro)$/i,
+    TipoCliente: /^(Consumidor Final|Responsable Inscripto)$/i,
+    FechaNacimiento: /^\d{2,4}-\d{2}-\d{2,4}$/,
+    Email: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+    Direccion: /^.{0}$|^.{5,100}$/,
+    Telefono: /^(\d{10})?$/,
+  };
+
+  const handleChange = e => {
     const { name, value } = e.target;
-    setCliente((prevCliente) => ({
-      ...prevCliente,
-      [name]: value
-    }));
+    setFormData({ ...formData, [name]: value });
+
+    if (validaciones[name].test(value)) {
+      setErrors({ ...errors, [name]: false });
+    } else {
+      setErrors({ ...errors, [name]: true });
+    }
   };
 
-  async function handleSubmit(e){
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log("Cliente agregado:", cliente);
-    let request = {
-      ...cliente
-    }
-    let rsp;
-    try{
-      rsp = await POST("clientes/crearcliente", request);
-      console.log(rsp)
-    }catch{
+    setIsLoading(true);
+    const newErrors = {};
+    let isValid = true;
 
-    }
-  };
+    Object.keys(formData).forEach(key => {
+      if (!validaciones[key].test(formData[key])) {
+        newErrors[key] = true;
+        isValid = false;
+      }
+    });
 
+    setErrors(newErrors);
+    if (isValid) {
+      try {
+        setFormData({...formData, FechaNacimiento: new Date(formData.FechaNacimiento).toISOString(),})
+        let response = await POST("clientes/crearcliente", { ...formData });
+        if (response) {
+          if (response.status === 200) {
+            setMessage("El cliente " + formData.Nombre + " " + formData.Apellido + ", Documento: " + formData.Documento + " ha sido cargado correctamente");
+            setFormData({
+              Nombre: "",
+              Apellido: "",
+              Documento: "",
+              FechaNacimiento: "",
+              Genero: "Masculino",
+              TipoCliente: "Consumidor Final",
+              Email: "",
+              Direccion: "",
+              Telefono: "",
+            });
+            setErrors({});
+            setShowModal(true);
+          }else{
+            response = await response.json();
+            setMessage(response.message)
+            setShowModal(true);
+          }
+        } else {
+          setMessage("Hubo un problema al agregar cliente. Verifique la conexion");
+          setShowModal(true);
+        }
+      } catch {
+        setMessage("Hubo un problema al agregar cliente. Por favor, contacte con un administrador.");
+        setShowModal(true);
+        setIsLoading(false);
+      }
+    }
+    setIsLoading(false);
+  }
 
   return (
-    <>
-    <div className="container">
-      <div className="card p-4">
-      <h2>Agregar Cliente</h2>
-      <div className="container">
+    <div className="container card p-4 mb-4">
+      <h2>
+          Agregar Cliente
+      </h2>
+      <br />
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="Nombre" className="form-label">Nombre(*)</label>
-          <input type="text" className="form-control" id="Nombre" name="Nombre" value={cliente.nombre} onChange={handleChange} required />
+          <label htmlFor="Nombre" className="form-label">
+            Nombre(*)
+          </label>
+          <input
+            type="text"
+            className={`form-control ${errors.Nombre ? "is-invalid" : ""}`}
+            id="Nombre"
+            name="Nombre"
+            value={formData.Nombre}
+            onChange={handleChange}
+          />
         </div>
         <div className="mb-3">
-          <label htmlFor="Apellido" className="form-label">Apellido(*)</label>
-          <input type="text" className="form-control" id="Apellido" name="Apellido" value={cliente.apellido} onChange={handleChange} required />
+          <label htmlFor="Apellido" className="form-label">
+            Apellido(*)
+          </label>
+          <input
+            type="text"
+            className={`form-control ${errors.Apellido ? "is-invalid" : ""}`}
+            id="Apellido"
+            name="Apellido"
+            value={formData.Apellido}
+            onChange={handleChange}
+          />
         </div>
         <div className="mb-3">
-          <label htmlFor="Documento" className="form-label">Documento(*)</label>
-          <input type="text" className="form-control" id="Documento" name="Documento" value={cliente.documento} onChange={handleChange} required />
+          <label htmlFor="Documento" className="form-label">
+            Documento(*)
+          </label>
+          <input
+            type="text"
+            className={`form-control ${errors.Documento ? "is-invalid" : ""}`}
+            id="Documento"
+            name="Documento"
+            value={formData.Documento}
+            onChange={handleChange}
+          />
         </div>
         <div className="mb-3">
-          <label htmlFor="FechaNacimiento" className="form-label">Fecha de Nacimiento(*)</label>
-          <input type="date" className="form-control" id="FechaNacimiento" name="FechaNacimiento" value={cliente.fecha_nacimiento} onChange={handleChange} />
+          <label htmlFor="FechaNacimiento" className="form-label">
+            Fecha de Nacimiento(*)
+          </label>
+          <input
+            type="date"
+            className={`form-control ${errors.FechaNacimiento ? "is-invalid" : ""}`}
+            id="FechaNacimiento"
+            name="FechaNacimiento"
+            value={formData.FechaNacimiento}
+            onChange={handleChange}
+          />
         </div>
         <div className="mb-3">
-          <label htmlFor="Genero" className="form-label">Género(*)</label>
-          <select className="form-select" id="Genero" name="Genero" value={cliente.genero} onChange={handleChange}>
+          <label htmlFor="Genero" className="form-label">
+            Género(*)
+          </label>
+          <select
+            className={`form-select ${errors.Genero ? "is-invalid" : ""}`}
+            id="Genero"
+            name="Genero"
+            value={formData.Genero}
+            onChange={handleChange}
+          >
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
             <option value="Otro">Otro</option>
           </select>
         </div>
         <div className="mb-3">
-          <label htmlFor="Email" className="form-label">Email(*)</label>
-          <input type="email" className="form-control" id="Email" name="Email" value={cliente.email} onChange={handleChange} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="Direccion" className="form-label">Dirección</label>
-          <input type="text" className="form-control" id="Direccion" name="Direccion" value={cliente.direccion} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="Telefono" className="form-label">Teléfono</label>
-          <input type="text" className="form-control" id="Telefono" name="Telefono" value={cliente.telefono} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="TipoCliente" className="form-label">Tipo Cliente(*)</label>
-          <select className="form-select" id="TipoCliente" name="TipoCliente" value={cliente.tipoCliente} onChange={handleChange}>
-            <option value="Responsable Inscripto">Responsable Inscripto</option>
+          <label htmlFor="TipoCliente" className="form-label">
+            Tipo de cliente(*)
+          </label>
+          <select
+            className={`form-select ${errors.TipoCliente ? "is-invalid" : ""}`}
+            id="TipoCliente"
+            name="TipoCliente"
+            value={formData.TipoCliente}
+            onChange={handleChange}
+          >
             <option value="Consumidor Final">Consumidor Final</option>
-            <option value="Consumidor Final<">Monotributista</option>
-            <option value="Excento">Excento</option>
+            <option value="Responsable Inscripto">Responsable Inscripto</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary">Agregar</button>
+        <div className="mb-3">
+          <label htmlFor="Email" className="form-label">
+            Email(*)
+          </label>
+          <input
+            type="Email"
+            className={`form-control ${errors.Email ? "is-invalid" : ""}`}
+            id="Email"
+            name="Email"
+            value={formData.Email}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="Direccion" className="form-label">
+            Dirección
+          </label>
+          <input
+            type="text"
+            className={`form-control ${errors.Direccion ? "is-invalid" : ""}`}
+            id="Direccion"
+            name="Direccion"
+            value={formData.Direccion}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="Telefono" className="form-label">
+            Teléfono
+          </label>
+          <input
+            type="tel"
+            className={`form-control ${errors.Telefono ? "is-invalid" : ""}`}
+            id="Telefono"
+            name="Telefono"
+            value={formData.Telefono}
+            onChange={handleChange}
+          />
+        </div>
+        {isLoading ? (
+          <div style={{ justifySelf: "center" }} className="d-flex spinner-border" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+        ) : (
+          <button style={{float: "inline-end"}} type="submit" className="btn btn-success w-25 mt-3 custom-button">
+            Agregar Cliente
+          </button>
+        )}
       </form>
-      </div>
-      </div>
-      <br />
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{message}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
-    </>
   );
-}
+};
+
+export default FormularioRegistro;

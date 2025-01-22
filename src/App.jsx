@@ -13,7 +13,7 @@ import ViewCanjes from "./views/ViewCanjes";
 function App() {
   const [isLogedIn, setIsLogedIn] = useState(false);
   useEffect(() => {
-    let token = localStorage.getItem("token"); 
+    let token = sessionStorage.getItem("token"); 
   if(token){
     setIsLogedIn(true);
   }

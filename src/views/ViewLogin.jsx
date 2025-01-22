@@ -18,7 +18,7 @@ import { POST } from "../Services/Fetch";
             switch (response.status) {
                 case 200:
                     response = await response.json();
-                    localStorage.setItem("token", response.token);
+                    sessionStorage.setItem("token", response.token);
                     setIsLogedIn(true);
                     setMensaje("");
                     return;
@@ -98,7 +98,7 @@ return (
           className="modal fade show"
           tabIndex="-1"
           aria-labelledby="modalMessageLabel"
-          style={{ display: "block", paddingRight: "17px" }} // Ensures modal is visible
+          style={{ display: "block", paddingRight: "17px" }}
         >
           <div className="modal-dialog">
             <div className="modal-content">
@@ -111,7 +111,7 @@ return (
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={() => setMensaje("")} // Limpiar el mensaje cuando el modal se cierre
+                  onClick={() => setMensaje("")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -122,7 +122,7 @@ return (
                   type="button"
                   className="btn btn-secondary"
                   data-bs-dismiss="modal"
-                  onClick={() => setMensaje("")} // Limpiar el mensaje cuando se cierre el modal
+                  onClick={() => setMensaje("")}
                 >
                   Cerrar
                 </button>
