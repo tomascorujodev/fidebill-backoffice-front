@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  function logOut(){
+    sessionStorage.clear();
+    window.location.reload();
+    return;
+  }
+
   return (
 <nav className="navbar navbar-expand-lg bg-body-tertiary mb-4">
   <br />
   <div className="container-fluid">
-    <a className="navbar-brand" href="#">
+    <a className="navbar-brand" href="/">
       <img
         src="/assets/LOGOSDCapCut.png"
         alt="FideBill Logo"
@@ -53,17 +59,22 @@ export default function Navbar() {
                 Compras
               </Link>
             </li>
-            {/* <li>
-              <Link className="dropdown-item" to="/canjes" disabled>
+            <li>
+              <Link className="dropdown-item" to="/canjes">
                 Canjes
               </Link>
-            </li> */}
+            </li>
           </ul>
         </li>
         <li className="nav-item">
           <Link className="nav-link" to="/ayuda">
             Soporte
           </Link>
+        </li>
+        <li className="nav-item">
+          <button className="btn btn-danger nav-link" onClick={() => logOut()}>
+            Cerrar Sesión
+          </button>
         </li>
       </ul>
     </div>

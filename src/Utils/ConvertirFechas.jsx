@@ -8,7 +8,7 @@ export function convertirFecha(fecha) {
 }
 
 export function convertirFechaArgentina(fechaISO) {
-  if(fechaISO === null) return;
+  if(fechaISO == null) return;
     const fecha = new Date(fechaISO);
   
     const opciones = {

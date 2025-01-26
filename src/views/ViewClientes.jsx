@@ -31,7 +31,7 @@ export default function ViewCompras() {
             setMensaje("No hay clientes cargados");
             return;
           case 401:
-            setMensaje("Usuario y contraseña incorrectos.");
+            setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
             return;
           case 500:
             setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
@@ -49,11 +49,27 @@ export default function ViewCompras() {
 
   async function filtarClientes() {
     try {
-      let clients = await GET("clientes/buscarclientes", { page: page, busqueda: busqueda });
-      if (clients) {
-        setMensaje("");
-        clients = await clients.json();
-        setClientes(clients.clientes);
+      let response = await GET("clientes/buscarclientes", { page: page, busqueda: busqueda });
+      if (response) {
+        switch (response.status) {
+          case 200:
+            response = await response.json();
+            setClientes(response.clientes);
+            setMensaje("");
+            return;
+          case 204:
+            setMensaje("No encontro el cliente");
+            return;
+          case 401:
+            setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
+            return;
+          case 500:
+            setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
+            return;
+          default:
+            setMensaje("Hubo un problema. Por favor, contacte con un administrador");
+            return;
+        }
       }
     } catch {
       setMensaje("Hubo un problema al intentar obtener los clientes");

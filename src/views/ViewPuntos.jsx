@@ -19,18 +19,20 @@ export default function ViewPuntos() {
   }, [opcionPuntos]);
 
   useEffect(() => {
-    if(effectId){
-      clearTimeout(effectId)
+    if (effectId) {
+      clearTimeout(effectId);
     }
     if (mensaje) {
       setFadeClass("fade-out");
-      setEffectId(setTimeout(() => {
-        setFadeClass("fade-out hide");
+      setEffectId(
         setTimeout(() => {
-          setMensaje("");
-          setFadeClass("fade-out");
-        }, 1000);
-      }, 10000))
+          setFadeClass("fade-out hide");
+          setTimeout(() => {
+            setMensaje("");
+            setFadeClass("fade-out");
+          }, 1000);
+        }, 10000)
+      );
     }
   }, [mensaje]);
 
@@ -51,6 +53,9 @@ export default function ViewPuntos() {
             return;
           case 204:
             setMensaje("No se encontró ningún cliente, verifique el DNI");
+            return;
+          case 401:
+            setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
             return;
           case 500:
             setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
@@ -73,14 +78,28 @@ export default function ViewPuntos() {
           IdCliente: cliente.idCliente,
           MontoCompra: Math.round(montoCompra),
         });
-        if (response.error) {
-          setMensaje("Error al cargar los puntos.");
+        if (!response) {
+          setMensaje("Ha ocurrido un error, verifique su conexión a internet");
         } else {
-          setDocumento(cliente.documento);
-          buscarCliente();
-          setMensaje(`Se cargaron ${Math.round(montoCompra * 0.03)} puntos correctamente.`);
-          setMontoCompra(0);
-          setCantidadPuntos(0);
+          switch (response.status) {
+            case 200:
+              let client = await response.json();
+              buscarCliente()
+              setMensaje(client.message);
+              return;
+            case 204:
+              setMensaje("No se encontró ningún cliente, verifique el DNI");
+              return;
+            case 401:
+              setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
+              return;
+            case 500:
+              setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
+              return;
+            default:
+              setMensaje("Hubo un problema. Por favor, contacte con un administrador");
+              return;
+          }
         }
       } catch (error) {
         setMensaje("Error al cargar los puntos.");
@@ -129,7 +148,11 @@ export default function ViewPuntos() {
             value={documento}
             onChange={e => setDocumento(e.target.value)}
           />
-          <button style={{ minHeight: "2rem",maxHeight: "4rem" }} className="btn btn-primary ms-2" onClick={buscarCliente}>
+          <button
+            style={{ minHeight: "2rem", maxHeight: "4rem" }}
+            className="btn btn-primary ms-2"
+            onClick={buscarCliente}
+          >
             Buscar Cliente
           </button>
         </div>

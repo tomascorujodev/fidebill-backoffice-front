@@ -9,14 +9,26 @@ import ViewSoporte from "./views/ViewSoporte";
 import ViewLogin from "./views/ViewLogin";
 import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
+import { GET } from "./Services/Fetch";
 
 function App() {
-  const [isLogedIn, setIsLogedIn] = useState(false);
+  const [isLogedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    let token = sessionStorage.getItem("token"); 
-  if(token){
-    setIsLogedIn(true);
-  }
+    async function validateFunction (){
+      let token = sessionStorage.getItem("token");
+      if(token){
+        let response = await GET("auth/validatetoken");
+        if(response.ok){
+          setIsLoggedIn(true);
+        }else{
+          sessionStorage.clear();
+          setIsLoggedIn(false);
+        }
+      }else{
+        setIsLoggedIn(false);
+      }
+    }
+    validateFunction();
   }, [])
   return (
     <BrowserRouter>
@@ -32,7 +44,7 @@ function App() {
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :
-          <Route path="/*" element={<ViewLogin setIsLogedIn={setIsLogedIn}></ViewLogin>}></Route>
+          <Route path="/*" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
         }
       </Routes>
     </BrowserRouter>
