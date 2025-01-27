@@ -61,25 +61,32 @@ const FormularioRegistro = () => {
         setFormData({...formData, FechaNacimiento: new Date(formData.FechaNacimiento).toISOString(),})
         let response = await POST("clientes/crearcliente", { ...formData });
         if (response) {
-          if (response.status === 200) {
-            setMessage("El cliente " + formData.Nombre + " " + formData.Apellido + ", Documento: " + formData.Documento + " ha sido cargado correctamente");
-            setFormData({
-              Nombre: "",
-              Apellido: "",
-              Documento: "",
-              FechaNacimiento: "",
-              Genero: "Masculino",
-              TipoCliente: "Consumidor Final",
-              Email: "",
-              Direccion: "",
-              Telefono: "",
-            });
-            setErrors({});
-            setShowModal(true);
-          }else{
-            response = await response.json();
-            setMessage(response.message)
-            setShowModal(true);
+          switch (response.status) {
+            case 200:
+              setMessage("El cliente " + formData.Nombre + " " + formData.Apellido + ", Documento: " + formData.Documento + " ha sido cargado correctamente");
+              setFormData({
+                Nombre: "",
+                Apellido: "",
+                Documento: "",
+                FechaNacimiento: "",
+                Genero: "Masculino",
+                TipoCliente: "Consumidor Final",
+                Email: "",
+                Direccion: "",
+                Telefono: "",
+              });
+              setErrors({});
+              setShowModal(true);
+              break;
+            case 401:
+              setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+              setShowModal(true);
+              break;
+            default:
+              response = await response.json();
+              setMessage(response.message);
+              setShowModal(true);
+              break;
           }
         } else {
           setMessage("Hubo un problema al agregar cliente. Verifique la conexion");
