@@ -10,7 +10,7 @@ export default async function imprimirComprobante({documento, nombre, apellido, 
 
     doc.setFont("Courier", "normal");
     doc.setFontSize(8);
-    doc.addImage("../../public/assets/LOGOSDCapCut.png", 'PNG', 9, 3, 40, 8.5);
+    doc.addImage("/assets/LOGOSDCapCut.png", 'PNG', 9, 3, 40, 8.5);
     doc.text(`NRO DOCUMENTO: ${documento}`, 2, 18);
     doc.text(`CLIENTE: ${nombre + " " + apellido}`, 2, 26);
     doc.text("--------------------------------", 2, 34);
