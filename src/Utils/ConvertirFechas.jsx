@@ -7,6 +7,15 @@ export function convertirFecha(fecha) {
     return `${dia}-${mes}-${anio}`;
 }
 
+export function convertirFechaIngles(fecha) {
+  const date = new Date(fecha); 
+  const dia = String(date.getDate()).padStart(2, '0');
+  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const anio = date.getFullYear();
+
+  return `${anio}-${mes}-${dia}`;
+}
+
 export function convertirFechaArgentina(fechaISO) {
   if(fechaISO == null) return;
     const fecha = new Date(fechaISO);

@@ -27,3 +27,17 @@ export async function POST(url, data){
         .then((res)=>res)
         .catch((err)=> console.log(err))
 }
+
+export async function PATCH(url, data){
+    return await fetch (backendurl + url, {
+        method: 'PATCH',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        },
+        body: JSON.stringify(data)
+        })
+        .then((res)=>res)
+        .catch((err)=> console.log(err))
+}

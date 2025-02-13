@@ -20,7 +20,7 @@
     "react-bootstrap": "^2.10.8",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1",
-    "vercel": "^39.3.0"
+    "vercel": "^32.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

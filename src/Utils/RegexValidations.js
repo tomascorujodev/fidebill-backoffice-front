@@ -1,20 +1,11 @@
 export const RegexValidations = {
-    soloLetras: /^[a-zA-Z\s]{2,}$/,
-
-    documento: /^[0-9]+$/, 
-
-    email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 
-  
-    direccion: /^[a-zA-Z0-9\s,.-]{5,}$/, 
-
-    telefono: /^[0-9]{7,15}$/, 
-
-    fechaNacimiento: /^\d{4}-\d{2}-\d{2}$/,
-
-    genero: /^(Masculino|Femenino|Otro)$/,
-
-    tipoCliente: /^(Responsable Inscripto|Consumidor Final|Monotributista|Excento)$/,
+    nombre: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/,
+    apellido: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/,
+    documento: /^[0-9]{7,9}$/,
+    genero: /^(Masculino|Femenino|Otro)$/i,
+    tipoCliente: /^(Consumidor Final|Responsable Inscripto)$/i,
+    fechaNacimiento: /^\d{2,4}-\d{2}-\d{2,4}$/,
+    email: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+    direccion: /^.{0}$|^.{5,100}$/,
+    telefono: /^(\d{10})?$/,
 };
-  
-export default RegexValidations;
-  

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { POST } from "../Services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 
-const FormularioRegistro = () => {
+export default function FormAgregarCliente(){
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     Nombre: "",
@@ -18,7 +18,6 @@ const FormularioRegistro = () => {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
-
   const validaciones = {
     Nombre: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/,
     Apellido: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/,
@@ -31,7 +30,7 @@ const FormularioRegistro = () => {
     Telefono: /^(\d{10})?$/,
   };
 
-  const handleChange = e => {
+  function handleChange(e){
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
@@ -254,5 +253,3 @@ const FormularioRegistro = () => {
     </div>
   );
 };
-
-export default FormularioRegistro;

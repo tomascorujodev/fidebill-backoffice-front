@@ -10,6 +10,7 @@ import ViewLogin from "./views/ViewLogin";
 import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
 import { GET } from "./Services/Fetch";
+import FormModificarCliente from "./views/FormModificarCliente";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +39,7 @@ function App() {
             <Route path="/" element={<Menu></Menu>}></Route>
             <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
             <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
+            <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>}/>
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />

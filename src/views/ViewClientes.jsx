@@ -19,7 +19,7 @@ export default function ViewCompras() {
 
   async function obtenerClientes() {
     try {
-      let response = await GET("clientes/obtenerclientes", { page: page });
+      let response = await GET("clientes/obtenerclientes", { page: page })
       if (response) {
         switch (response.status) {
           case 200:
@@ -82,7 +82,7 @@ export default function ViewCompras() {
         <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card p-4 mb-4">
           <div className="d-flex justify-content-between align-items-center">
             <h2>Gestión de Clientes</h2>
-            <Link className="btn btn-success btn-lg px-3 py-1" to="/cliente/agregar-cliente">
+            <Link className="btn btn-success btn-lg px-3 py-1 mb-2" to="/cliente/agregar-cliente">
               Agregar cliente
             </Link>
           </div>
@@ -105,10 +105,12 @@ export default function ViewCompras() {
               <th scope="col">Apellido</th>
               <th scope="col">Documento</th>
               <th scope="col">Fecha de Nacimiento</th>
+              <th scope="col">Direccion</th>
               <th scope="col">Telefono</th>
               <th scope="col">Tipo Cliente</th>
               <th scope="col">Genero</th>
               <th scope="col">Puntos</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -118,10 +120,12 @@ export default function ViewCompras() {
                 <td>{cliente.apellido}</td>
                 <td>{cliente.documento}</td>
                 <td>{convertirFecha(cliente?.fechaNacimiento)}</td>
+                <td>{cliente.direccion}</td>
                 <td>{cliente.telefono}</td>
                 <td>{cliente.tipoCliente}</td>
                 <td>{cliente.genero}</td>
                 <td>{cliente.puntos}</td>
+                <td><Link className="btn btn-warning" to={"/cliente/modificar-cliente/"+cliente.idCliente}>Modificar</Link></td>
               </tr>
             ))}
           </tbody>
