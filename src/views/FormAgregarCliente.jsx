@@ -57,8 +57,7 @@ export default function FormAgregarCliente(){
     setErrors(newErrors);
     if (isValid) {
       try {
-        setFormData({...formData, FechaNacimiento: new Date(formData.FechaNacimiento).toISOString(),})
-        let response = await POST("clientes/crearcliente", { ...formData });
+        let response = await POST("clientes/crearcliente", { ...formData, FechaNacimiento: new Date(formData.FechaNacimiento).toISOString() });
         if (response) {
           switch (response.status) {
             case 200:
@@ -88,7 +87,11 @@ export default function FormAgregarCliente(){
               break;
           }
         } else {
-          setMessage("Hubo un problema al agregar cliente. Verifique la conexion");
+          if(navigator.onLine){
+            setMessage("El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con la sucursal más cercana");
+          } else {
+            setMessage("Hubo un problema al agregar cliente. Por favor, verifique la conexión y vuelva a intentarlo.");
+          }
           setShowModal(true);
         }
       } catch {
