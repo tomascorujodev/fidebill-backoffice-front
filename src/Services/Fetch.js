@@ -1,5 +1,5 @@
-//const backendurl = "http://localhost:5046/";
-const backendurl = "https://fidebill-cqbradhucreue7bv.canadacentral-01.azurewebsites.net/";
+const backendurl = "http://localhost:5046/";
+// const backendurl = "https://fidebill-cqbradhucreue7bv.canadacentral-01.azurewebsites.net/";
 
 export async function GET(url, data){
     const objString = '?' + new URLSearchParams(data).toString();
@@ -26,6 +26,29 @@ export async function POST(url, data){
         })
         .then((res)=>res)
         .catch((err)=> console.log(err))
+}
+
+export async function POSTImage(url, file, extraData = {}) {
+    const formData = new FormData();
+    
+    if (file) {
+        formData.append("file", file);
+    }
+
+    Object.keys(extraData).forEach(key => {
+        formData.append(key, extraData[key]);
+    });
+
+    return await fetch(backendurl + url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .catch(err => console.error("Error al subir imagen:", err));
 }
 
 export async function PATCH(url, data){
