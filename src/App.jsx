@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
 import { GET } from "./Services/Fetch";
 import FormModificarCliente from "./views/FormModificarCliente";
-import ViewPromociones from "./views/ViewPromociones";
+import ViewBeneficios from "./views/ViewBeneficios";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -44,7 +44,7 @@ function App() {
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />
-            <Route path="promociones" element={<ViewPromociones />} />
+            {/* <Route path="beneficios" element={<ViewBeneficios />} /> */}
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :

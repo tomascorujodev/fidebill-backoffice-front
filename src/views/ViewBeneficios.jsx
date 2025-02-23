@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { POSTImage } from "../Services/Fetch";
+import { POSTFormData } from "../Services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
 
-export default function ViewPromociones() {
+export default function ViewBeneficios() {
   const [isLoading, setIsLoading] = useState(false);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -21,26 +21,13 @@ export default function ViewPromociones() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     setIsLoading(true);
     try {
-      let response = await POSTImage("`https://api.cloudinary.com/v1_1/tu_cloud_name/image/upload`", imagenPromocion, {Titulo: titulo, Descripcion: descripcion, Dias: dias});
+      let response = await POSTFormData("promociones/subirpromocion", imagenPromocion, {Titulo: titulo, Descripcion: descripcion, Dias: dias});
       if (response) {
         switch (response.status) {
           case 200:
-            setMessage("El cliente " + formData.Titulo + " " + formData.Descripcion + ", Dias: " + formData.Dias + " ha sido cargado correctamente");
-            setFormData({
-              Titulo: "",
-              Descripcion: "",
-              Dias: "",
-              FechaNacimiento: "",
-              Genero: "Masculino",
-              TipoCliente: "Consumidor Final",
-              Email: "",
-              Direccion: "",
-              Telefono: "",
-            });
-            setErrors({});
+            setMessage("La promocion se cargo correctamente, en unos minutos vera la vera publicada");
             setShowModal(true);
             break;
           case 401:
@@ -89,7 +76,7 @@ function handleUploadImage(e) {
 return (
   <div className="container card p-4 mb-4">
     <h2>
-      Promociones
+      Beneficios
     </h2>
     <br />
     <form onSubmit={handleSubmit}>
