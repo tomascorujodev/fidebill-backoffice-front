@@ -4,10 +4,10 @@ export default function Menu() {
           <br />
         <div className="d-flex justify-content-center">
             <img
-              src="/assets/PByFidebill.png"
+              src="/assets/PoweredByFidebill.png"
               alt="FideBill Logo"
-              width="320"
-              height="170"
+              width="340"
+              height="63"
             />
           </div>
       </div>
