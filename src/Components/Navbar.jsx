@@ -71,8 +71,8 @@ export default function Navbar() {
           </ul>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/promociones" style={{ color: "white" }}>
-            Promociones
+          <Link className="nav-link disabled" to="/beneficios" style={{ color: "gray" }}>
+            Beneficios
           </Link>
         </li>
         <li className="nav-item">

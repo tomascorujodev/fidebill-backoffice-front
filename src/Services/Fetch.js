@@ -28,7 +28,7 @@ export async function POST(url, data){
         .catch((err)=> console.log(err))
 }
 
-export async function POSTImage(url, file, extraData = {}) {
+export async function POSTFormData(url, file, extraData = {}) {
     const formData = new FormData();
     
     if (file) {
@@ -36,8 +36,13 @@ export async function POSTImage(url, file, extraData = {}) {
     }
 
     Object.keys(extraData).forEach(key => {
-        formData.append(key, extraData[key]);
+        if (Array.isArray(extraData[key])) {
+            formData.append(key, JSON.stringify(extraData[key]));
+        }else{
+            formData.append(key, extraData[key]);
+        }
     });
+    console.log(formData);
 
     return await fetch(backendurl + url, {
         method: 'POST',
