@@ -44,7 +44,7 @@ function App() {
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />
-            {/* <Route path="beneficios" element={<ViewBeneficios />} /> */}
+            <Route path="beneficios" element={<ViewBeneficios />} />
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :
