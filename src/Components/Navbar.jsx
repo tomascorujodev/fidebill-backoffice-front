@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { jwtDecode } from "../Utils/jwtDecode"
 
 export default function Navbar() {
   function logOut(){
@@ -82,6 +83,9 @@ export default function Navbar() {
         </li>
       </ul>
       <ul className="navbar-nav mb-2 mb-lg-0">
+        <li>
+          {jwtDecode(sessionStorage.getItem("token")).Usuario}
+        </li>
         <li className="nav-item">
           <button className="btn nav-link" onClick={() => logOut()} style={{ color: "white" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
