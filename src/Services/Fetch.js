@@ -32,18 +32,19 @@ export async function POSTFormData(url, file, extraData = {}) {
     const formData = new FormData();
     
     if (file) {
-        formData.append("file", file);
+        formData.append("File", file);
     }
-
+    
+    console.log(formData)
     Object.keys(extraData).forEach(key => {
         if (Array.isArray(extraData[key])) {
-            formData.append(key, JSON.stringify(extraData[key]));
+            extraData[key].forEach((item) => {
+                formData.append(key, item);
+            })
         }else{
             formData.append(key, extraData[key]);
         }
     });
-    console.log(formData);
-
     return await fetch(backendurl + url, {
         method: 'POST',
         mode: 'cors',

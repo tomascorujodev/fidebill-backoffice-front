@@ -9,7 +9,7 @@ export default function ViewLogin({ setIsLoggedIn }) {
   const [mensaje, setMensaje] = useState("");
 
   async function handleSubmit(e) {
-    e.preventDefault();
+    e?.preventDefault();
     setIsLoading(true);
     try {
       let response = await POST("auth/login", { Username: username, Password: password });
