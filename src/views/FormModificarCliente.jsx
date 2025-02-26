@@ -21,6 +21,7 @@ export default function FormModificarCliente() {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
+  const [ok, setOk] = useState(false);
   const { id } = useParams();
   const validaciones = RegexValidations;
   const navigate = useNavigate();
@@ -59,17 +60,24 @@ export default function FormModificarCliente() {
     }
     buscarcliente();
   }, []);
-
+  
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
+    
     if (validaciones[name].test(value)) {
       setErrors({ ...errors, [name]: false });
     } else {
       setErrors({ ...errors, [name]: true });
     }
   };
+  
+  function handleClose(){
+    setShowModal(false);
+    if(ok){
+      navigate("/cliente")
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -83,6 +91,7 @@ export default function FormModificarCliente() {
         isValid = false;
       }
     });
+
 
     setErrors(newErrors);
     if (isValid) {
@@ -104,6 +113,7 @@ export default function FormModificarCliente() {
                 direccion: "",
                 telefono: "",
               });
+              setOk(true);
               setErrors({});
               setShowModal(true);
               break;
@@ -269,13 +279,13 @@ export default function FormModificarCliente() {
           </button>
         )}
       </form>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
+      <Modal show={showModal}>
+        <Modal.Header>
           <Modal.Title>Aviso</Modal.Title>
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => navigate("/cliente")}>
+          <Button variant="secondary" onClick={handleClose}>
             Cerrar
           </Button>
         </Modal.Footer>

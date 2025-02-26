@@ -20,7 +20,7 @@ function App() {
       let token = sessionStorage.getItem("token");
       if(token){
         let response = await GET("auth/validatetoken");
-        if(response.ok){
+        if(response?.ok){
           setIsLoggedIn(true);
         }else{
           sessionStorage.clear();
@@ -37,7 +37,7 @@ function App() {
       <Routes>
         {isLogedIn ?
           <Route element={<BackOffice />}>
-            <Route path="/" element={<Menu></Menu>}></Route>
+            <Route path="/*" element={<Menu></Menu>}></Route>
             <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
             <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
             <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>}/>
