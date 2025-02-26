@@ -1,5 +1,5 @@
-const backendurl = "http://localhost:5046/";
-// const backendurl = "https://fidebill-cqbradhucreue7bv.canadacentral-01.azurewebsites.net/";
+//const backendurl = "http://localhost:5046/";
+const backendurl = "https://fidebill-cqbradhucreue7bv.canadacentral-01.azurewebsites.net/";
 
 export async function GET(url, data){
     const objString = '?' + new URLSearchParams(data).toString();
