@@ -28,21 +28,22 @@ export async function POST(url, data){
         .catch((err)=> console.log(err))
 }
 
-export async function POSTFormData(url, file, extraData = {}) {
+export async function  POSTFormData(url, file, extraData = {}) {
     const formData = new FormData();
     
     if (file) {
         formData.append("File", file);
     }
     
-    console.log(formData)
     Object.keys(extraData).forEach(key => {
         if (Array.isArray(extraData[key])) {
             extraData[key].forEach((item) => {
                 formData.append(key, item);
             })
         }else{
-            formData.append(key, extraData[key]);
+            if(extraData[key]){
+                formData.append(key, extraData[key]);
+            }
         }
     });
     return await fetch(backendurl + url, {
@@ -53,7 +54,7 @@ export async function POSTFormData(url, file, extraData = {}) {
         },
         body: formData
     })
-    .then(res => res.json())
+    .then(res => res)
     .catch(err => console.error("Error al subir imagen:", err));
 }
 

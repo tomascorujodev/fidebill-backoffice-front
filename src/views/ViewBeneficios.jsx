@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { GET, POSTFormData } from "../Services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
+import jwtDecode from "../Utils/jwtDecode";
 
 export default function ViewBeneficios() {
+  const token = jwtDecode(sessionStorage.getItem("token"));
   const [isLoading, setIsLoading] = useState(false);
   const [tipo, setTipo] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -18,15 +20,17 @@ export default function ViewBeneficios() {
   const [message, setMessage] = useState("");
   const [porcentajeReintegro, setPorcentajeReintegro] = useState(3);
   const [sucursales, setSucursales] = useState(["Todas"]);
+  const [sucursalesConId, setSucursalesConId] = useState(null);
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
 
 
   useEffect(() => {
     async function cargaInicial() {
-      let locales = await GET("promociones/obtenerlocales");
+      let locales = await GET("beneficios/obtenerlocales");
       if (locales) {
         locales = await locales.json();
+        setSucursalesConId(locales);
         let tmp = [];
         locales.map(local => {
           tmp.push(local.direccionLocal);
@@ -81,14 +85,51 @@ export default function ViewBeneficios() {
       setShowModal(true);
       return;
     }
+
+    if(!dias.some(value => value === true)){
+      setMessage("Debe seleccionar al menos un dia de la semana");
+      setShowModal(true);
+      return;
+    }
     
     setIsLoading(true);
     try {
-      let response = await POSTFormData("promociones/subirpromocion", imagenPromocion, { Tipo: tipo, Descripcion: descripcion, Dias: dias, PorcentajeReintegro: porcentajeReintegro, FechaInicio: habilitarFechaInicio ? fechaInicio : null, FechaFin: habilitarFechaFin ? fechaFin : null, Sucursales: sucursales });
+      let tmp = [];
+      if((sucursalesDisponibles[0] === 'Todas' && sucursalesDisponibles.length === 1) || (sucursales[0] === 'Todas' && sucursales.length === 1)){
+        tmp = null
+      }else{
+        sucursales.map(sucursal => {
+          sucursalesConId.map( sucursalConId => {
+            if(sucursalConId.direccionLocal === sucursal){
+              tmp.push(sucursalConId.idUsuarioEmpresa);
+            }
+          })
+        });
+      }
+      if(sucursalesDisponibles == ["Todas"]){
+      }
+      let response = await POSTFormData(
+        "beneficios/cargarbeneficio",
+        imagenPromocion,
+        { 
+          Tipo: tipo,
+          Descripcion: descripcion,
+          Dias: dias,
+          PorcentajeReintegro: tipo === "Reintegro de puntos" && porcentajeReintegro,
+          FechaInicio: habilitarFechaInicio ? fechaInicio : null,
+          FechaFin: habilitarFechaFin ? fechaFin : null,
+          Sucursales: tmp,
+          NombreEmpresa: token.NombreEmpresa,
+          IdEmpresa: token.idEmpresa
+        }
+      );
       if (response) {
         switch (response.status) {
           case 200:
             setMessage("La promocion se ha cargado correctamente.");
+            break;
+          case 400:
+            setMessage("Verifique que todos los campos sean correctos y vuelva a intentarlo");
             break;
           case 401:
             setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
@@ -131,7 +172,7 @@ export default function ViewBeneficios() {
   function handleSelectSucursal(e) {
     let selectedValue = e.target.value;
     if (selectedValue == "Todas") {
-      let tmp = sucursales;
+      let tmp = [...sucursales];
       sucursalesDisponibles.map(sucursalDisponible => {
         if (sucursalDisponible !== "Todas")
           tmp.push(sucursalDisponible);
@@ -142,8 +183,6 @@ export default function ViewBeneficios() {
       setSelectedSucursal("");
       setSucursales([...sucursales, selectedValue]);
       setSucursalesDisponibles(sucursalesDisponibles.filter((sucural) => sucural !== selectedValue));
-    } else {
-
     }
   }
 

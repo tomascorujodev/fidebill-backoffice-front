@@ -36,7 +36,11 @@ export default function ViewLogin({ setIsLoggedIn }) {
             return;
         }
       } else {
-        setMensaje("Hubo un problema al intentar iniciar sesion. Verifique la conexion");
+        if(navigator.onLine){
+          setMensaje("El servidor no responde. Por favor, espere unos instantes y vuelva a intentarlo, si el error persiste contactese con un administrador");
+        }else{
+          setMensaje("No hay conexion a internet, verifique la red y vuelva a intentarlo");
+        }
       }
     } catch {
       setMensaje("Hubo un problem iniciar sesion. Por favor, contacte con un administrador.");
