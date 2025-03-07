@@ -16,6 +16,17 @@ export function convertirFechaIngles(fecha) {
   return `${anio}-${mes}-${dia}`;
 }
 
+export function convertirFechaMuestra(fecha) {
+  const date = new Date(fecha + "T00:00:00Z"); 
+
+  const dia = String(date.getUTCDate()).padStart(2, '0');
+  const mes = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const anio = date.getUTCFullYear();
+
+  return `${dia}-${mes}-${anio}`;
+}
+
+
 export function convertirFechaArgentina(fechaISO) {
   if(fechaISO == null) return;
     const fecha = new Date(fechaISO);

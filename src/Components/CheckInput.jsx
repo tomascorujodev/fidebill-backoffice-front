@@ -1,4 +1,4 @@
-export default function CheckInput({ dia, name, evento }) {
+export default function CheckInput({ dia, name, evento, value }) {
   return (
     <div className="form-check-inline" style={{marginRight: "10px"}}>
         <label 
@@ -17,6 +17,8 @@ export default function CheckInput({ dia, name, evento }) {
         className="form-check-input"
         id={dia}
         name={name}
+        value={value}
+        checked={value}
         onChange={(e) => evento(e)}
         style={{
           width: '24px',  // Tamaño del checkbox

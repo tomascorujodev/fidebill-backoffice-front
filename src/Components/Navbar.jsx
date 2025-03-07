@@ -83,12 +83,12 @@ export default function Navbar() {
               </Link>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown" >
                 <li>
-                  <Link className="dropdown-item" to="/beneficios">
+                  <Link className="dropdown-item" to="beneficios/crearbeneficio">
                     Crear
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/canjes">
+                  <Link className="dropdown-item" to="beneficios/verbeneficios">
                     Activos
                   </Link>
                 </li>

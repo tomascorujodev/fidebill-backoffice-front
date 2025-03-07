@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
 import { GET } from "./Services/Fetch";
 import FormModificarCliente from "./views/FormModificarCliente";
+import ViewModificarBeneficio from "./views/ViewModificarBeneficio";
+import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
 
 function App() {
@@ -44,7 +46,9 @@ function App() {
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />
-            <Route path="beneficios" element={<ViewBeneficios />} />
+            <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
+            <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
+            <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :

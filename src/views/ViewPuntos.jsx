@@ -102,14 +102,14 @@ export default function ViewPuntos() {
       try {
         let response = await POST(`puntos/cargarcompra`, {
           IdCliente: cliente.idCliente,
-          MontoCompra: Math.round(montoCompra),
+          MontoCompra: (Math.round(montoCompra * 100) / 100),
         });
         if (!response) {
           setMensaje("Ha ocurrido un error, verifique su conexión a internet");
         } else {
           switch (response.status) {
             case 200:
-              setModalText(`Se cargaron correctamente "${(montoCompra * 0.03).toFixed(2)}" puntos a "${cliente?.nombre} ${cliente?.apellido}"`)
+              setModalText(`Se cargaron correctamente "${(Math.round(montoCompra * 100) / 100)}" puntos a "${cliente?.nombre} ${cliente?.apellido}"`)
               setShowModal(true);
               break;
             case 204:
@@ -128,7 +128,7 @@ export default function ViewPuntos() {
         }
         setIsLoading(false);
       } catch (error) {
-        setMensaje("Error al cargar los puntos.");
+        setMensaje("Ocurrio un error al intentar cargar la compra");
         setIsLoading(false);
       }
     } else {
