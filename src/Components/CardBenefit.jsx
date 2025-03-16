@@ -18,8 +18,7 @@ export default function CardBenefit({ id = null, tipo , descripcion, dias, porce
   }
   fechaInicio = formatDate(fechaInicio);
   fechaFin = formatDate(fechaFin);
-  console.log(fechaInicio)
-
+  console.log(sucursales)
   return (
     <div className={`promo-card ${expanded ? "expanded" : ""}`}>
       <div className="promo-card-header">

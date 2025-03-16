@@ -5,6 +5,7 @@ import CheckInput from "../Components/CheckInput";
 import jwtDecode from "../Utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
 import { useLocation } from "react-router-dom";
+import { convertirFechaIngles } from "../Utils/ConvertirFechas";
 
 export default function ViewModificarBeneficio() {
   const token = jwtDecode(sessionStorage.getItem("token"));
@@ -28,6 +29,7 @@ export default function ViewModificarBeneficio() {
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
   const [isConfirmation, setIsConfirmation] = useState(false);
+  const [modifiedStates, setModifiedStates] = useState({ tipo: false, porcentajeReintegro: false, descripcion: false, dias: false, fechaInicio: false, sucursales: false, fechaFin: false, imagenPromocion: false });
 
   useEffect(() => {
     async function cargaInicial() {
@@ -50,20 +52,23 @@ export default function ViewModificarBeneficio() {
               flag = true;
             }
           })
-          if(!flag){
+          if (!flag) {
             tmp.push(local.direccionLocal);
           }
         })
-        if(nombresEmpresas.length === 0) {nombresEmpresas.push("Todas")};
+        if (nombresEmpresas.length === 0) { nombresEmpresas.push("Todas") };
         setSucursales(nombresEmpresas);
+        if(nombresEmpresas != "Todas"){
+          tmp.push("Todas");
+        }
         setSucursalesDisponibles(tmp);
 
         setTipo(beneficio.tipo);
         setPorcentajeReintegro(beneficio.porcentajeReintegro);
         setDescripcion(beneficio.descripcion);
         setDias(beneficio.dias);
-        setFechaInicio(beneficio.fechaInicio);
-        setFechaFin(beneficio.fechaFin);
+        setFechaInicio(convertirFechaIngles(beneficio.fechaInicio));
+        setFechaFin(convertirFechaIngles(beneficio.fechaFin));
         setHabilitarFechaInicio(beneficio.fechaInicio ? true : false);
         setHabilitarFechaFin(beneficio.fechaFin ? true : false);
         setImagenPromocion(beneficio.imagenPromocion);
@@ -81,6 +86,10 @@ export default function ViewModificarBeneficio() {
     }
     cargaInicial();
   }, []);
+
+  useEffect(() => {
+    console.log(modifiedStates)
+  }, [modifiedStates]);
 
   function handleChangeDays(e) {
     const newDias = [...dias];
@@ -146,8 +155,8 @@ export default function ViewModificarBeneficio() {
           })
         });
       }
-      if (sucursalesDisponibles == ["Todas"]) {
-      }
+      // if (sucursalesDisponibles == ["Todas"]) {
+      // } VER MAS TARDE
       let response = await POSTFormData(
         "beneficios/cargarbeneficio",
         imagenPromocion,
@@ -204,6 +213,7 @@ export default function ViewModificarBeneficio() {
       if (archivo.size <= 1048576) {
         setImagenPromocion(archivo);
         setUrlImagen(URL.createObjectURL(archivo));
+        handleInputChange("imagenPromocion")
       } else {
         setMessage("La imagen excede el tamaño máximo permitido de 1MB");
         setShowModal(true);
@@ -245,6 +255,13 @@ export default function ViewModificarBeneficio() {
     setSucursalesDisponibles(tmp);
   }
 
+  function handleInputChange(field){
+    setModifiedStates(prevState => ({
+      ...prevState,
+      [field]: true
+    }));
+  };
+  console.log(sucursales)
   return (
     <div className="container">
       {loadingPage ?
@@ -265,7 +282,9 @@ export default function ViewModificarBeneficio() {
             <h3>Vista Previa</h3>
             <p style={{ color: "gray" }}>📌 Recomendación: Para una mejor visualización, sube imágenes con una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).</p>
           </div>
-          <select style={{ gridColumn: "2", gridRow: "2", display: "flex", height: "40px" }} className="form-control" id="Tipo" value={tipo} onChange={e => setTipo(e.target.value)}>
+          <select style={{ gridColumn: "2", gridRow: "2", display: "flex", height: "40px" }} className="form-control" id="Tipo" name="tipo" value={tipo} onChange={e => {
+            setTipo(e.target.value); handleInputChange(e.target.name)
+          }}>
             <option value="">Selecciona una opción</option>
             <option value="Reintegro de puntos">Reintegro de puntos</option>
             <option value="Promocion">Promoción</option>
@@ -273,38 +292,38 @@ export default function ViewModificarBeneficio() {
           {tipo === "Reintegro de puntos" &&
             <span style={{ gridColumn: "3", gridRow: "2", display: "flex", height: "40px", width: "80px", alignItems: "center" }} className="d-flex flex-row align-content-center">
               <span style={{ marginInline: "8px" }}>%</span>
-              <input style={{ width: "70px" }} type="number" min="3" max="100" className="form-control" id="PorcentajeReintegro" value={porcentajeReintegro} onChange={e => setPorcentajeReintegro(e.target.value)} />
+              <input style={{ width: "70px" }} type="number" min="3" max="100" className="form-control" id="PorcentajeReintegro" name="porcentajeReintegro" value={porcentajeReintegro} onChange={e => {setPorcentajeReintegro(e.target.value); handleInputChange(e.target.name)}} />
             </span>
           }
           <div style={{ gridColumn: "2 / 5", gridRow: "3" }} className="mb-3">
-            <textarea style={{ maxHeight: "95px" }} className="form-control" maxLength="1500" id="Descripcion" value={descripcion} onChange={e => setDescripcion(e.target.value)} />
+            <textarea style={{ maxHeight: "95px" }} className="form-control" maxLength="1500" id="Descripcion" name="descripcion" value={descripcion} onChange={e => {setDescripcion(e.target.value); handleInputChange(e.target.name)}} />
           </div>
           <div style={{ gridColumn: "2 / 5", gridRow: "4" }}>
-            <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={handleChangeDays} />
-            <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={handleChangeDays} />
-            <CheckInput value={dias[2]} dia={"X"} name={"2"} evento={handleChangeDays} />
-            <CheckInput value={dias[3]} dia={"J"} name={"3"} evento={handleChangeDays} />
-            <CheckInput value={dias[4]} dia={"V"} name={"4"} evento={handleChangeDays} />
-            <CheckInput value={dias[5]} dia={"S"} name={"5"} evento={handleChangeDays} />
-            <CheckInput value={dias[6]} dia={"D"} name={"6"} evento={handleChangeDays} />
+            <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[2]} dia={"X"} name={"2"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[3]} dia={"J"} name={"3"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[4]} dia={"V"} name={"4"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[5]} dia={"S"} name={"5"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[6]} dia={"D"} name={"6"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
           </div>
           <div style={{ gridColumn: "2 / 4", gridRow: "5" }} className="mb-3 d-flex align-content-center">
             <div>
               <label htmlFor="CheckFechaInicio" className="pe-4">Fecha de Inicio</label>
-              <input type="checkbox" id="CheckFechaInicio" checked={habilitarFechaInicio} onChange={() => setHabilitarFechaInicio(!habilitarFechaInicio)} />
-              <input type="date" className="form-control" id="FechaInicio" value={fechaInicio} onChange={e => setFechaInicio(e.target.value)} disabled={!habilitarFechaInicio} />
+              <input type="checkbox" id="CheckFechaInicio" name="fechaInicio" checked={habilitarFechaInicio} onChange={(e) => {setHabilitarFechaInicio(!habilitarFechaInicio); handleInputChange(e.target.name)}} />
+              <input type="date" className="form-control" id="FechaInicio" name="fechaInicio" value={fechaInicio} onChange={e => {setFechaInicio(e.target.value); handleInputChange(e.target.name)}} disabled={!habilitarFechaInicio} />
             </div>
             <div className="d-flex p-3 mt-3">
               -
             </div>
             <div>
               <label htmlFor="CheckFechaFin" className="pe-4">Fecha de Fin</label>
-              <input type="checkbox" id="CheckFechaFin" checked={habilitarFechaFin} onChange={() => setHabilitarFechaFin(!habilitarFechaFin)} />
-              <input type="date" className="form-control" value={fechaFin} onChange={e => setFechaFin(e.target.value)} disabled={!habilitarFechaFin} />
+              <input type="checkbox" id="CheckFechaFin" name="fechaFin" checked={habilitarFechaFin} onChange={(e) => {setHabilitarFechaFin(!habilitarFechaFin); handleInputChange(e.target.name)}} />
+              <input type="date" className="form-control" name="fechaFin" value={fechaFin} onChange={e => {setFechaFin(e.target.value); handleInputChange(e.target.name)}} disabled={!habilitarFechaFin} />
             </div>
           </div>
           <div style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px" }} className="mb-3">
-            <select className="form-control" id="Sucursales" value={selectedSucursal} onChange={handleSelectSucursal}>
+            <select className="form-control" id="Sucursales" name="sucursales" value={selectedSucursal} onChange={(e) => {handleSelectSucursal(e); handleInputChange(e.target.name)}}>
               <option value=""></option>
               {sucursalesDisponibles.map((sucursal, index) => (
                 <option key={index} value={sucursal}>
@@ -316,7 +335,7 @@ export default function ViewModificarBeneficio() {
               {sucursales.map((sucursal, index) => (
                 <span key={index} style={{ fontSize: "14px" }} className="badge bg-light text-dark me-2 mb-2">
                   {sucursal} <button name={sucursal} type="button" style={{ background: "transparent", border: "none", color: "#e06971", fontSize: "20px" }} onMouseEnter={(e) => e.target.style.color = "#ff0000"}
-                    onMouseLeave={(e) => e.target.style.color = "#dc3545"} className="btn btn-sm btn-danger ms-2" onClick={(e) => handleRemoveSucursal(e)}>X</button>
+                    onMouseLeave={(e) => e.target.style.color = "#dc3545"} className="btn btn-sm btn-danger ms-2" onClick={(e) => {handleRemoveSucursal(e); handleInputChange("sucursales")}}>X</button>
                 </span>
               ))}
             </div>

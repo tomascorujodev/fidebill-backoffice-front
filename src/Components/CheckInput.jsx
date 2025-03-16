@@ -19,7 +19,7 @@ export default function CheckInput({ dia, name, evento, value }) {
         name={name}
         value={value}
         checked={value}
-        onChange={(e) => evento(e)}
+        onChange={evento}
         style={{
           width: '24px',  // Tamaño del checkbox
           height: '24px',
