@@ -250,7 +250,7 @@ export default function ViewCrearBeneficios() {
   return (
     <div className="container">
       <div
-        className="card p-4 mb-4"
+        className="card-rounded"
         style={{
           display: "grid",
           gridTemplateColumns: "250px 1fr 1fr 1fr 1 fr 1fr",
@@ -468,8 +468,8 @@ export default function ViewCrearBeneficios() {
                 gridColumn: "5",
                 gridRow: "8",
                 justifySelf: "self-end",
-                width: "150px",
-                height: "60px",
+                width: "200px",
+                height: "50px",
               }}
               className="btn btn-success mt-1"
               onClick={handleSubmit}

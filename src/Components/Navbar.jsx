@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import jwtDecode from "../Utils/jwtDecode"
+import "../assets/css/Navbar.css";
+
 
 export default function Navbar() {
   function logOut() {
@@ -9,14 +11,14 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg mb-4" style={{ backgroundColor: "#202020" }} >
+    <nav className="navbar navbar-expand-lg mb-4 rounded-navbar" >
 
       <br />
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
           <img
             src="/assets/LOGOSDCapCut.png"
-            alt="FideBill Logo"
+            alt="Street Dog Logo"
             width="140"
             height="30"
           />
@@ -29,31 +31,31 @@ export default function Navbar() {
           aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
-          style={{ color: "white" }}
+          style={{ color: "black" }}
 
         >
           <span className="navbar-toggler-icon" style={{ filter: "invert(1)" }}></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent" style={{ color: "white" }}>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent" style={{ color: "black" }}>
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/cliente" style={{ color: "white" }}>
+              <Link className="nav-link" to="/cliente" style={{ color: "black" }}>
                 Clientes
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/puntos" style={{ color: "white" }}>
+              <Link className="nav-link" to="/puntos" style={{ color: "black" }}>
                 Puntos
               </Link>
             </li>
-            <li className="nav-item dropdown" style={{ color: "white" }}>
+            <li className="nav-item dropdown" style={{ color: "black" }}>
               <Link
                 className="nav-link dropdown-toggle"
                 id="navbarDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                style={{ color: "white" }}
+                style={{ color: "black" }}
               >
                 Historial
               </Link>
@@ -77,7 +79,7 @@ export default function Navbar() {
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                style={{ color: "white" }}
+                style={{ color: "black" }}
               >
                 Beneficios
               </Link>
@@ -95,7 +97,7 @@ export default function Navbar() {
               </ul>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/ayuda" style={{ color: "white" }}>
+              <Link className="nav-link" to="/ayuda" style={{ color: "black" }}>
                 Soporte
               </Link>
             </li>
@@ -114,7 +116,7 @@ export default function Navbar() {
               </p>
             </li>
             <li className="nav-item">
-              <button className="btn nav-link" onClick={() => logOut()} style={{ color: "white" }}>
+              <button className="btn nav-link" onClick={() => logOut()} style={{ color: "black" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
                   <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
                   <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z" />

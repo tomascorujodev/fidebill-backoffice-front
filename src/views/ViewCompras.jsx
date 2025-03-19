@@ -84,7 +84,7 @@ export default function ViewCompras() {
   return (
     <>
       <div className="container">
-      <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card p-4">
+      <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card-rounded">
         <h2>Historial de Compras</h2>
         <br />
           <input
@@ -95,6 +95,8 @@ export default function ViewCompras() {
             aria-label="Buscar compra"
           />
         </div>
+        <div className="card-rounded">
+
         {mensaje && <div className="alert alert-info mt-3">{mensaje}</div>}
         <br />
         <table className="table">
@@ -169,6 +171,7 @@ export default function ViewCompras() {
           </div>
         </div>
       )}
+        </div>
     </>
   );
 }

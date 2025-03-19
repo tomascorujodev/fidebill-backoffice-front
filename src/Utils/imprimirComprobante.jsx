@@ -4,7 +4,7 @@ export default async function imprimirComprobante({documento, nombre, apellido, 
     let counter = 42;
     const doc = new jsPDF({
     unit: "mm",
-    format: [58, 100],
+    format: [58, 90],
     lineHeight: 1.2,
     });
 
@@ -25,6 +25,9 @@ export default async function imprimirComprobante({documento, nombre, apellido, 
     doc.text("--------------------------------", 2, counter);
     counter += 8;
     doc.text("MUCHAS GRACIAS", 17, counter);
+
+    console.log(doc.internal.pageSize);
+
     
     doc.autoPrint();
 

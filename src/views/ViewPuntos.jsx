@@ -175,7 +175,7 @@ export default function ViewPuntos() {
 
   return (
     <div className="container mt-2">
-      <div style={{ boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem" }} className="card p-4">
+      <div style={{ boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem" }} className="card-rounded">
         <h2>Gestión de Puntos</h2>
         <br />
         <label htmlFor="documento" className="form-label">
@@ -190,8 +190,8 @@ export default function ViewPuntos() {
             onChange={e => setDocumento(e.target.value)}
           />
           <button
-            style={{ minHeight: "2rem", maxHeight: "4rem" }}
-            className="btn btn-primary ms-2"
+            style={{ width:"25%", minHeight: "2rem", maxHeight: "4rem" }}
+            className="btn btn-primary ms-2 center"
             onClick={buscarCliente}
             disabled={isLoading}
           >
@@ -227,6 +227,8 @@ export default function ViewPuntos() {
 
       {opcionPuntos !== 0 && (
         <>
+        <br />
+        <div className="card-rounded">
           {opcionPuntos === 1 && (
             <Card
               title={cliente?.nombre + " " + cliente?.apellido}
@@ -249,6 +251,7 @@ export default function ViewPuntos() {
               <Button text={"Canjear Puntos"} className="btn-warning" onClick={canjearPuntos} disabled={isLoading}/>
             </Card>
           )}
+        </div>
         </>
       )}
       {showModal && (
