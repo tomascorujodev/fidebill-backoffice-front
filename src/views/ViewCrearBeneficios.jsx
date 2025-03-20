@@ -10,15 +10,7 @@ export default function ViewCrearBeneficios() {
   const [isLoading, setIsLoading] = useState(false);
   const [tipo, setTipo] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [dias, setDias] = useState([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
+  const [dias, setDias] = useState([false, false, false, false, false, false, false]);
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [habilitarFechaInicio, setHabilitarFechaInicio] = useState(true);
@@ -101,17 +93,12 @@ export default function ViewCrearBeneficios() {
       return;
     }
 
-    if (!dias.some((value) => value === true)) {
-      setMessage("Debe seleccionar al menos un dia de la semana");
+    if (!isConfirmation) {
+      setIsConfirmation(true);
+      setMessage("Está a punto de crear una publicación visible para sus clientes. Por favor, verifique que todos los datos sean correctos antes de continuar. ¿Desea publicar?");
       setShowModal(true);
-      return;
+      return
     }
-
-    setIsConfirmation(true);
-    setMessage(
-      "Está a punto de crear una publicación visible para sus clientes. Por favor, verifique que todos los datos sean correctos antes de continuar. ¿Desea publicar?"
-    );
-    setShowModal(true);
 
     if (!isConfirmation) return;
 
@@ -132,8 +119,6 @@ export default function ViewCrearBeneficios() {
             }
           });
         });
-      }
-      if (sucursalesDisponibles == ["Todas"]) {
       }
       let response = await POSTFormData(
         "beneficios/cargarbeneficio",
@@ -257,14 +242,13 @@ export default function ViewCrearBeneficios() {
           gridTemplateRows: "90px 90px 110px 60px 110px 170px 100px 90px",
         }}
       >
-        <h2 style={{ gridColumn: "1", gridRow: "1" , paddingRight: "16px"}}>Beneficios</h2>
-        <h4 style={{ gridColumn: "1", gridRow: "2" , paddingRight: "16px"}}>Tipo(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "3" , paddingRight: "16px"}}>Descripcion(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "4" , paddingRight: "16px"}}>Fecha</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "6" , paddingRight: "16px"}}>Sucursales</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "7" , paddingRight: "16px"}}>Imagen</h4>
+        <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Beneficios</h2>
+        <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Tipo(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Descripcion(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Fecha</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Sucursales</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Imagen</h4>
 
-        {/* Línea divisoria */}
         <div
           style={{
             gridColumn: "5",
@@ -276,10 +260,10 @@ export default function ViewCrearBeneficios() {
           }}
         ></div>
 
-        <div style={{ gridColumn: "10", gridRow: "1", alignSelf: "start" , paddingLeft: "16px"}}>
+        <div style={{ gridColumn: "10", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
           <h4>Vista Previa</h4>
           <p style={{ color: "gray" }}>
-            📌 Recomendación: Para una mejor visualización, sube imágenes con
+            📌 Recomendación: Para una mejor visualización, suba imágenes con
             una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
           </p>
         </div>
@@ -324,7 +308,7 @@ export default function ViewCrearBeneficios() {
             />
           </span>
         )}
-        <div style={{ gridColumn: "2 / 5", gridRow: "3" , paddingRight: "16px"}} className="mb-3">
+        <div style={{ gridColumn: "2 / 5", gridRow: "3", paddingRight: "16px" }} className="mb-3">
           <textarea
             style={{ maxHeight: "95px" }}
             className="form-control"
@@ -334,7 +318,7 @@ export default function ViewCrearBeneficios() {
             onChange={(e) => setDescripcion(e.target.value)}
           />
         </div>
-        <div style={{ gridColumn: "2 / 5", gridRow: "4" , paddingRight: "16px"}}>
+        <div style={{ gridColumn: "2 / 5", gridRow: "4", paddingRight: "16px" }}>
           <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} />
           <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} />
           <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} />
@@ -344,7 +328,7 @@ export default function ViewCrearBeneficios() {
           <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} />
         </div>
         <div
-          style={{ gridColumn: "2 / 4", gridRow: "5" , paddingRight: "16px"}}
+          style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }}
           className="mb-3 d-flex align-content-center"
         >
           <div>
@@ -387,7 +371,7 @@ export default function ViewCrearBeneficios() {
           </div>
         </div>
         <div
-          style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px" , paddingRight: "16px"}}
+          style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px", paddingRight: "16px" }}
           className="mb-3"
         >
           <select
@@ -396,7 +380,9 @@ export default function ViewCrearBeneficios() {
             value={selectedSucursal}
             onChange={handleSelectSucursal}
           >
-            <option value=""></option>
+            <option value="" disabled>
+              Seleccione una sucursal
+            </option>
             {sucursalesDisponibles.map((sucursal, index) => (
               <option key={index} value={sucursal}>
                 {sucursal}
@@ -431,13 +417,16 @@ export default function ViewCrearBeneficios() {
             ))}
           </div>
         </div>
-        <div style={{ gridColumn: "2 / 4", gridRow: "7" , paddingRight: "16px"}} className="mb-3">
+        <div style={{ gridColumn: "2 / 4", gridRow: "7", paddingRight: "16px" }} className="mb-3">
           <input
             type="file"
             className="form-control"
             accept="image/png, image/jpeg, image/svg+xml"
             onChange={handleUploadImage}
           />
+        </div>
+        <div style={{ gridColumn: "4 / 4", gridRow: "7" }} className="mb-3 mx-4">
+          <button className="btn btn-danger" onClick={() => {setUrlImagen(null); setImagenPromocion(null)}}>Eliminar imagen</button>
         </div>
         <div style={{ gridColumn: "10", gridRow: "2" }} className="mb-3">
           <CardBenefit
@@ -456,57 +445,58 @@ export default function ViewCrearBeneficios() {
         </div>
         <div
           className="d-flex aling-content-center justify-content-center"
-          style={{ gridColumn: "3", gridRow: "8" }}
+          style={{ gridColumn: "4", gridRow: "8" }}
         >
-          {isLoading ? (
-            <div className="spinner-border mt-4 mr-4" role="status">
-              <span className="visually-hidden">Cargando...</span>
-            </div>
-          ) : (
-            <button
-              style={{
-                gridColumn: "5",
-                gridRow: "8",
-                justifySelf: "self-end",
-                width: "150px",
-                height: "60px",
-              }}
-              className="btn btn-success mt-1"
-              onClick={handleSubmit}
-            >
-              Subir Promocion
-            </button>
-          )}
+          {
+            isLoading ?
+              <div className="spinner-border mt-4 mr-4" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+              :
+              <button
+                style={{
+                  gridColumn: "6",
+                  gridRow: "8", 
+                  width: "150px",
+                  height: "60px",
+                }}
+                className="btn btn-success mt-1"
+                onClick={handleSubmit}
+              >
+                Subir Promocion
+              </button>
+          }
         </div>
       </div>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
-        <Modal.Footer>
-          {isConfirmation ? (
-            <>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowModal(false);
-                  setIsConfirmation(false);
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button variant="success" onClick={handleSubmit}>
-                Confirmar
-              </Button>
-            </>
-          ) : (
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cerrar
-            </Button>
-          )}
-        </Modal.Footer>
-      </Modal>
+      {
+        isLoading ?
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Body style={{ alignSelf: "center" }} >
+              {
+                <div className="spinner-border mt-4 mr-4" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+              }
+            </Modal.Body>
+          </Modal>
+          :
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
+            <Modal.Footer>
+              {isConfirmation ? (
+                <>
+                  <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
+                  <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
+                </>
+              ) : (
+                <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
+              )}
+            </Modal.Footer>
+          </Modal>
+      }
     </div>
   );
 }

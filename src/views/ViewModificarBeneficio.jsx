@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../Services/Fetch";
+import { GET, PATCHFormData } from "../Services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
 import jwtDecode from "../Utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { convertirFechaIngles } from "../Utils/ConvertirFechas";
 
 export default function ViewModificarBeneficio() {
-  const token = jwtDecode(sessionStorage.getItem("token"));
   const location = new URLSearchParams(useLocation().search)
   const [isLoading, setIsLoading] = useState(false);
   const [loadingPage, setLoadingPage] = useState(true);
@@ -21,6 +20,7 @@ export default function ViewModificarBeneficio() {
   const [habilitarFechaInicio, setHabilitarFechaInicio] = useState(true);
   const [habilitarFechaFin, setHabilitarFechaFin] = useState(true);
   const [urlImagen, setUrlImagen] = useState(null);
+  const [UrlImagenEliminar, setUrlImagenEliminar] = useState(null);
   const [imagenPromocion, setImagenPromocion] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
@@ -29,8 +29,8 @@ export default function ViewModificarBeneficio() {
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
   const [isConfirmation, setIsConfirmation] = useState(false);
-  const [modifiedStates, setModifiedStates] = useState({ tipo: false, porcentajeReintegro: false, descripcion: false, dias: false, fechaInicio: false, sucursales: false, fechaFin: false, imagenPromocion: false });
-
+  const [modifiedStates, setModifiedStates] = useState({ tipo: false, porcentajeReintegro: false, descripcion: false, dias: false, fechaInicio: false, sucursales: false, fechaFin: false, imagenPromocion: false, UrlImagenEliminar: false });
+  const navigate = useNavigate();
   useEffect(() => {
     async function cargaInicial() {
       let locales = await GET("beneficios/obtenerlocales");
@@ -58,7 +58,7 @@ export default function ViewModificarBeneficio() {
         })
         if (nombresEmpresas.length === 0) { nombresEmpresas.push("Todas") };
         setSucursales(nombresEmpresas);
-        if(nombresEmpresas != "Todas"){
+        if (nombresEmpresas != "Todas") {
           tmp.push("Todas");
         }
         setSucursalesDisponibles(tmp);
@@ -71,9 +71,8 @@ export default function ViewModificarBeneficio() {
         setFechaFin(convertirFechaIngles(beneficio.fechaFin));
         setHabilitarFechaInicio(beneficio.fechaInicio ? true : false);
         setHabilitarFechaFin(beneficio.fechaFin ? true : false);
-        setImagenPromocion(beneficio.imagenPromocion);
+        setUrlImagenEliminar(beneficio.urlImagen);
         setUrlImagen(beneficio.urlImagen);
-
         setLoadingPage(false);
       } else {
         if (navigator.onLine) {
@@ -129,17 +128,26 @@ export default function ViewModificarBeneficio() {
       return;
     }
 
-    if (!dias.some(value => value === true)) {
-      setMessage("Debe seleccionar al menos un dia de la semana");
+    if (sucursales.length === 0) {
+      setMessage("Debe seleccionar al menos una sucursal para aplicar su beneficio");
       setShowModal(true);
       return;
     }
 
-    setIsConfirmation(true);
-    setMessage("Está a punto de crear una publicación visible para sus clientes. Por favor, verifique que todos los datos sean correctos antes de continuar. ¿Desea publicar?");
-    setShowModal(true);
+    if (Object.values(modifiedStates).every(value => value === false)) {
+      setMessage("No se ha modificado ningún dato. Por favor, realice algún cambio antes de continuar.");
+      setShowModal(true);
+      return;
+    }
 
-    if (!isConfirmation) return
+    if (!isConfirmation) {
+      setIsConfirmation(true);
+      setMessage("Está a punto de modificar una publicación visible para sus clientes. Por favor, verifique que todos los datos sean correctos antes de continuar. ¿Desea publicar?");
+      setShowModal(true);
+      return
+    }
+
+    setIsConfirmation(false)
 
     setIsLoading(true);
     try {
@@ -155,27 +163,30 @@ export default function ViewModificarBeneficio() {
           })
         });
       }
-      // if (sucursalesDisponibles == ["Todas"]) {
-      // } VER MAS TARDE
-      let response = await POSTFormData(
-        "beneficios/cargarbeneficio",
-        imagenPromocion,
+      console.log(tmp)
+      let response = await PATCHFormData(
+        "beneficios/modificarbeneficio",
+        modifiedStates.imagenPromocion && imagenPromocion ? imagenPromocion : null,
         {
-          Tipo: tipo,
-          Descripcion: descripcion,
-          Dias: dias,
-          PorcentajeReintegro: tipo === "Reintegro de puntos" && porcentajeReintegro,
-          FechaInicio: habilitarFechaInicio ? fechaInicio : null,
-          FechaFin: habilitarFechaFin ? fechaFin : null,
-          Sucursales: tmp,
-          NombreEmpresa: token.NombreEmpresa,
-          IdEmpresa: token.idEmpresa
+          IdBeneficio: location.get("id"),
+          Tipo: modifiedStates.tipo ? tipo : null,
+          Descripcion: modifiedStates.descripcion ? descripcion : null,
+          Dias: modifiedStates.dias ? dias : null,
+          PorcentajeReintegro: modifiedStates.porcentajeReintegro && tipo === "Reintegro de puntos" ? porcentajeReintegro : null,
+          FechaInicio: habilitarFechaInicio && modifiedStates.fechaInicio ? fechaInicio : null,
+          FechaFin: habilitarFechaFin && modifiedStates.fechaFin ? fechaFin : null,
+          Sucursales: modifiedStates.sucursales ? (tmp ? tmp : "Todas") : null,
+          UrlImagenEliminar: (modifiedStates.UrlImagenEliminar || modifiedStates.imagenPromocion) && UrlImagenEliminar ? UrlImagenEliminar : null
         }
       );
       if (response) {
         switch (response.status) {
           case 200:
-            setMessage("La promocion se ha cargado correctamente.");
+            setMessage("La promocion se ha modificado correctamente.");
+            setLoadingPage(true)
+            setTimeout(() => {
+              navigate("/beneficios/verbeneficios");
+            }, 4000)
             break;
           case 400:
             setMessage("Verifique que todos los campos sean correctos y vuelva a intentarlo");
@@ -255,13 +266,12 @@ export default function ViewModificarBeneficio() {
     setSucursalesDisponibles(tmp);
   }
 
-  function handleInputChange(field){
+  function handleInputChange(field) {
     setModifiedStates(prevState => ({
       ...prevState,
       [field]: true
     }));
   };
-  console.log(sucursales)
   return (
     <div className="container">
       {loadingPage ?
@@ -292,39 +302,41 @@ export default function ViewModificarBeneficio() {
           {tipo === "Reintegro de puntos" &&
             <span style={{ gridColumn: "3", gridRow: "2", display: "flex", height: "40px", width: "80px", alignItems: "center" }} className="d-flex flex-row align-content-center">
               <span style={{ marginInline: "8px" }}>%</span>
-              <input style={{ width: "70px" }} type="number" min="3" max="100" className="form-control" id="PorcentajeReintegro" name="porcentajeReintegro" value={porcentajeReintegro} onChange={e => {setPorcentajeReintegro(e.target.value); handleInputChange(e.target.name)}} />
+              <input style={{ width: "70px" }} type="number" min="3" max="100" className="form-control" id="PorcentajeReintegro" name="porcentajeReintegro" value={porcentajeReintegro} onChange={e => { setPorcentajeReintegro(e.target.value); handleInputChange(e.target.name) }} />
             </span>
           }
           <div style={{ gridColumn: "2 / 5", gridRow: "3" }} className="mb-3">
-            <textarea style={{ maxHeight: "95px" }} className="form-control" maxLength="1500" id="Descripcion" name="descripcion" value={descripcion} onChange={e => {setDescripcion(e.target.value); handleInputChange(e.target.name)}} />
+            <textarea style={{ maxHeight: "95px" }} className="form-control" maxLength="1500" id="Descripcion" name="descripcion" value={descripcion} onChange={e => { setDescripcion(e.target.value); handleInputChange(e.target.name) }} />
           </div>
           <div style={{ gridColumn: "2 / 5", gridRow: "4" }}>
-            <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
-            <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
-            <CheckInput value={dias[2]} dia={"X"} name={"2"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
-            <CheckInput value={dias[3]} dia={"J"} name={"3"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
-            <CheckInput value={dias[4]} dia={"V"} name={"4"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
-            <CheckInput value={dias[5]} dia={"S"} name={"5"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
-            <CheckInput value={dias[6]} dia={"D"} name={"6"} evento={(e) => {handleChangeDays(e); handleInputChange("dias")}} />
+            <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            <CheckInput value={dias[2]} dia={"X"} name={"2"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            <CheckInput value={dias[3]} dia={"J"} name={"3"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            <CheckInput value={dias[4]} dia={"V"} name={"4"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            <CheckInput value={dias[5]} dia={"S"} name={"5"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            <CheckInput value={dias[6]} dia={"D"} name={"6"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
           </div>
           <div style={{ gridColumn: "2 / 4", gridRow: "5" }} className="mb-3 d-flex align-content-center">
             <div>
               <label htmlFor="CheckFechaInicio" className="pe-4">Fecha de Inicio</label>
-              <input type="checkbox" id="CheckFechaInicio" name="fechaInicio" checked={habilitarFechaInicio} onChange={(e) => {setHabilitarFechaInicio(!habilitarFechaInicio); handleInputChange(e.target.name)}} />
-              <input type="date" className="form-control" id="FechaInicio" name="fechaInicio" value={fechaInicio} onChange={e => {setFechaInicio(e.target.value); handleInputChange(e.target.name)}} disabled={!habilitarFechaInicio} />
+              <input type="checkbox" id="CheckFechaInicio" name="fechaInicio" checked={habilitarFechaInicio} onChange={(e) => { setHabilitarFechaInicio(!habilitarFechaInicio); handleInputChange(e.target.name) }} />
+              <input type="date" className="form-control" id="FechaInicio" name="fechaInicio" value={fechaInicio} onChange={e => { setFechaInicio(e.target.value); handleInputChange(e.target.name) }} disabled={!habilitarFechaInicio} />
             </div>
             <div className="d-flex p-3 mt-3">
               -
             </div>
             <div>
               <label htmlFor="CheckFechaFin" className="pe-4">Fecha de Fin</label>
-              <input type="checkbox" id="CheckFechaFin" name="fechaFin" checked={habilitarFechaFin} onChange={(e) => {setHabilitarFechaFin(!habilitarFechaFin); handleInputChange(e.target.name)}} />
-              <input type="date" className="form-control" name="fechaFin" value={fechaFin} onChange={e => {setFechaFin(e.target.value); handleInputChange(e.target.name)}} disabled={!habilitarFechaFin} />
+              <input type="checkbox" id="CheckFechaFin" name="fechaFin" checked={habilitarFechaFin} onChange={(e) => { setHabilitarFechaFin(!habilitarFechaFin); handleInputChange(e.target.name) }} />
+              <input type="date" className="form-control" name="fechaFin" value={fechaFin} onChange={e => { setFechaFin(e.target.value); handleInputChange(e.target.name) }} disabled={!habilitarFechaFin} />
             </div>
           </div>
           <div style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px" }} className="mb-3">
-            <select className="form-control" id="Sucursales" name="sucursales" value={selectedSucursal} onChange={(e) => {handleSelectSucursal(e); handleInputChange(e.target.name)}}>
-              <option value=""></option>
+            <select className="form-control" id="Sucursales" name="sucursales" value={selectedSucursal} onChange={(e) => { handleSelectSucursal(e); handleInputChange(e.target.name) }}>
+              <option value="" disabled>
+                Seleccione una sucursal
+              </option>
               {sucursalesDisponibles.map((sucursal, index) => (
                 <option key={index} value={sucursal}>
                   {sucursal}
@@ -335,13 +347,16 @@ export default function ViewModificarBeneficio() {
               {sucursales.map((sucursal, index) => (
                 <span key={index} style={{ fontSize: "14px" }} className="badge bg-light text-dark me-2 mb-2">
                   {sucursal} <button name={sucursal} type="button" style={{ background: "transparent", border: "none", color: "#e06971", fontSize: "20px" }} onMouseEnter={(e) => e.target.style.color = "#ff0000"}
-                    onMouseLeave={(e) => e.target.style.color = "#dc3545"} className="btn btn-sm btn-danger ms-2" onClick={(e) => {handleRemoveSucursal(e); handleInputChange("sucursales")}}>X</button>
+                    onMouseLeave={(e) => e.target.style.color = "#dc3545"} className="btn btn-sm btn-danger ms-2" onClick={(e) => { handleRemoveSucursal(e); handleInputChange("sucursales") }}>X</button>
                 </span>
               ))}
             </div>
           </div>
           <div style={{ gridColumn: "2 / 4", gridRow: "7" }} className="mb-3">
             <input type="file" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={handleUploadImage} />
+          </div>
+          <div style={{ gridColumn: "4 / 4", gridRow: "7" }} className="mb-3 mx-4">
+            <button className="btn btn-danger" name="UrlImagenEliminar" onClick={(e) => { handleInputChange(e.target.name); setUrlImagen(null); setImagenPromocion(null); }}>Eliminar imagen</button>
           </div>
           <div style={{ gridColumn: "1 / 4", gridRow: "8" }} className="mb-3">
             <CardBenefit descripcion={descripcion} titulo={descripcion}
@@ -355,26 +370,45 @@ export default function ViewModificarBeneficio() {
             />
           </div>
           <div className="d-flex aling-content-center justify-content-center" style={{ gridColumn: "4/5", gridRow: "8" }}>
-            {isLoading ? <div className="spinner-border mt-4 mr-4" role="status"><span className="visually-hidden">Cargando...</span></div> : <button style={{ gridColumn: "5", gridRow: "8", justifySelf: "self-end", width: "150px", height: "60px" }} className="btn btn-success mt-1" onClick={handleSubmit}>Subir Promocion</button>}
+            {
+              isLoading ?
+                <div className="spinner-border mt-4 mr-4" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+                :
+                <button style={{ gridColumn: "5", gridRow: "8", justifySelf: "self-end", width: "150px", height: "60px" }} className="btn btn-success mt-1" onClick={handleSubmit}>Subir Promocion</button>}
           </div>
         </div>
       }
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
-        <Modal.Footer>
-          {isConfirmation ? (
-            <>
-              <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
-              <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
-            </>
-          ) : (
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
-          )}
-        </Modal.Footer>
-      </Modal>
+      {
+        isLoading ?
+          <Modal show={showModal} onHide={() => {setShowModal(false); setIsConfirmation(false) }}>
+            <Modal.Body style={{ alignSelf: "center" }} >
+              {
+                <div className="spinner-border mt-4 mr-4" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+              }
+            </Modal.Body>
+          </Modal>
+          :
+          <Modal show={showModal} onHide={() => {setShowModal(false); setIsConfirmation(false) }}>
+            <Modal.Header closeButton>
+              <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
+            <Modal.Footer>
+              {isConfirmation ? (
+                <>
+                  <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
+                  <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
+                </>
+              ) : (
+                <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
+              )}
+            </Modal.Footer>
+          </Modal>
+      }
     </div>
   );
 }

@@ -58,6 +58,36 @@ export async function  POSTFormData(url, file, extraData = {}) {
     .catch(err => console.error("Error al subir imagen:", err));
 }
 
+export async function  PATCHFormData(url, file, extraData = {}) {
+    const formData = new FormData();
+    
+    if (file) {
+        formData.append("NuevaImagen", file);
+    }
+    
+    Object.keys(extraData).forEach(key => {
+        if (Array.isArray(extraData[key])) {
+            extraData[key].forEach((item) => {
+                formData.append(key, item);
+            })
+        }else{
+            if(extraData[key]){
+                formData.append(key, extraData[key]);
+            }
+        }
+    });
+    return await fetch(backendurl + url, {
+        method: 'PATCH',
+        mode: 'cors',
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        },
+        body: formData
+    })
+    .then(res => res)
+    .catch(err => console.error("Error al subir imagen:", err));
+}
+
 export async function PATCH(url, data){
     return await fetch (backendurl + url, {
         method: 'PATCH',

@@ -24,10 +24,10 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             switch (result.status) {
                 case 200:
                     result = await result.json();
-                    setBeneficios(result.beneficiosAgrupados)
+                    setBeneficios(result.beneficiosAgrupados);
                     break;
                 case 204:
-                    setMensaje("Los beneficios que tenemos para ti aun no estan publicados")
+                    setMensaje("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
                     break;
                 case 401:
                     localStorage.clear();
@@ -47,9 +47,8 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
         }
         obtenerBeneficios();
     }, [])
-
     return (
-        <>
+        <div className="container">
             {
                 loading ?
                     <div style={{ height: "670px" }} className="w-100 align-content-center">
@@ -61,12 +60,6 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                     <div style={{
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))",
-                        gridAutoRows: "minmax(18rem, auto)",
-                        gap: "20px",
-                        width: "100%",
-                        maxWidth: "600px",
-                        margin: "0 auto",
-                        justifyContent: "center",
                     }}>
                         {
                             beneficios &&
@@ -77,7 +70,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                                     porcentajeReintegro={beneficio.porcentajeReintegro}
                                     fechaInicio={beneficio.fechaInicio}
                                     fechaFin={beneficio.fechaFin}
-                                    sucursales={beneficio.idsUsuariosEmpresas}
+                                    sucursales={beneficio.idsUsuariosEmpresas.map(sucursal => sucursal.nombreUsuarioEmpresa)}
                                     urlImagen={beneficio.urlImagen}
                                 />
                             ))
@@ -115,6 +108,6 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                     </div>
                 </div>
             }
-        </>
+        </div>
     );
 }
