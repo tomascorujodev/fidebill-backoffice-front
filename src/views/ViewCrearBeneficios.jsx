@@ -251,7 +251,7 @@ export default function ViewCrearBeneficios() {
 
         <div
           style={{
-            gridColumn: "5",
+            gridColumn: "4",
             gridRow: "1 / span 8",
             borderLeft: "1px solid gray",
             height: "auto",
@@ -262,7 +262,7 @@ export default function ViewCrearBeneficios() {
 
         <div style={{ gridColumn: "10", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
           <h4>Vista Previa</h4>
-          <p style={{ color: "gray" }}>
+          <p style={{ color: "gray" , fontSize: "12px"}}>
             📌 Recomendación: Para una mejor visualización, suba imágenes con
             una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
           </p>
@@ -290,7 +290,7 @@ export default function ViewCrearBeneficios() {
               gridRow: "2",
               display: "flex",
               height: "40px",
-              width: "80px",
+              width: "100px",
               alignItems: "center",
             }}
             className="d-flex flex-row align-content-center"
@@ -308,9 +308,9 @@ export default function ViewCrearBeneficios() {
             />
           </span>
         )}
-        <div style={{ gridColumn: "2 / 5", gridRow: "3", paddingRight: "16px" }} className="mb-3">
+        <div style={{ gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }} className="mb-3">
           <textarea
-            style={{ maxHeight: "95px" }}
+            style={{ maxHeight: "95px"}}
             className="form-control"
             maxLength="1500"
             id="Descripcion"
@@ -371,7 +371,7 @@ export default function ViewCrearBeneficios() {
           </div>
         </div>
         <div
-          style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px", paddingRight: "16px" }}
+          style={{ gridColumn: "2 / 4", gridRow: "6", maxHeight: "150px", paddingRight: "16px" }}
           className="mb-3"
         >
           <select
@@ -417,7 +417,7 @@ export default function ViewCrearBeneficios() {
             ))}
           </div>
         </div>
-        <div style={{ gridColumn: "2 / 4", gridRow: "7", paddingRight: "16px" }} className="mb-3">
+        <div style={{ gridColumn: "2 / 3", gridRow: "7", paddingRight: "16px" }} className="mb-3">
           <input
             type="file"
             className="form-control"
@@ -425,7 +425,7 @@ export default function ViewCrearBeneficios() {
             onChange={handleUploadImage}
           />
         </div>
-        <div style={{ gridColumn: "4 / 4", gridRow: "7" }} className="mb-3 mx-4">
+        <div style={{ gridColumn: "3 / 4", gridRow: "7" }} className="mb-3 mx-4">
           <button className="btn btn-danger" onClick={() => {setUrlImagen(null); setImagenPromocion(null)}}>Eliminar imagen</button>
         </div>
         <div style={{ gridColumn: "10", gridRow: "2" }} className="mb-3">
@@ -445,7 +445,7 @@ export default function ViewCrearBeneficios() {
         </div>
         <div
           className="d-flex aling-content-center justify-content-center"
-          style={{ gridColumn: "4", gridRow: "8" }}
+          style={{ gridColumn: "3", gridRow: "8" }}
         >
           {
             isLoading ?
@@ -457,8 +457,8 @@ export default function ViewCrearBeneficios() {
                 style={{
                   gridColumn: "6",
                   gridRow: "8", 
-                  width: "150px",
-                  height: "60px",
+                  width: "170px",
+                  height: "40px",
                 }}
                 className="btn btn-success mt-1"
                 onClick={handleSubmit}

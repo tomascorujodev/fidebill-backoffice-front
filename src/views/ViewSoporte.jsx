@@ -5,6 +5,8 @@ export default function ViewSoporte() {
     <div className="container mt-4">
       <div className="card-rounded">
 
+    <div style={{marginLeft: "20px", marginRight: "20px",}}>
+      
       <h2>Soporte</h2>
       <p className="lead text-justify">
         ¿Tenés alguna pregunta o necesitás ayuda con el sistema?. 
@@ -14,6 +16,7 @@ export default function ViewSoporte() {
       Envianos un correo a soportefidebill@gmail.com o escribinos al +54 223 312 2315.
       </div>
       <br />
+    </div>
     </div>
       <div className="d-flex justify-content-center">
             <img
