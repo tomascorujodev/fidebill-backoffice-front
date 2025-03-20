@@ -79,7 +79,7 @@ export default function ViewCompras() {
   return (
     <>
       <div className="container">
-        <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card p-4 mb-4">
+        <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card-rounded">
           <div className="d-flex justify-content-between align-items-center">
             <h2>Gestión de Clientes</h2>
             <Link className="btn btn-success btn-lg px-3 py-1 mb-2" to="/cliente/agregar-cliente">
@@ -95,6 +95,9 @@ export default function ViewCompras() {
             aria-label="Buscar cliente"
           />
         </div>
+    <div className="card-rounded">
+
+
 
         {mensaje && <div className="alert alert-info mt-3">{mensaje}</div>}
         <br />
@@ -133,6 +136,7 @@ export default function ViewCompras() {
         <Pagination currentPage={page} onPageChange={setPage} />
       </div>
       <br />
+    </div>
     </>
   );
 }

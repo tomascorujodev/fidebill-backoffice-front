@@ -49,8 +49,17 @@ export default function ViewLogin({ setIsLoggedIn }) {
   }
 
   return (
-    <div className="container-fluid bg-light min-vh-100 d-flex align-items-center justify-content-center">
-      <div className="card shadow-lg" style={{ maxWidth: "400px", width: "100%" }}>
+    <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center justify-content-center">
+      <div className="mt-4">
+            <img
+              src="/assets/LOGOSDCapCut.png"
+              alt="Street Dog Logo"
+               width="350"
+               height="75"
+            />
+      </div>
+      <br />
+      <div className="card-rounded" style={{ maxWidth: "400px", width: "100%" }}>
         <div className="card-body p-5">
           <h2 className="card-title text-center mb-4">Iniciar Sesión</h2>
           <form onSubmit={handleSubmit}>
@@ -140,6 +149,15 @@ export default function ViewLogin({ setIsLoggedIn }) {
           </div>
         </div>
       }
+      <br />
+      <div className="mt-4">
+            <img
+              src="/assets/PoweredByFidebill.png"
+              alt="FideBill Logo"
+              width="238"
+              height="44"
+            />
+      </div>
     </div>
   );
 };

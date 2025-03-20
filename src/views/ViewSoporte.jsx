@@ -3,6 +3,8 @@ import React from "react";
 export default function ViewSoporte() {
   return (
     <div className="container mt-4">
+      <div className="card-rounded">
+
       <h2>Soporte</h2>
       <p className="lead text-justify">
         ¿Tenés alguna pregunta o necesitás ayuda con el sistema?. 
@@ -12,6 +14,7 @@ export default function ViewSoporte() {
       Envianos un correo a soportefidebill@gmail.com o escribinos al +54 223 312 2315.
       </div>
       <br />
+    </div>
       <div className="d-flex justify-content-center">
             <img
               src="/assets/PoweredByFidebill.png"
@@ -20,6 +23,6 @@ export default function ViewSoporte() {
               height="63"
             />
       </div>
-    </div>
+      </div>
   );
 }

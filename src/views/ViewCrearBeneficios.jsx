@@ -235,7 +235,7 @@ export default function ViewCrearBeneficios() {
   return (
     <div className="container">
       <div
-        className="card p-4 mb-4"
+        className="card-rounded"
         style={{
           display: "grid",
           gridTemplateColumns: "250px 1fr 1fr 1fr 1 fr 1fr",

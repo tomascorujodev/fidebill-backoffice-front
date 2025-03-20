@@ -84,17 +84,19 @@ export default function ViewCanjes() {
   return (
     <>
       <div className="container">
-      <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card p-4">
+      <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card-rounded">
         <h2>Historial de Canjes</h2>
         <br />
           <input
-            className="form-control me-2"
+            className="form-control me-2 rounded"
             type="search"
             onChange={e => setBusqueda(e.target.value)}
             placeholder="Buscar cliente"
             aria-label="Buscar cliente"
           />
         </div>
+        <div className="card-rounded">
+
         {mensaje && <div className="alert alert-info mt-3">{mensaje}</div>}
         <br />
         <table className="table">
@@ -167,6 +169,7 @@ export default function ViewCanjes() {
           </div>
         </div>
       )} */}
+        </div>
     </>
   );
 }
