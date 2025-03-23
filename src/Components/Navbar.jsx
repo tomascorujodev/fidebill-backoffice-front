@@ -74,12 +74,12 @@ export default function Navbar() {
             </li>
             <li className="nav-item dropdown">
             <Link
-                className="nav-link dropdown-toggle"
+                className="nav-link dropdown-toggle disabled"
                 id="navbarDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                style={{ color: "black" }}
+                style={{ color: "gray" }}
               >
                 Beneficios
               </Link>
@@ -97,8 +97,8 @@ export default function Navbar() {
               </ul>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/appclientes" style={{ color: "black" }}>
-                App Clientes
+              <Link className="nav-link disabled" to="/appclientes" style={{ color: "gray" }}>
+                Aplicación
               </Link>
             </li>
             <li className="nav-item">

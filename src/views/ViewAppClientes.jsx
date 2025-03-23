@@ -141,7 +141,7 @@ export default function ViewAppClientes() {
   return (
     <div className="container">
       <div className="card-rounded">
-        <h2>Configurar App de Clientes</h2>
+        <h2>Configuración</h2>
         <br />
         <form>
           <div className="mb-3">
