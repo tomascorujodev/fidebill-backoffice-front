@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { GET, PATCHFormData } from "../Services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
-import jwtDecode from "../Utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
 import { useLocation, useNavigate } from "react-router-dom";
 import { convertirFechaIngles } from "../Utils/ConvertirFechas";
@@ -269,141 +268,143 @@ export default function ViewModificarBeneficio() {
   };
   return (
     <div className="container">
-      {loadingPage ?
-        <div style={{ height: "670px" }} className="w-100 align-content-center">
-          <div style={{ justifySelf: "center", alignSelf: "center" }} className="d-flex spinner-border" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-        </div>
-        :
-        <div className="card p-4 mb-4" style={{ display: "grid", gridTemplateColumns: "250px 1fr 1fr 1fr", gridTemplateRows: "80px 80px 100px 50px 100px 160px 90px 800px" }}>
-          <h2 style={{ gridColumn: "1", gridRow: "1" }}>Beneficios</h2>
-          <h3 style={{ gridColumn: "1", gridRow: "2" }}>Tipo(*)</h3>
-          <h3 style={{ gridColumn: "1", gridRow: "3" }}>Descripcion(*)</h3>
-          <h3 style={{ gridColumn: "1", gridRow: "4" }}>Fecha</h3>
-          <h3 style={{ gridColumn: "1", gridRow: "6" }}>Sucursales</h3>
-          <h3 style={{ gridColumn: "1", gridRow: "7" }}>Imagen</h3>
-          <div style={{ gridColumn: "1", gridRow: "8" }}>
-            <h3>Vista Previa</h3>
-            <p style={{ color: "gray" }}>📌 Recomendación: Para una mejor visualización, sube imágenes con una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).</p>
-          </div>
-          <select style={{ gridColumn: "2", gridRow: "2", display: "flex", height: "40px" }} className="form-control" id="Tipo" name="tipo" value={tipo} onChange={e => {
-            setTipo(e.target.value); handleInputChange(e.target.name)
-          }}>
-            <option value="">Selecciona una opción</option>
-            <option value="Reintegro de puntos">Reintegro de puntos</option>
-            <option value="Promocion">Promoción</option>
-          </select>
-          {tipo === "Reintegro de puntos" &&
-            <span style={{ gridColumn: "3", gridRow: "2", display: "flex", height: "40px", width: "80px", alignItems: "center" }} className="d-flex flex-row align-content-center">
-              <span style={{ marginInline: "8px" }}>%</span>
-              <input style={{ width: "70px" }} type="number" min="3" max="100" className="form-control" id="PorcentajeReintegro" name="porcentajeReintegro" value={porcentajeReintegro} onChange={e => { setPorcentajeReintegro(e.target.value); handleInputChange(e.target.name) }} />
-            </span>
-          }
-          <div style={{ gridColumn: "2 / 5", gridRow: "3" }} className="mb-3">
-            <textarea style={{ maxHeight: "95px" }} className="form-control" maxLength="1500" id="Descripcion" name="descripcion" value={descripcion} onChange={e => { setDescripcion(e.target.value); handleInputChange(e.target.name) }} />
-          </div>
-          <div style={{ gridColumn: "2 / 5", gridRow: "4" }}>
-            <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-            <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-            <CheckInput value={dias[2]} dia={"X"} name={"2"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-            <CheckInput value={dias[3]} dia={"J"} name={"3"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-            <CheckInput value={dias[4]} dia={"V"} name={"4"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-            <CheckInput value={dias[5]} dia={"S"} name={"5"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-            <CheckInput value={dias[6]} dia={"D"} name={"6"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
-          </div>
-          <div style={{ gridColumn: "2 / 4", gridRow: "5" }} className="mb-3 d-flex align-content-center">
-            <div>
-              <label htmlFor="CheckFechaInicio" className="pe-4">Fecha de Inicio</label>
-              <input type="checkbox" id="CheckFechaInicio" name="fechaInicio" checked={habilitarFechaInicio} onChange={(e) => { setHabilitarFechaInicio(!habilitarFechaInicio); handleInputChange(e.target.name) }} />
-              <input type="date" className="form-control" id="FechaInicio" name="fechaInicio" value={fechaInicio} onChange={e => { setFechaInicio(e.target.value); handleInputChange(e.target.name) }} disabled={!habilitarFechaInicio} />
-            </div>
-            <div className="d-flex p-3 mt-3">
-              -
-            </div>
-            <div>
-              <label htmlFor="CheckFechaFin" className="pe-4">Fecha de Fin</label>
-              <input type="checkbox" id="CheckFechaFin" name="fechaFin" checked={habilitarFechaFin} onChange={(e) => { setHabilitarFechaFin(!habilitarFechaFin); handleInputChange(e.target.name) }} />
-              <input type="date" className="form-control" name="fechaFin" value={fechaFin} onChange={e => { setFechaFin(e.target.value); handleInputChange(e.target.name) }} disabled={!habilitarFechaFin} />
+      <div className="card-rounded">
+        {loadingPage ?
+          <div style={{ height: "670px" }} className="w-100 align-content-center">
+            <div style={{ justifySelf: "center", alignSelf: "center" }} className="d-flex spinner-border" role="status">
+              <span className="visually-hidden">Cargando...</span>
             </div>
           </div>
-          <div style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px" }} className="mb-3">
-            <select className="form-control" id="Sucursales" name="sucursales" value={selectedSucursal} onChange={(e) => { handleSelectSucursal(e); handleInputChange(e.target.name) }}>
-              <option value="" disabled>
-                Seleccione una sucursal
-              </option>
-              {sucursalesDisponibles.map((sucursal, index) => (
-                <option key={index} value={sucursal}>
-                  {sucursal}
-                </option>
-              ))}
-            </select>
-            <div className="mt-2 border p-2" style={{ minHeight: "50px" }}>
-              {sucursales.map((sucursal, index) => (
-                <span key={index} style={{ fontSize: "14px" }} className="badge bg-light text-dark me-2 mb-2">
-                  {sucursal} <button name={sucursal} type="button" style={{ background: "transparent", border: "none", color: "#e06971", fontSize: "20px" }} onMouseEnter={(e) => e.target.style.color = "#ff0000"}
-                    onMouseLeave={(e) => e.target.style.color = "#dc3545"} className="btn btn-sm btn-danger ms-2" onClick={(e) => { handleRemoveSucursal(e); handleInputChange("sucursales") }}>X</button>
-                </span>
-              ))}
-            </div>
-          </div>
-          <div style={{ gridColumn: "2 / 4", gridRow: "7" }} className="mb-3">
-            <input type="file" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={handleUploadImage} />
-          </div>
-          <div style={{ gridColumn: "4 / 4", gridRow: "7" }} className="mb-3 mx-4">
-            <button className="btn btn-danger" name="UrlImagenEliminar" onClick={(e) => { handleInputChange(e.target.name); setUrlImagen(null); setImagenPromocion(null); }}>Eliminar imagen</button>
-          </div>
-          <div style={{ gridColumn: "1 / 4", gridRow: "8" }} className="mb-3">
-            <CardBenefit descripcion={descripcion} titulo={descripcion}
-              tipo={tipo}
-              dias={dias}
-              porcentajeReintegro={tipo === "Reintegro de puntos" && porcentajeReintegro}
-              fechaInicio={habilitarFechaInicio && fechaInicio}
-              fechaFin={habilitarFechaFin && fechaFin}
-              sucursales={sucursales}
-              urlImagen={urlImagen}
-            />
-          </div>
-          <div className="d-flex aling-content-center justify-content-center" style={{ gridColumn: "4/5", gridRow: "8" }}>
-            {
-              isLoading ?
-                <div className="spinner-border mt-4 mr-4" role="status">
-                  <span className="visually-hidden">Cargando...</span>
-                </div>
-                :
-                <button style={{ gridColumn: "5", gridRow: "8", justifySelf: "self-end", width: "150px", height: "60px" }} className="btn btn-success mt-1" onClick={handleSubmit}>Actualizar Beneficio</button>}
-          </div>
-        </div>
-      }
-      {
-        isLoading ?
-          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
-            <Modal.Body style={{ alignSelf: "center" }} >
-              {
-                <div className="spinner-border mt-4 mr-4" role="status">
-                  <span className="visually-hidden">Cargando...</span>
-                </div>
-              }
-            </Modal.Body>
-          </Modal>
           :
-          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
-            <Modal.Header closeButton>
-              <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
-            <Modal.Footer>
-              {isConfirmation ?
-                <>
-                  <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
-                  <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
-                </>
-                :
-                <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
-              }
-            </Modal.Footer>
-          </Modal>
-      }
+          <div className="mb-4" style={{ display: "grid", gridTemplateColumns: "250px 1fr 1fr 1fr", gridTemplateRows: "80px 80px 100px 50px 100px 160px 90px 800px" }}>
+            <h2 style={{ gridColumn: "1", gridRow: "1" }}>Beneficios</h2>
+            <h3 style={{ gridColumn: "1", gridRow: "2" }}>Tipo(*)</h3>
+            <h3 style={{ gridColumn: "1", gridRow: "3" }}>Descripcion(*)</h3>
+            <h3 style={{ gridColumn: "1", gridRow: "4" }}>Fecha</h3>
+            <h3 style={{ gridColumn: "1", gridRow: "6" }}>Sucursales</h3>
+            <h3 style={{ gridColumn: "1", gridRow: "7" }}>Imagen</h3>
+            <div style={{ gridColumn: "1", gridRow: "8" }}>
+              <h3>Vista Previa</h3>
+              <p style={{ color: "gray" }}>📌 Recomendación: Para una mejor visualización, sube imágenes con una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).</p>
+            </div>
+            <select style={{ gridColumn: "2", gridRow: "2", display: "flex", height: "40px" }} className="form-control" id="Tipo" name="tipo" value={tipo} onChange={e => {
+              setTipo(e.target.value); handleInputChange(e.target.name)
+            }}>
+              <option value="">Selecciona una opción</option>
+              <option value="Reintegro de puntos">Reintegro de puntos</option>
+              <option value="Promocion">Promoción</option>
+            </select>
+            {tipo === "Reintegro de puntos" &&
+              <span style={{ gridColumn: "3", gridRow: "2", display: "flex", height: "40px", width: "80px", alignItems: "center" }} className="d-flex flex-row align-content-center">
+                <span style={{ marginInline: "8px" }}>%</span>
+                <input style={{ width: "70px" }} type="number" min="3" max="100" className="form-control" id="PorcentajeReintegro" name="porcentajeReintegro" value={porcentajeReintegro} onChange={e => { setPorcentajeReintegro(e.target.value); handleInputChange(e.target.name) }} />
+              </span>
+            }
+            <div style={{ gridColumn: "2 / 5", gridRow: "3" }} className="mb-3">
+              <textarea style={{ maxHeight: "95px" }} className="form-control" maxLength="1500" id="Descripcion" name="descripcion" value={descripcion} onChange={e => { setDescripcion(e.target.value); handleInputChange(e.target.name) }} />
+            </div>
+            <div style={{ gridColumn: "2 / 5", gridRow: "4" }}>
+              <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+              <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+              <CheckInput value={dias[2]} dia={"X"} name={"2"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+              <CheckInput value={dias[3]} dia={"J"} name={"3"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+              <CheckInput value={dias[4]} dia={"V"} name={"4"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+              <CheckInput value={dias[5]} dia={"S"} name={"5"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+              <CheckInput value={dias[6]} dia={"D"} name={"6"} evento={(e) => { handleChangeDays(e); handleInputChange("dias") }} />
+            </div>
+            <div style={{ gridColumn: "2 / 4", gridRow: "5" }} className="mb-3 d-flex align-content-center">
+              <div>
+                <label htmlFor="CheckFechaInicio" className="pe-4">Fecha de Inicio</label>
+                <input type="checkbox" id="CheckFechaInicio" name="fechaInicio" checked={habilitarFechaInicio} onChange={(e) => { setHabilitarFechaInicio(!habilitarFechaInicio); handleInputChange(e.target.name) }} />
+                <input type="date" className="form-control" id="FechaInicio" name="fechaInicio" value={fechaInicio} onChange={e => { setFechaInicio(e.target.value); handleInputChange(e.target.name) }} disabled={!habilitarFechaInicio} />
+              </div>
+              <div className="d-flex p-3 mt-3">
+                -
+              </div>
+              <div>
+                <label htmlFor="CheckFechaFin" className="pe-4">Fecha de Fin</label>
+                <input type="checkbox" id="CheckFechaFin" name="fechaFin" checked={habilitarFechaFin} onChange={(e) => { setHabilitarFechaFin(!habilitarFechaFin); handleInputChange(e.target.name) }} />
+                <input type="date" className="form-control" name="fechaFin" value={fechaFin} onChange={e => { setFechaFin(e.target.value); handleInputChange(e.target.name) }} disabled={!habilitarFechaFin} />
+              </div>
+            </div>
+            <div style={{ gridColumn: "2 / 5", gridRow: "6", maxHeight: "150px" }} className="mb-3">
+              <select className="form-control" id="Sucursales" name="sucursales" value={selectedSucursal} onChange={(e) => { handleSelectSucursal(e); handleInputChange(e.target.name) }}>
+                <option value="" disabled>
+                  Seleccione una sucursal
+                </option>
+                {sucursalesDisponibles.map((sucursal, index) => (
+                  <option key={index} value={sucursal}>
+                    {sucursal}
+                  </option>
+                ))}
+              </select>
+              <div className="mt-2 border p-2" style={{ minHeight: "50px" }}>
+                {sucursales.map((sucursal, index) => (
+                  <span key={index} style={{ fontSize: "14px" }} className="badge bg-light text-dark me-2 mb-2">
+                    {sucursal} <button name={sucursal} type="button" style={{ background: "transparent", border: "none", color: "#e06971", fontSize: "20px" }} onMouseEnter={(e) => e.target.style.color = "#ff0000"}
+                      onMouseLeave={(e) => e.target.style.color = "#dc3545"} className="btn btn-sm btn-danger ms-2" onClick={(e) => { handleRemoveSucursal(e); handleInputChange("sucursales") }}>X</button>
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div style={{ gridColumn: "2 / 4", gridRow: "7" }} className="mb-3">
+              <input type="file" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={handleUploadImage} />
+            </div>
+            <div style={{ gridColumn: "4 / 4", gridRow: "7" }} className="mb-3 mx-4">
+              <button className="btn btn-danger" name="UrlImagenEliminar" onClick={(e) => { handleInputChange(e.target.name); setUrlImagen(null); setImagenPromocion(null); }}>Eliminar imagen</button>
+            </div>
+            <div style={{ gridColumn: "1 / 4", gridRow: "8" }} className="mb-3">
+              <CardBenefit descripcion={descripcion} titulo={descripcion}
+                tipo={tipo}
+                dias={dias}
+                porcentajeReintegro={tipo === "Reintegro de puntos" && porcentajeReintegro}
+                fechaInicio={habilitarFechaInicio && fechaInicio}
+                fechaFin={habilitarFechaFin && fechaFin}
+                sucursales={sucursales}
+                urlImagen={urlImagen}
+              />
+            </div>
+            <div className="d-flex aling-content-center justify-content-center" style={{ gridColumn: "4/5", gridRow: "8" }}>
+              {
+                isLoading ?
+                  <div className="spinner-border mt-4 mr-4" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                  </div>
+                  :
+                  <button style={{ gridColumn: "5", gridRow: "8", justifySelf: "self-end", width: "150px", height: "60px" }} className="btn btn-success mt-1" onClick={handleSubmit}>Actualizar Beneficio</button>}
+            </div>
+          </div>
+        }
+        {
+          isLoading ?
+            <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
+              <Modal.Body style={{ alignSelf: "center" }} >
+                {
+                  <div className="spinner-border mt-4 mr-4" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                  </div>
+                }
+              </Modal.Body>
+            </Modal>
+            :
+            <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
+              <Modal.Header closeButton>
+                <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
+              <Modal.Footer>
+                {isConfirmation ?
+                  <>
+                    <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
+                    <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
+                  </>
+                  :
+                  <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
+                }
+              </Modal.Footer>
+            </Modal>
+        }
+      </div>
     </div>
   );
 }

@@ -79,7 +79,7 @@ export default function ViewCompras() {
   return (
     <>
       <div className="container">
-        <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem"}} className="card-rounded">
+        <div style={{boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem" }} className="card-rounded">
           <div className="d-flex justify-content-between align-items-center">
             <h2>Gestión de Clientes</h2>
             <Link className="btn btn-success btn-lg px-3 py-1 mb-2" to="/cliente/agregar-cliente">

@@ -4,6 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
 import jwtDecode from "../Utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewCrearBeneficios() {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +25,7 @@ export default function ViewCrearBeneficios() {
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
   const [isConfirmation, setIsConfirmation] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function cargaInicial() {
@@ -98,9 +100,7 @@ export default function ViewCrearBeneficios() {
       setShowModal(true);
       return
     }
-
-    if (!isConfirmation) return;
-
+    setIsConfirmation(false);
     setIsLoading(true);
     try {
       let tmp = [];
@@ -137,6 +137,9 @@ export default function ViewCrearBeneficios() {
         switch (response.status) {
           case 200:
             setMessage("La promocion se ha cargado correctamente.");
+            setTimeout(() => {
+              navigate("/beneficios/verbeneficios");
+            }, 1500)
             break;
           case 400:
             setMessage(
