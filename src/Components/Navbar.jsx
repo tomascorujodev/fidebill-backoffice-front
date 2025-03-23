@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import jwtDecode from "../Utils/jwtDecode"
-import "../assets/CSS/Navbar.css";
+import "../assets/css/Navbar.css";
 
 
 export default function Navbar() {
