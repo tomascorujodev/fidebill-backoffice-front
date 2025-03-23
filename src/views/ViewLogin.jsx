@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../assets/CSS/ViewLogin.css"; // Importamos un archivo CSS para estilos adicionales
+import "../assets/CSS/ViewLogin.css";
 import { POST } from "../Services/Fetch";
 
 export default function ViewLogin({ setIsLoggedIn }) {
@@ -36,7 +36,11 @@ export default function ViewLogin({ setIsLoggedIn }) {
             return;
         }
       } else {
-        setMensaje("Hubo un problema al intentar iniciar sesion. Verifique la conexion");
+        if(navigator.onLine){
+          setMensaje("El servidor no responde. Por favor, espere unos instantes y vuelva a intentarlo, si el error persiste contactese con un administrador");
+        }else{
+          setMensaje("No hay conexion a internet, verifique la red y vuelva a intentarlo");
+        }
       }
     } catch {
       setMensaje("Hubo un problem iniciar sesion. Por favor, contacte con un administrador.");
@@ -45,8 +49,17 @@ export default function ViewLogin({ setIsLoggedIn }) {
   }
 
   return (
-    <div className="container-fluid bg-light min-vh-100 d-flex align-items-center justify-content-center">
-      <div className="card shadow-lg" style={{ maxWidth: "400px", width: "100%" }}>
+    <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center justify-content-center">
+      <div className="mt-4">
+            <img
+              src="/assets/LOGOSDCapCut.png"
+              alt="Street Dog Logo"
+               width="350"
+               height="75"
+            />
+      </div>
+      <br />
+      <div className="card-rounded" style={{ maxWidth: "400px", width: "100%" }}>
         <div className="card-body p-5">
           <h2 className="card-title text-center mb-4">Iniciar Sesión</h2>
           <form onSubmit={handleSubmit}>
@@ -136,6 +149,15 @@ export default function ViewLogin({ setIsLoggedIn }) {
           </div>
         </div>
       }
+      <br />
+      <div className="mt-4">
+            <img
+              src="/assets/PoweredByFidebill.png"
+              alt="FideBill Logo"
+              width="238"
+              height="44"
+            />
+      </div>
     </div>
   );
 };

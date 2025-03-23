@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Menu from "./views/Menu";
+import ViewMenu from "./views/ViewMenu";
 import ViewClientes from "./views/ViewClientes";
 import ViewPuntos from "./views/ViewPuntos";
 import FormAgregarCliente from "./views/FormAgregarCliente";
@@ -11,7 +11,10 @@ import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
 import { GET } from "./Services/Fetch";
 import FormModificarCliente from "./views/FormModificarCliente";
+import ViewModificarBeneficio from "./views/ViewModificarBeneficio";
+import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
+import ViewAppClientes from "./views/ViewAppClientes";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +23,7 @@ function App() {
       let token = sessionStorage.getItem("token");
       if(token){
         let response = await GET("auth/validatetoken");
-        if(response.ok){
+        if(response?.ok){
           setIsLoggedIn(true);
         }else{
           sessionStorage.clear();
@@ -37,14 +40,17 @@ function App() {
       <Routes>
         {isLogedIn ?
           <Route element={<BackOffice />}>
-            <Route path="/" element={<Menu></Menu>}></Route>
+            <Route path="/*" element={<ViewMenu></ViewMenu>}></Route>
+            <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
             <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
             <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
             <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>}/>
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />
-            <Route path="beneficios" element={<ViewBeneficios />} />
+            <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
+            <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
+            <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :

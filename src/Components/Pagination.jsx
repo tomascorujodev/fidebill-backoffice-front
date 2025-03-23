@@ -5,6 +5,7 @@ export default function Pagination({ currentPage, onPageChange }){
     }
   };
   return (
+
     <div className="pagination-container d-flex justify-content-center mt-4">
       <nav aria-label="Page navigation">
         <ul className="pagination">
@@ -29,6 +30,7 @@ export default function Pagination({ currentPage, onPageChange }){
         </ul>
       </nav>
     </div>
+
   );
 };
 
