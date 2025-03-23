@@ -21,10 +21,10 @@ export default function CheckInput({ dia, name, evento, value }) {
         checked={value}
         onChange={evento}
         style={{
-          width: '24px',  // Tamaño del checkbox
+          width: '24px',
           height: '24px',
           borderRadius: '5px',
-          borderColor: '#007bff', // Color de borde
+          borderColor: '#007bff',
         }}
       />
     </div>

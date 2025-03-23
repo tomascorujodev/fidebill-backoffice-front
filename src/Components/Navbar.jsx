@@ -97,6 +97,11 @@ export default function Navbar() {
               </ul>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/appclientes" style={{ color: "black" }}>
+                App Clientes
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/ayuda" style={{ color: "black" }}>
                 Soporte
               </Link>

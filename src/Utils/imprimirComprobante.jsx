@@ -25,9 +25,6 @@ export default async function imprimirComprobante({documento, nombre, apellido, 
     doc.text("--------------------------------", 2, counter);
     counter += 8;
     doc.text("MUCHAS GRACIAS", 17, counter);
-
-    console.log(doc.internal.pageSize);
-
     
     doc.autoPrint();
 

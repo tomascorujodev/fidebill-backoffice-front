@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { GET } from "../Services/Fetch";
+import { DELETE, GET } from "../Services/Fetch";
 import CardBenefit from "../Components/CardBenefit";
 import { useParams, useSearchParams } from "react-router-dom";
+import { Button, Modal } from "react-bootstrap";
 
 export default function ViewBeneficios({ setIsLoggedIn }) {
     const [beneficios, setBeneficios] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [eliminar, setEliminar] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [mensaje, setMensaje] = useState("");
+    const [message, setMessage] = useState("");
     const { empresa } = useParams();
 
     useEffect(() => {
@@ -14,9 +17,9 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             let result = await GET("beneficios/obtenerbeneficios")
             if (!result) {
                 if (navigator.onLine) {
-                    setMensaje("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo")
+                    setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo")
                 } else {
-                    setMensaje("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
+                    setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
                 }
                 setLoading(false);
                 return;
@@ -27,26 +30,68 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                     setBeneficios(result.beneficiosAgrupados);
                     break;
                 case 204:
-                    setMensaje("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
+                    setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
                     break;
                 case 401:
                     localStorage.clear();
-                    setMensaje("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
+                    setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
                     setTimeout(() => {
                         window.location.replace(`/${empresa}`)
                     }, 4000)
                     break;
                 case 500:
-                    setMensaje("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                    setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
                     break;
                 default:
-                    setMensaje("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                    setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
                     break;
             }
             setLoading(false);
         }
         obtenerBeneficios();
     }, [])
+
+    async function eliminarBeneficio() {
+        setLoading(true)
+        let result = await DELETE("beneficios/eliminarbeneficio", { IdBeneficio: eliminar })
+        setEliminar(null);
+        if (!result) {
+            if (navigator.onLine) {
+                setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo. Si el problema persiste comuniquese con un administrador")
+            } else {
+                setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
+            }
+            setLoading(false);
+            return;
+        }
+        switch (result.status) {
+            case 200:
+                result = await result.json();
+                setMessage("El beneficio se ha eliminado correctamente");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000)
+                break;
+            case 204:
+                setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
+                break;
+            case 401:
+                localStorage.clear();
+                setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
+                setTimeout(() => {
+                    window.location.replace(`/${empresa}`)
+                }, 4000)
+                break;
+            case 500:
+                setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                break;
+            default:
+                setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                break;
+        }
+        setLoading(false);
+    }
+
     return (
         <div className="container">
             {
@@ -72,12 +117,13 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                                     fechaFin={beneficio.fechaFin}
                                     sucursales={beneficio.idsUsuariosEmpresas.map(sucursal => sucursal.nombreUsuarioEmpresa)}
                                     urlImagen={beneficio.urlImagen}
+                                    eliminar={setEliminar}
                                 />
                             ))
                         }
                     </div>
             }
-            {mensaje &&
+            {message &&
                 <div
                     className="modal fade show"
                     tabIndex="-1"
@@ -88,18 +134,18 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title" id="modalMessageLabel">
-                                    Mensaje
+                                    Aviso
                                 </h5>
                             </div>
                             <div className="modal-body">
-                                {mensaje}
+                                {message}
                             </div>
                             <div className="modal-footer">
                                 <button
                                     type="button"
                                     className="btn btn-secondary"
                                     data-bs-dismiss="modal"
-                                    onClick={() => setMensaje("")}
+                                    onClick={() => setMessage("")}
                                 >
                                     Cerrar
                                 </button>
@@ -108,6 +154,29 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                     </div>
                 </div>
             }
+            <Modal show={eliminar} onHide={() => setEliminar(null)}>
+                <Modal.Header>
+                    <Modal.Title>Advertencia</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Estas a punto de eliminar esta publicación de la vista de sus clientes. ¿Esta seguro que desea continuar?</Modal.Body>
+                <Modal.Footer>
+                    {!loading ?
+                        <>
+                            <Button variant="secondary" onClick={() => { setEliminar(null) }}>Cancelar</Button>
+                            <Button variant="success" onClick={eliminarBeneficio}>Confirmar</Button>
+                        </>
+                        :
+                        <div
+                            style={{ justifySelf: "center" }}
+                            className="d-flex spinner-border"
+                            role="status"
+                        >
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    }
+
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

@@ -86,10 +86,6 @@ export default function ViewModificarBeneficio() {
     cargaInicial();
   }, []);
 
-  useEffect(() => {
-    console.log(modifiedStates)
-  }, [modifiedStates]);
-
   function handleChangeDays(e) {
     const newDias = [...dias];
     newDias[e.target.name] = e.target.checked;
@@ -163,7 +159,6 @@ export default function ViewModificarBeneficio() {
           })
         });
       }
-      console.log(tmp)
       let response = await PATCHFormData(
         "beneficios/modificarbeneficio",
         modifiedStates.imagenPromocion && imagenPromocion ? imagenPromocion : null,
@@ -376,13 +371,13 @@ export default function ViewModificarBeneficio() {
                   <span className="visually-hidden">Cargando...</span>
                 </div>
                 :
-                <button style={{ gridColumn: "5", gridRow: "8", justifySelf: "self-end", width: "150px", height: "60px" }} className="btn btn-success mt-1" onClick={handleSubmit}>Subir Promocion</button>}
+                <button style={{ gridColumn: "5", gridRow: "8", justifySelf: "self-end", width: "150px", height: "60px" }} className="btn btn-success mt-1" onClick={handleSubmit}>Actualizar Beneficio</button>}
           </div>
         </div>
       }
       {
         isLoading ?
-          <Modal show={showModal} onHide={() => {setShowModal(false); setIsConfirmation(false) }}>
+          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
             <Modal.Body style={{ alignSelf: "center" }} >
               {
                 <div className="spinner-border mt-4 mr-4" role="status">
@@ -392,20 +387,20 @@ export default function ViewModificarBeneficio() {
             </Modal.Body>
           </Modal>
           :
-          <Modal show={showModal} onHide={() => {setShowModal(false); setIsConfirmation(false) }}>
+          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
             <Modal.Header closeButton>
               <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
             <Modal.Footer>
-              {isConfirmation ? (
+              {isConfirmation ?
                 <>
                   <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
                   <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
                 </>
-              ) : (
+                :
                 <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
-              )}
+              }
             </Modal.Footer>
           </Modal>
       }

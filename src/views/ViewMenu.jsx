@@ -1,4 +1,4 @@
-export default function Menu() {
+export default function ViewMenu() {
     return (
         <div className="container mt-4">
           <br />

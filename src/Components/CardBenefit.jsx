@@ -4,7 +4,7 @@ import WeekDays from "./WeekDays"
 import { convertirFecha, convertirFechaMuestra } from "../Utils/ConvertirFechas";
 import { Navigate, useNavigate } from "react-router-dom";
 
-export default function CardBenefit({ id = null, tipo, descripcion, dias, porcentajeReintegro = null, fechaInicio, fechaFin, sucursales, urlImagen }) {
+export default function CardBenefit({ id = null, tipo, descripcion, dias, porcentajeReintegro = null, fechaInicio, fechaFin, sucursales, urlImagen, eliminar = () => {} }) {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate()
 
@@ -27,6 +27,7 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
           className="promo-logo"
         />
         {id && <button className="modify-button bg-warning" onClick={() => navigate(`/beneficios/modificarbeneficio?id=${id}`)}>Modificar</button>}
+        {id && <button style={{marginTop: "40px"}} className="modify-button bg-danger" onClick={() => eliminar(id)}>Eliminar</button>}
         {
           porcentajeReintegro &&
           <div className="promo-badge">{porcentajeReintegro}% de reintegro</div>

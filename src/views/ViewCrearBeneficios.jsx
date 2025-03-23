@@ -6,7 +6,6 @@ import jwtDecode from "../Utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
 
 export default function ViewCrearBeneficios() {
-  const token = jwtDecode(sessionStorage.getItem("token"));
   const [isLoading, setIsLoading] = useState(false);
   const [tipo, setTipo] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -132,8 +131,6 @@ export default function ViewCrearBeneficios() {
           FechaInicio: habilitarFechaInicio ? fechaInicio : null,
           FechaFin: habilitarFechaFin ? fechaFin : null,
           Sucursales: tmp,
-          NombreEmpresa: token.NombreEmpresa,
-          IdEmpresa: token.idEmpresa,
         }
       );
       if (response) {
@@ -181,10 +178,7 @@ export default function ViewCrearBeneficios() {
 
   function handleUploadImage(e) {
     let archivo = e.target.files[0];
-    if (
-      archivo &&
-      ["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)
-    ) {
+    if (archivo && ["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)) {
       if (archivo.size <= 1048576) {
         setImagenPromocion(archivo);
         setUrlImagen(URL.createObjectURL(archivo));
@@ -463,7 +457,7 @@ export default function ViewCrearBeneficios() {
                 className="btn btn-success mt-1"
                 onClick={handleSubmit}
               >
-                Subir Promocion
+                Crear Beneficio
               </button>
           }
         </div>

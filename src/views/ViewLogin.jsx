@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../assets/CSS/ViewLogin.css"; // Importamos un archivo CSS para estilos adicionales
+import "../assets/CSS/ViewLogin.css";
 import { POST } from "../Services/Fetch";
 
 export default function ViewLogin({ setIsLoggedIn }) {

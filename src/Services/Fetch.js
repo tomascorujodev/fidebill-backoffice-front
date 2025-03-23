@@ -101,3 +101,16 @@ export async function PATCH(url, data){
         .then((res)=>res)
         .catch((err)=> console.log(err))
 }
+
+export async function DELETE(url, data){
+    const objString = '?' + new URLSearchParams(data).toString();
+    return await fetch(backendurl + url + objString, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers:{
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        }
+    })
+    .then((res) => res)
+    .catch((err)=>console.log(err));
+}

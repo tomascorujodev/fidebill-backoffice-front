@@ -66,12 +66,12 @@ export default function FormAgregarCliente() {
             case 200:
               setMessage(
                 "El cliente " +
-                  formData.Nombre +
-                  " " +
-                  formData.Apellido +
-                  ", Documento: " +
-                  formData.Documento +
-                  " ha sido cargado correctamente"
+                formData.Nombre +
+                " " +
+                formData.Apellido +
+                ", Documento: " +
+                formData.Documento +
+                " ha sido cargado correctamente"
               );
               setFormData({
                 Nombre: "",
@@ -173,9 +173,8 @@ export default function FormAgregarCliente() {
             </label>
             <input
               type="date"
-              className={`form-control ${
-                errors.FechaNacimiento ? "is-invalid" : ""
-              }`}
+              className={`form-control ${errors.FechaNacimiento ? "is-invalid" : ""
+                }`}
               id="FechaNacimiento"
               name="FechaNacimiento"
               value={formData.FechaNacimiento}
@@ -203,9 +202,8 @@ export default function FormAgregarCliente() {
               Tipo de cliente(*)
             </label>
             <select
-              className={`form-select ${
-                errors.TipoCliente ? "is-invalid" : ""
-              }`}
+              className={`form-select ${errors.TipoCliente ? "is-invalid" : ""
+                }`}
               id="TipoCliente"
               name="TipoCliente"
               value={formData.TipoCliente}
@@ -256,7 +254,7 @@ export default function FormAgregarCliente() {
               onChange={handleChange}
             />
           </div>
-          {isLoading ? (
+          {isLoading ?
             <div
               style={{ justifySelf: "center" }}
               className="d-flex spinner-border"
@@ -264,11 +262,11 @@ export default function FormAgregarCliente() {
             >
               <span className="visually-hidden">Cargando...</span>
             </div>
-          ) : (
+            :
             <>
               <button
-                style={{ 
-                  marginTop: "0px", 
+                style={{
+                  marginTop: "0px",
                   marginBottom: "10px",
                 }}
                 type="submit"
@@ -277,7 +275,7 @@ export default function FormAgregarCliente() {
                 Agregar Cliente
               </button>
             </>
-          )}
+          }
         </form>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header closeButton>

@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Menu from "./views/Menu";
+import ViewMenu from "./views/ViewMenu";
 import ViewClientes from "./views/ViewClientes";
 import ViewPuntos from "./views/ViewPuntos";
 import FormAgregarCliente from "./views/FormAgregarCliente";
@@ -14,6 +14,7 @@ import FormModificarCliente from "./views/FormModificarCliente";
 import ViewModificarBeneficio from "./views/ViewModificarBeneficio";
 import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
+import ViewAppClientes from "./views/ViewAppClientes";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -39,7 +40,8 @@ function App() {
       <Routes>
         {isLogedIn ?
           <Route element={<BackOffice />}>
-            <Route path="/*" element={<Menu></Menu>}></Route>
+            <Route path="/*" element={<ViewMenu></ViewMenu>}></Route>
+            <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
             <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
             <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
             <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>}/>
