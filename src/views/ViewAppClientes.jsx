@@ -137,11 +137,23 @@ export default function ViewAppClientes() {
     }
   }
 
+  function Spinner() {
+    return (
+      <div
+        style={{ justifySelf: "center" }}
+        className="d-flex spinner-border"
+        role="status"
+      >
+        <span className="visually-hidden">Cargando...</span>
+      </div>
+    );
+  }
+
 
   return (
     <div className="container">
       <div className="card-rounded">
-        <h2>Configurar App de Clientes</h2>
+        <h2>Configuracion</h2>
         <br />
         <form>
           <div className="mb-3">
@@ -151,69 +163,138 @@ export default function ViewAppClientes() {
             <div className="custom-layout">
               <ColorPicker color={color} onChange={setColor} />
             </div>
+            {isLoading ?
+              <div
+                style={{ justifySelf: "center" }}
+                className="d-flex spinner-border"
+                role="status"
+              >
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+              :
+              <>
+                <div className="d-flex justify-content-end flex-wrap">
+                  <button
+                    style={{
+                      marginTop: "0px",
+                      marginBottom: "10px",
+                    }}
+                    type="submit"
+                    className="btn btn-success mt-3 custom-button"
+                  >
+                    Guardar Estilo
+                  </button>
+                </div>
+              </>
+            }
           </div>
           <div className="mb-3">
-            <h5 htmlFor="Carrousel" className="form-label">
-              Carrousel
-            </h5>
-            <label htmlFor="imagen1" className="form-label">
-              Imagen 1
-            </label>
-            <input
-              type="file"
-              id="imagen1"
-              className="form-control"
-              accept="image/png, image/jpeg, image/svg+xml"
-              onChange={cargarImagen}
-            />
-            <label htmlFor="imagen2" className="form-label">
-              Imagen 2
-            </label>
-            <input
-              type="file"
-              id="imagen2"
-              className="form-control"
-              accept="image/png, image/jpeg, image/svg+xml"
-              onChange={cargarImagen}
-            />
-            <label htmlFor="imagen3" className="form-label">
-              Imagen 3
-            </label>
-            <input
-              type="file"
-              id="imagen3"
-              className="form-control"
-              accept="image/png, image/jpeg, image/svg+xml"
-              onChange={cargarImagen}
-            />
+            <h4 htmlFor="Carrousel" className="form-label">
+              Carrusel de imagenes
+            </h4>
+            <hr className="m-2"></hr>
+            <div>
+              <label htmlFor="imagen1" className="ms-1 fs-4 form-label">
+                Imagen 1
+              </label>
+              <input
+                type="file"
+                id="imagen1"
+                className="form-control mb-2"
+                accept="image/png, image/jpeg, image/svg+xml"
+                onChange={cargarImagen}
+              />
+              {isLoading ?
+                <Spinner />
+                :
+                <>
+                  <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-danger p-1 me-3 mt-2">
+                      Eliminar imagen
+                    </button>
+                    <button className="btn btn-success p-1 me-3 mt-2">
+                      Guardar imagen
+                    </button>
+                  </div>
+                </>
+              }
+            </div>
+            <hr className="m-2"></hr>
+            <div>
+              <label htmlFor="imagen2" className="ms-1 fs-4 form-label">
+                Imagen 2
+              </label>
+              <input
+                type="file"
+                id="imagen2"
+                className="form-control"
+                accept="image/png, image/jpeg, image/svg+xml"
+                onChange={cargarImagen}
+              />
+              {isLoading ?
+                <Spinner />
+                :
+                <>
+                  <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-danger p-1 me-3 mt-2">
+                      Eliminar imagen
+                    </button>
+                    <button className="btn btn-success p-1 me-3 mt-2">
+                      Guardar imagen
+                    </button>
+                  </div>
+                </>
+              }
+            </div>
+            <hr className="m-2"></hr>
+            <div>
+              <label htmlFor="imagen3" className="ms-1 fs-4 form-label">
+                Imagen 3
+              </label>
+              <input
+                type="file"
+                id="imagen3"
+                className="form-control"
+                accept="image/png, image/jpeg, image/svg+xml"
+                onChange={cargarImagen}
+              />
+              {isLoading ?
+                <Spinner />
+                :
+                <>
+                  <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-danger p-1 me-3 mt-2">
+                      Eliminar imagen
+                    </button>
+                    <button className="btn btn-success p-1 me-3 mt-2">
+                      Guardar imagen
+                    </button>
+                  </div>
+                </>
+              }
+            </div>
+            <hr className="m-2"></hr>
           </div>
           <p style={{ color: "gray", fontSize: "12px" }}>
             📌 Recomendación: Para una mejor visualización, suba imágenes con
             una relación de aspecto 4:1 (Ejemplo: 1600 × 400, 2000 × 500, 2400 × 600).
           </p>
           <Carousel imagen1={urlImagenes.urlImagen1} imagen2={urlImagenes.urlImagen2} imagen3={urlImagenes.urlImagen3} />
-          {isLoading ? (
-            <div
-              style={{ justifySelf: "center" }}
-              className="d-flex spinner-border"
-              role="status"
-            >
-              <span className="visually-hidden">Cargando...</span>
-            </div>
-          ) : (
-            <>
+          {isLoading ?
+            <Spinner />
+            :
+            <div className="d-flex justify-content-end flex-wrap">
               <button
                 style={{
                   marginTop: "0px",
                   marginBottom: "10px",
                 }}
-                type="submit"
-                className="btn btn-success w-25 mt-3 custom-button"
+                className="btn btn-success mt-3 custom-button"
               >
-                Guardar cambios
+                Guardar Carrusel
               </button>
-            </>
-          )}
+            </div>
+          }
         </form>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header closeButton>
