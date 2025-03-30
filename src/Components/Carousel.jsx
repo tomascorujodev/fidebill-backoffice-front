@@ -23,6 +23,7 @@ export default function Carousel({ imagen1 = null, imagen2 = null, imagen3 = nul
         <div className="carousel-inner h-100 w-100">
           {imagenes.map((imagen, index) => (
             <div key={index} className={`carousel-item ${index === 0 ? "active" : ""} h-100 w-100`}>
+              <div style={{color: "white", backgroundColor: "rgba(0, 0, 0, 0.5)"}} className="position-absolute fs-2">{index + 1}</div>
               <img src={imagen} className="d-block w-100 h-100 object-cover" alt={`Imagen ${index + 1}`} />
             </div>
           ))}
