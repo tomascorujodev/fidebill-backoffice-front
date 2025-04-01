@@ -72,7 +72,7 @@ export default function FormModificarCliente() {
   }, []);
 
   function handleChange(e) {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
     if (validaciones[name].test(value)) {
@@ -92,7 +92,7 @@ export default function FormModificarCliente() {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    const newErrors = {};
+    let newErrors = {};
     let isValid = true;
 
     Object.keys(formData).forEach((key) => {
