@@ -1,98 +1,128 @@
 import { useEffect, useState } from "react";
-import { POST } from "../Services/Fetch";
+import { GET, PATCH, POSTFormData } from "../Services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import Carousel from "../Components/Carousel";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/css";
+import { useNavigate } from "react-router-dom";
+import { hexToHsv } from "../Utils/hexToHsv.js"
+import { hexToRgba } from "../Utils/hexToRgba.js";
 
 export default function ViewAppClientes() {
+  const [action, setAction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [imagenes, setImagenes] = useState({ imagen1: "", imagen2: "", imagen3: "" });
   const [urlImagenes, seturlImagenes] = useState({ urlImagen1: null, urlImagen2: null, urlImagen3: null });
-  const [colorPrincipal, setColorPrincipal] = useState("");
-  const [modifiedStates, setModifiedStates] = useState({ imagen1: "", imagen2: "", imagen3: "" });
   const [message, setMessage] = useState("");
-  const [color, setColor] = useColor("#561ecb");
+  const [color, setColor] = useColor("#00000000");
+  const [newColorSent, setNewColorSent] = useState(false);
+  const [newImageSent, setNewImageSent] = useState({ imagen1: false, imagen2: false, imagen3: false });
+  const navigate = useNavigate();
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setIsLoading(true);
-    const newErrors = {};
-    let isValid = true;
-
-    Object.keys(formData).forEach((key) => {
-      if (!validaciones[key].test(formData[key])) {
-        newErrors[key] = true;
-        isValid = false;
-      }
-    });
-
-    setErrors(newErrors);
-    if (isValid) {
-      try {
-        let response = await POST("clientes/crearcliente", {
-          ...formData,
-          FechaNacimiento: new Date(formData.FechaNacimiento).toISOString(),
-        });
-        if (response) {
-          switch (response.status) {
-            case 200:
-              setMessage(
-                "El cliente " +
-                formData.Nombre +
-                " " +
-                formData.Apellido +
-                ", Documento: " +
-                formData.Documento +
-                " ha sido cargado correctamente"
-              );
-              setFormData({
-                Nombre: "",
-                Apellido: "",
-                Documento: "",
-                FechaNacimiento: "",
-                Genero: "Masculino",
-                TipoCliente: "Consumidor Final",
-                Email: "",
-                Direccion: "",
-                Telefono: "",
-              });
-              setErrors({});
-              setShowModal(true);
-              break;
-            case 401:
-              setMessage(
-                "Su sesion expiro. Por favor, vuelva a iniciar sesion"
-              );
-              setShowModal(true);
-              break;
-            default:
-              response = await response.json();
-              setMessage(response.message);
-              setShowModal(true);
-              break;
-          }
+  useEffect(() => {
+    async function obtenerConfiguracion() {
+      let result = await GET("ConfiguracionApp/getconfiguracion")
+      if (!result) {
+        if (navigator.onLine) {
+          setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo")
         } else {
-          if (navigator.onLine) {
-            setMessage(
-              "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con la sucursal más cercana"
-            );
-          } else {
-            setMessage(
-              "Hubo un problema al agregar cliente. Por favor, verifique la conexión y vuelva a intentarlo."
-            );
-          }
-          setShowModal(true);
+          setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
         }
-      } catch {
-        setMessage(
-          "Hubo un problema al agregar cliente. Por favor, contacte con un administrador."
-        );
-        setShowModal(true);
         setIsLoading(false);
+        setShowModal(true);
+        return;
       }
+      switch (result.status) {
+        case 200:
+          result = await result.json();
+          setMessage("");
+          setColor({ hex: result.colorPrincipal, hsv: hexToHsv(result.colorPrincipal), rgb: hexToRgba(result.colorPrincipal)});
+          seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
+          return;
+        case 204:
+          setMessage("La empresa aun no tiene creados sus estilos. Contacte con un administrador para mas información.");
+          setAction(() => () => { navigate("/ayuda") });
+          break;
+        case 401:
+          localStorage.clear();
+          setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
+          setTimeout(() => {
+            window.location.replace(`/${empresa}`)
+          }, 4000)
+          break;
+        case 500:
+          setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+          break;
+        default:
+          setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+          break;
+      }
+      setShowModal(true);
+      setIsLoading(false);
     }
+    obtenerConfiguracion();
+  }, [])
+
+  async function uploadImage(e) {
+    let name = e.target.name;
+
+    try {
+      if (!["image/jpeg", "image/png", "image/svg+xml"].includes(imagenes[name].type)) {
+        setMessage("El formato de archivo no es compatible");
+        setShowModal(true);
+        e.target.value = "";
+        return;
+      }
+
+      if (imagenes[name].size >= 1048576) {
+        setMessage("La imagen excede el tamaño máximo permitido de 1MB");
+        setShowModal(true);
+        e.target.value = "";
+        return;
+      }
+
+      setIsLoading(true);
+
+      let keys = Object.keys(imagenes);
+      let index = keys.indexOf(name) + 1;
+      console.log(imagenes[name])
+      let response = await POSTFormData("ConfiguracionApp/cargarimagencarrousel", imagenes[name], { NumeroImagen: index });
+
+      if (response) {
+        switch (response.status) {
+          case 200:
+            setMessage(`La imagen ${index} se guardo correctamente`);
+            setNewImageSent(
+              (prev) => ({
+                ...prev,
+                [name]: true,
+              })
+            );
+            break;
+          case 401:
+            setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+            break;
+          case 422:
+            setMessage("El formato de imagen es invalido");
+            break;
+          default:
+            setMessage("Ha ocurrido un error. Si el problema persiste, por favor, contacte con un administrador");
+            break;
+        }
+      } else {
+        if (navigator.onLine) {
+          setMessage("El servidor no responde. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+        } else {
+          setMessage("Hubo un problema al cargar la imagen. Por favor, verifique la conexión y vuelva a intentarlo.");
+        }
+      }
+    } catch {
+      setMessage("Hubo un problema al agregar la imagen. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+      setShowModal(true);
+      setIsLoading(false);
+    }
+    setShowModal(true);
     setIsLoading(false);
   }
 
@@ -100,135 +130,227 @@ export default function ViewAppClientes() {
 
   function cargarImagen(e) {
     let archivo = e.target.files[0];
-    let id = e.target.id;
+    let name = e.target.name;
 
     if (!archivo) return;
 
-    if (["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)) {
-      if (archivo.size <= 1048576) {
-
-        let keyMap = {
-          imagen1: "urlImagen1",
-          imagen2: "urlImagen2",
-          imagen3: "urlImagen3"
-        };
-
-        if (keyMap[id]) {
-          seturlImagenes((prev) => ({
-            ...prev,
-            [keyMap[id]]: URL.createObjectURL(archivo),
-          }));
-
-          setImagenes((prev) => ({
-            ...prev,
-            [id]: archivo,
-          }));
-        }
-
-      } else {
-        setMessage("La imagen excede el tamaño máximo permitido de 1MB");
-        setShowModal(true);
-        e.target.value = "";
-      }
-    } else {
+    if (!["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)) {
       setMessage("El formato de archivo no es compatible");
       setShowModal(true);
       e.target.value = "";
     }
+
+    if (archivo.size >= 1048576) {
+      setMessage("La imagen excede el tamaño máximo permitido de 1MB");
+      setShowModal(true);
+      e.target.value = "";
+      return;
+    }
+
+    let keyMap = {
+      imagen1: "urlImagen1",
+      imagen2: "urlImagen2",
+      imagen3: "urlImagen3"
+    };
+
+    if (keyMap[name]) {
+      seturlImagenes((prev) => ({
+        ...prev,
+        [keyMap[name]]: URL.createObjectURL(archivo),
+      }));
+
+      setImagenes((prev) => ({
+        ...prev,
+        [name]: archivo,
+      }));
+    }
+  }
+
+  function Spinner() {
+    return (
+      <div
+        style={{ justifySelf: "end" }}
+        className="d-flex spinner-border"
+        role="status"
+      >
+        <span className="visually-hidden">Cargando...</span>
+      </div>
+    );
+  }
+
+  async function submitNewColor() {
+    setIsLoading(true);
+    try {
+      let response = await PATCH("ConfiguracionApp/modificarcolorprincipal", color.hex);
+      if (response) {
+        switch (response.status) {
+          case 200:
+            setNewColorSent(true);
+            break;
+          case 401:
+            setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+            setShowModal(true);
+            break;
+          case 422:
+            setMessage("El formato enviado es incorrecto");
+            setShowModal(true);
+            break;
+          default:
+            response = await response.json();
+            setMessage(response.message);
+            setShowModal(true);
+            break;
+        }
+      } else {
+        if (navigator.onLine) {
+          setMessage("El servidor no responde. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+        } else {
+          setMessage("Hubo un problema al agregar cliente. Por favor, verifique la conexión y vuelva a intentarlo.");
+        }
+      }
+    } catch {
+      setMessage("Hubo un problema al agregar cliente. Por favor, contacte con un administrador.");
+      setShowModal(true);
+      setIsLoading(false);
+    }
+    setIsLoading(false);
   }
 
 
   return (
     <div className="container">
       <div className="card-rounded">
-        <h2>Configurar App de Clientes</h2>
-        <br />
-        <form>
-          <div className="mb-3">
-            <h5 htmlFor="Nombre" className="form-label">
-              Color Principal
-            </h5>
-            <div className="custom-layout">
-              <ColorPicker color={color} onChange={setColor} />
-            </div>
+        <h2 className="mb-4">Configuracion</h2>
+        <div className="mb-3">
+          <h5 htmlFor="Nombre" className="form-label">
+            Color Principal
+          </h5>
+          <div className="custom-layout">
+            <ColorPicker color={color} onChange={setColor} />
           </div>
-          <div className="mb-3">
-            <h5 htmlFor="Carrousel" className="form-label">
-              Carrousel
-            </h5>
-            <label htmlFor="imagen1" className="form-label">
+          {
+            newColorSent ?
+              <div className="d-flex justify-content-end flex-wrap">
+                El color se ha cambiado con exito!
+              </div>
+              :
+              isLoading ?
+                <Spinner />
+                :
+                <div className="d-flex justify-content-end flex-wrap">
+                  <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3 custom-button" onClick={submitNewColor}>
+                    Guardar Estilo
+                  </button>
+                </div>
+          }
+        </div>
+        <div className="mb-3">
+          <h4 htmlFor="Carrousel" className="form-label">
+            Carrusel de imagenes
+          </h4>
+          <hr className="m-2"></hr>
+          <div>
+            <label htmlFor="imagen1" className="ms-1 fs-4 form-label">
               Imagen 1
             </label>
-            <input
-              type="file"
-              id="imagen1"
-              className="form-control"
-              accept="image/png, image/jpeg, image/svg+xml"
-              onChange={cargarImagen}
-            />
-            <label htmlFor="imagen2" className="form-label">
+            <input type="file" name="imagen1" id="imagen1" className="form-control mb-2" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
+            {
+              newImageSent.imagen1 ?
+                <div className="d-flex justify-content-end flex-wrap">
+                  La imagen 1 se ha subido con exito!
+                </div>
+                :
+                isLoading ?
+                  <Spinner />
+                  :
+                  <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-danger p-1 me-3 mt-2">
+                      Eliminar imagen
+                    </button>
+                    <button name="imagen1" className="btn btn-success p-1 me-3 mt-2" onClick={uploadImage}>
+                      Subir imagen
+                    </button>
+                  </div>
+            }
+          </div>
+          <hr className="m-2"></hr>
+          <div>
+            <label htmlFor="imagen2" className="ms-1 fs-4 form-label">
               Imagen 2
             </label>
-            <input
-              type="file"
-              id="imagen2"
-              className="form-control"
-              accept="image/png, image/jpeg, image/svg+xml"
-              onChange={cargarImagen}
-            />
-            <label htmlFor="imagen3" className="form-label">
+            <input type="file" name="imagen2" id="imagen2" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
+            {
+              newImageSent.imagen2 ?
+                <div className="d-flex justify-content-end flex-wrap">
+                  La imagen 2 se ha subido con exito!
+                </div>
+                :
+                isLoading ?
+                  <Spinner />
+                  :
+                  <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-danger p-1 me-3 mt-2">
+                      Eliminar imagen
+                    </button>
+                    <button name="imagen2" className="btn btn-success p-1 me-3 mt-2" onClick={uploadImage}>
+                      Subir imagen
+                    </button>
+                  </div>
+            }
+          </div>
+          <hr className="m-2"></hr>
+          <div>
+            <label htmlFor="imagen3" className="ms-1 fs-4 form-label">
               Imagen 3
             </label>
-            <input
-              type="file"
-              id="imagen3"
-              className="form-control"
-              accept="image/png, image/jpeg, image/svg+xml"
-              onChange={cargarImagen}
-            />
+            <input type="file" name="imagen3" id="imagen3" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
+            {
+              newImageSent.imagen3 ?
+                <div className="d-flex justify-content-end flex-wrap">
+                  La imagen 3 se ha subido con exito!
+                </div>
+                :
+                isLoading ?
+                  <Spinner />
+                  :
+                  <div className="d-flex justify-content-between mb-3">
+                    <button name="imagen3" className="btn btn-danger p-1 me-3 mt-2">
+                      Eliminar imagen
+                    </button>
+                    <button name="imagen3" className="btn btn-success p-1 me-3 mt-2" onClick={uploadImage}>
+                      Subir imagen
+                    </button>
+                  </div>
+            }
           </div>
-          <p style={{ color: "gray", fontSize: "12px" }}>
-            📌 Recomendación: Para una mejor visualización, suba imágenes con
-            una relación de aspecto 4:1 (Ejemplo: 1600 × 400, 2000 × 500, 2400 × 600).
-          </p>
-          <Carousel imagen1={urlImagenes.urlImagen1} imagen2={urlImagenes.urlImagen2} imagen3={urlImagenes.urlImagen3} />
-          {isLoading ? (
-            <div
-              style={{ justifySelf: "center" }}
-              className="d-flex spinner-border"
-              role="status"
-            >
-              <span className="visually-hidden">Cargando...</span>
-            </div>
-          ) : (
-            <>
-              <button
-                style={{
-                  marginTop: "0px",
-                  marginBottom: "10px",
-                }}
-                type="submit"
-                className="btn btn-success w-25 mt-3 custom-button"
-              >
-                Guardar cambios
-              </button>
-            </>
-          )}
-        </form>
+          <hr className="m-2"></hr>
+        </div>
+        <p style={{ color: "gray", fontSize: "12px" }}>
+          📌 Recomendación: Para una mejor visualización, suba imágenes con
+          una relación de aspecto 4:1 (Ejemplo: 1600 × 400, 2000 × 500, 2400 × 600).
+        </p>
+        <Carousel imagen1={urlImagenes.urlImagen1} imagen2={urlImagenes.urlImagen2} imagen3={urlImagenes.urlImagen3} />
+        {isLoading ?
+          <Spinner />
+          :
+          <div className="d-flex justify-content-end flex-wrap">
+            <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3 custom-button">
+              Guardar Carrusel
+            </button>
+          </div>
+        }
         <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirmación</Modal.Title>
+          <Modal.Header>
+            <Modal.Title>Aviso</Modal.Title>
           </Modal.Header>
           <Modal.Body>{message}</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <Button variant="secondary" onClick={() => { setShowModal(false); action() }}>
               Cerrar
             </Button>
           </Modal.Footer>
         </Modal>
-        <br />
       </div>
-      <br />
     </div>
   );
 }
