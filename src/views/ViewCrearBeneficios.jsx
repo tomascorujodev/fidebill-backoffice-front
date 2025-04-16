@@ -151,7 +151,7 @@ export default function ViewCrearBeneficios() {
             );
             break;
           case 401:
-            setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+            useNavigate("/")
             break;
           case 500:
             setMessage(
