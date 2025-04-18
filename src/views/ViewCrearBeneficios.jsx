@@ -141,9 +141,6 @@ export default function ViewCrearBeneficios() {
           case 200:
             setMessage("La promocion se ha cargado correctamente.");
             setCreated(true);
-            setTimeout(() => {
-              navigate("/beneficios/verbeneficios");
-            }, 2000)
             break;
           case 400:
             setMessage(
@@ -151,7 +148,7 @@ export default function ViewCrearBeneficios() {
             );
             break;
           case 401:
-            useNavigate("/")
+            navigate("/")
             break;
           case 500:
             setMessage(
