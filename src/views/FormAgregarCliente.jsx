@@ -64,15 +64,7 @@ export default function FormAgregarCliente() {
         if (response) {
           switch (response.status) {
             case 200:
-              setMessage(
-                "El cliente " +
-                formData.Nombre +
-                " " +
-                formData.Apellido +
-                ", Documento: " +
-                formData.Documento +
-                " ha sido cargado correctamente"
-              );
+              setMessage("El cliente " + formData.Nombre + " " + formData.Apellido + ", Documento: " + formData.Documento + " ha sido cargado correctamente");
               setFormData({
                 Nombre: "",
                 Apellido: "",
@@ -88,9 +80,7 @@ export default function FormAgregarCliente() {
               setShowModal(true);
               break;
             case 401:
-              setMessage(
-                "Su sesion expiro. Por favor, vuelva a iniciar sesion"
-              );
+              setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
               setShowModal(true);
               break;
             default:
@@ -101,20 +91,14 @@ export default function FormAgregarCliente() {
           }
         } else {
           if (navigator.onLine) {
-            setMessage(
-              "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con la sucursal más cercana"
-            );
+            setMessage("El servidor no responde. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
           } else {
-            setMessage(
-              "Hubo un problema al agregar cliente. Por favor, verifique la conexión y vuelva a intentarlo."
-            );
+            setMessage("Hubo un problema al agregar cliente. Por favor, verifique la conexión y vuelva a intentarlo.");
           }
           setShowModal(true);
         }
       } catch {
-        setMessage(
-          "Hubo un problema al agregar cliente. Por favor, contacte con un administrador."
-        );
+        setMessage("Hubo un problema al agregar cliente. Por favor, contacte con un administrador.");
         setShowModal(true);
         setIsLoading(false);
       }

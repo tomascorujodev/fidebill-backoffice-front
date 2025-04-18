@@ -4,11 +4,11 @@ import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
 import jwtDecode from "../Utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
-import { useNavigate } from "react-router-dom";
 
 export default function ViewCrearBeneficios() {
   const [isLoading, setIsLoading] = useState(false);
   const [tipo, setTipo] = useState("");
+  const [created, setCreated] = useState(false);
   const [descripcion, setDescripcion] = useState("");
   const [dias, setDias] = useState([false, false, false, false, false, false, false]);
   const [fechaInicio, setFechaInicio] = useState("");
@@ -25,7 +25,6 @@ export default function ViewCrearBeneficios() {
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
   const [isConfirmation, setIsConfirmation] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function cargaInicial() {
@@ -137,9 +136,6 @@ export default function ViewCrearBeneficios() {
         switch (response.status) {
           case 200:
             setMessage("La promocion se ha cargado correctamente.");
-            setTimeout(() => {
-              navigate("/beneficios/verbeneficios");
-            }, 1500)
             break;
           case 400:
             setMessage(
@@ -147,7 +143,7 @@ export default function ViewCrearBeneficios() {
             );
             break;
           case 401:
-            setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+            useNavigate("/")
             break;
           case 500:
             setMessage(
@@ -259,7 +255,7 @@ export default function ViewCrearBeneficios() {
 
         <div style={{ gridColumn: "10", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
           <h4>Vista Previa</h4>
-          <p style={{ color: "gray" , fontSize: "12px"}}>
+          <p style={{ color: "gray", fontSize: "12px" }}>
             📌 Recomendación: Para una mejor visualización, suba imágenes con
             una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
           </p>
@@ -307,7 +303,7 @@ export default function ViewCrearBeneficios() {
         )}
         <div style={{ gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }} className="mb-3">
           <textarea
-            style={{ maxHeight: "95px"}}
+            style={{ maxHeight: "95px" }}
             className="form-control"
             maxLength="1500"
             id="Descripcion"
@@ -423,7 +419,7 @@ export default function ViewCrearBeneficios() {
           />
         </div>
         <div style={{ gridColumn: "3 / 4", gridRow: "7" }} className="mb-3 mx-4">
-          <button className="btn btn-danger" onClick={() => {setUrlImagen(null); setImagenPromocion(null)}}>Eliminar imagen</button>
+          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPromocion(null) }}>Eliminar imagen</button>
         </div>
         <div style={{ gridColumn: "10", gridRow: "2" }} className="mb-3">
           <CardBenefit
@@ -450,18 +446,23 @@ export default function ViewCrearBeneficios() {
                 <span className="visually-hidden">Cargando...</span>
               </div>
               :
-              <button
-                style={{
-                  gridColumn: "6",
-                  gridRow: "8", 
-                  width: "170px",
-                  height: "40px",
-                }}
-                className="btn btn-success mt-1"
-                onClick={handleSubmit}
-              >
-                Crear Beneficio
-              </button>
+              !created ?
+                <button
+                  style={{
+                    gridColumn: "6",
+                    gridRow: "8",
+                    width: "170px",
+                    height: "40px",
+                  }}
+                  className="btn btn-success mt-1"
+                  onClick={handleSubmit}
+                >
+                  Crear Beneficio
+                </button>
+                :
+                <div className="spinner-border mt-4 mr-4" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
           }
         </div>
       </div>
@@ -483,14 +484,17 @@ export default function ViewCrearBeneficios() {
             </Modal.Header>
             <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
             <Modal.Footer>
-              {isConfirmation ? (
-                <>
-                  <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
-                  <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
-                </>
-              ) : (
+              {!created ?
+                isConfirmation ?
+                  <>
+                    <Button variant="secondary" onClick={() => { setShowModal(false); setIsConfirmation(false) }}>Cancelar</Button>
+                    <Button variant="success" onClick={handleSubmit}>Confirmar</Button>
+                  </>
+                  :
+                  <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
+                :
                 <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
-              )}
+              }
             </Modal.Footer>
           </Modal>
       }
