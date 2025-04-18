@@ -143,7 +143,7 @@ export default function ViewCrearBeneficios() {
             );
             break;
           case 401:
-            useNavigate("/")
+            navigate("/")
             break;
           case 500:
             setMessage(
