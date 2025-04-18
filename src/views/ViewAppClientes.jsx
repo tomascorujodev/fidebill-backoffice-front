@@ -327,18 +327,9 @@ export default function ViewAppClientes() {
         </div>
         <p style={{ color: "gray", fontSize: "12px" }}>
           📌 Recomendación: Para una mejor visualización, suba imágenes con
-          una relación de aspecto 4:1 (Ejemplo: 1600 × 400, 2000 × 500, 2400 × 600).
+          una relación de aspecto 2:1 (Ejemplo: 800 × 400, 1000 × 500, 1200 × 600).
         </p>
         <Carousel imagen1={urlImagenes.urlImagen1} imagen2={urlImagenes.urlImagen2} imagen3={urlImagenes.urlImagen3} />
-        {isLoading ?
-          <Spinner />
-          :
-          <div className="d-flex justify-content-end flex-wrap">
-            <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3 custom-button">
-              Guardar Carrusel
-            </button>
-          </div>
-        }
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header>
             <Modal.Title>Aviso</Modal.Title>
