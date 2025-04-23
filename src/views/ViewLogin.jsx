@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import "../assets/CSS/ViewLogin.css";
 import { POST } from "../Services/Fetch";
+import { useLocation } from "react-router-dom";
 
 export default function ViewLogin({ setIsLoggedIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const location = useLocation()
 
   async function handleSubmit(e) {
     e?.preventDefault();
     setIsLoading(true);
     try {
-      let response = await POST("auth/login", { Username: username, Password: password });
+      const isAdmin = location.pathname.startsWith("/admin");
+      console.log(isAdmin)
+      let response = await POST(isAdmin ? "auth/admin" : "auth/login", { Username: username, Password: password });
       setIsLoading(false);
       if (response) {
         switch (response.status) {

@@ -19,17 +19,17 @@ import ViewAppClientes from "./views/ViewAppClientes";
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    async function validateFunction (){
+    async function validateFunction() {
       let token = sessionStorage.getItem("token");
-      if(token){
+      if (token) {
         let response = await GET("auth/validatetoken");
-        if(response?.ok){
+        if (response?.ok) {
           setIsLoggedIn(true);
-        }else{
+        } else {
           sessionStorage.clear();
           setIsLoggedIn(false);
         }
-      }else{
+      } else {
         setIsLoggedIn(false);
       }
     }
@@ -43,8 +43,8 @@ function App() {
             <Route path="/*" element={<ViewMenu></ViewMenu>}></Route>
             <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
             <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
-            <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>}/>
-            <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>}/>
+            <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>} />
+            <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>} />
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />
@@ -54,7 +54,10 @@ function App() {
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :
-          <Route path="/*" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
+          <>
+            <Route path="/*" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
+            <Route path="/Admin" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
+          </>
         }
       </Routes>
     </BrowserRouter>
