@@ -15,12 +15,14 @@ import ViewModificarBeneficio from "./views/ViewModificarBeneficio";
 import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
 import ViewAppClientes from "./views/ViewAppClientes";
+import jwtDecode from "./Utils/jwtDecode";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
+  let token = sessionStorage.getItem("token");
+  let tokenDecoded = jwtDecode(sessionStorage.getItem("token"));
   useEffect(() => {
     async function validateFunction() {
-      let token = sessionStorage.getItem("token");
       if (token) {
         let response = await GET("auth/validatetoken");
         if (response?.ok) {
@@ -48,9 +50,14 @@ function App() {
             <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
             <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
             <Route path="puntos" element={<ViewPuntos />} />
-            <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
-            <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
-            <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
+            {
+              tokenDecoded?.rol &&
+              <>
+                <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
+                <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
+                <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
+              </>
+            }
             <Route path="ayuda" element={<ViewSoporte />} />
           </Route>
           :
