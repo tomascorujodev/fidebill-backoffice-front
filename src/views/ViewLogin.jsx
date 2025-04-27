@@ -9,13 +9,12 @@ export default function ViewLogin({ setIsLoggedIn }) {
   const [isLoading, setIsLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const location = useLocation()
+  const isAdmin = location.pathname.startsWith("/admin");
 
   async function handleSubmit(e) {
     e?.preventDefault();
     setIsLoading(true);
     try {
-      const isAdmin = location.pathname.startsWith("/admin");
-      console.log(isAdmin)
       let response = await POST(isAdmin ? "auth/admin" : "auth/login", { Username: username, Password: password });
       setIsLoading(false);
       if (response) {
@@ -40,9 +39,9 @@ export default function ViewLogin({ setIsLoggedIn }) {
             return;
         }
       } else {
-        if(navigator.onLine){
+        if (navigator.onLine) {
           setMensaje("El servidor no responde. Por favor, espere unos instantes y vuelva a intentarlo, si el error persiste contactese con un administrador");
-        }else{
+        } else {
           setMensaje("No hay conexion a internet, verifique la red y vuelva a intentarlo");
         }
       }
@@ -54,14 +53,20 @@ export default function ViewLogin({ setIsLoggedIn }) {
 
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center justify-content-center">
-      <div className="mt-4">
-            <img
-              src="/assets/LOGOSDCapCut.png"
-              alt="Street Dog Logo"
-               width="350"
-               height="75"
-            />
-      </div>
+      {/* <img
+        src="/assets/LogoFidebill.png"
+        alt="Fidebill Logo"
+        height="200"
+      /> */}
+      {
+        isAdmin &&
+        <img
+          src="/assets/Administrador.png"
+          alt="Icono Administrador"
+          className="my-2"
+          width="300"
+        />
+      }
       <br />
       <div className="card-rounded" style={{ maxWidth: "400px", width: "100%" }}>
         <div className="card-body p-5">
@@ -102,7 +107,7 @@ export default function ViewLogin({ setIsLoggedIn }) {
                     <span className="visually-hidden">Cargando...</span>
                   </div>
                 </div>
-              :
+                :
                 <button type="submit" className="btn btn-primary w-100 mt-3 custom-button">
                   Iniciar Sesión
                 </button>
@@ -154,13 +159,13 @@ export default function ViewLogin({ setIsLoggedIn }) {
         </div>
       }
       <br />
-      <div className="mt-4">
-            <img
-              src="/assets/PoweredByFidebill.png"
-              alt="FideBill Logo"
-              width="238"
-              height="44"
-            />
+      <div>
+        <img
+          src="/assets/PoweredByFidebill.png"
+          alt="FideBill Logo"
+          width="238"
+          height="44"
+        />
       </div>
     </div>
   );

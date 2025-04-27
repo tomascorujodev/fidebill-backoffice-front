@@ -37,7 +37,7 @@ export default function ViewAppClientes() {
         case 200:
           result = await result.json();
           setMessage("");
-          setColor({ hex: result.colorPrincipal, hsv: hexToHsv(result.colorPrincipal), rgb: hexToRgba(result.colorPrincipal)});
+          setColor({ hex: result.colorPrincipal, hsv: hexToHsv(result.colorPrincipal), rgb: hexToRgba(result.colorPrincipal) });
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
           return;
         case 204:
@@ -222,32 +222,9 @@ export default function ViewAppClientes() {
       <div className="card-rounded">
         <h2 className="mb-4">Configuracion</h2>
         <div className="mb-3">
-          <h5 htmlFor="Nombre" className="form-label">
-            Color Principal
-          </h5>
-          <div className="custom-layout">
-            <ColorPicker color={color} onChange={setColor} />
-          </div>
-          {
-            newColorSent ?
-              <div className="d-flex justify-content-end flex-wrap">
-                El color se ha cambiado con exito!
-              </div>
-              :
-              isLoading ?
-                <Spinner />
-                :
-                <div className="d-flex justify-content-end flex-wrap">
-                  <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3 custom-button" onClick={submitNewColor}>
-                    Guardar Estilo
-                  </button>
-                </div>
-          }
-        </div>
-        <div className="mb-3">
-          <h4 htmlFor="Carrousel" className="form-label">
+          <h3 htmlFor="Carrousel" className="form-label">
             Carrusel de imagenes
-          </h4>
+          </h3>
           <hr className="m-2"></hr>
           <div>
             <label htmlFor="imagen1" className="ms-1 fs-4 form-label">
@@ -330,6 +307,30 @@ export default function ViewAppClientes() {
           una relación de aspecto 2:1 (Ejemplo: 800 × 400, 1000 × 500, 1200 × 600).
         </p>
         <Carousel imagen1={urlImagenes.urlImagen1} imagen2={urlImagenes.urlImagen2} imagen3={urlImagenes.urlImagen3} />
+        <br/>
+        <div className="mb-3">
+          <h3 htmlFor="Nombre" className="form-label">
+            Color Principal
+          </h3>
+          <div style={{width: "400px"}} className="custom-layout">
+            <ColorPicker  hideInput={["rgb", "hsv"]}  color={color} onChange={setColor} />
+          </div>
+          {
+            newColorSent ?
+              <div className="d-flex justify-content-end flex-wrap">
+                El color se ha cambiado con exito!
+              </div>
+              :
+              isLoading ?
+                <Spinner />
+                :
+                <div className="d-flex justify-content-end flex-wrap">
+                  <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3 custom-button" onClick={submitNewColor}>
+                    Guardar Estilo
+                  </button>
+                </div>
+          }
+        </div>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header>
             <Modal.Title>Aviso</Modal.Title>
@@ -345,3 +346,47 @@ export default function ViewAppClientes() {
     </div>
   );
 }
+
+
+{/* <input
+type="text"
+className="form-control"
+value={color}
+onChange={(e) => setColor(e.target.value)}
+style={{ marginRight: 10, width: "150px", height: "30px" }}
+/>
+<div
+onClick={() => setShowPicker(!showPicker)}
+style={{
+  display: "inline-block",
+  width: 30,
+  height: 30,
+  backgroundColor: color,
+  border: "1px solid #ccc",
+  cursor: "pointer",
+  borderRadius: 8,
+}}
+/>
+{showPicker && (
+<div style={{ position: "relative", bottom: 200, zIndex: 2 }}>
+  <button
+    onClick={() => setShowPicker(false)}
+    style={{
+      right: -6,
+      top: -5,
+      position: "absolute",
+      background: "transparent",
+      border: "none",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "-10px",
+    }}
+  >
+    ✖
+  </button>
+  <SketchPicker
+    color={color}
+    onChange={(updatedColor) => setColor(updatedColor.hex)}
+  />
+</div>
+)} */}

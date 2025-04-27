@@ -40,31 +40,32 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {isLogedIn ?
-          <Route element={<BackOffice />}>
-            <Route path="/*" element={<ViewMenu></ViewMenu>}></Route>
-            <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
-            <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
-            <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>} />
-            <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>} />
-            <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
-            <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
-            <Route path="puntos" element={<ViewPuntos />} />
-            {
-              tokenDecoded?.rol &&
-              <>
-                <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
-                <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
-                <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
-              </>
-            }
-            <Route path="ayuda" element={<ViewSoporte />} />
-          </Route>
-          :
-          <>
-            <Route path="/*" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
-            <Route path="/Admin" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
-          </>
+        {
+          isLogedIn ?
+            <Route element={<BackOffice />}>
+              <Route path="/*" element={<ViewMenu></ViewMenu>}></Route>
+              <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
+              <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
+              <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>} />
+              <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>} />
+              <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
+              <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
+              <Route path="puntos" element={<ViewPuntos />} />
+              {
+                tokenDecoded?.rol &&
+                <>
+                  <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
+                  <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
+                  <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
+                </>
+              }
+              <Route path="ayuda" element={<ViewSoporte />} />
+            </Route>
+            :
+            <>
+              <Route path="/*" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
+              <Route path="/Admin" element={<ViewLogin setIsLoggedIn={setIsLoggedIn}></ViewLogin>}></Route>
+            </>
         }
       </Routes>
     </BrowserRouter>
