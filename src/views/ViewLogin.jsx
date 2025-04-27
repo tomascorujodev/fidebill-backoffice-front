@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import "../assets/css/ViewLogin.css";
 import { POST } from "../Services/Fetch";
+import { useLocation } from "react-router-dom";
 
 export default function ViewLogin({ setIsLoggedIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const location = useLocation()
+  const isAdmin = location.pathname.startsWith("/admin");
 
   async function handleSubmit(e) {
     e?.preventDefault();
     setIsLoading(true);
     try {
-      let response = await POST("auth/login", { Username: username, Password: password });
+      let response = await POST(isAdmin ? "auth/admin" : "auth/login", { Username: username, Password: password });
       setIsLoading(false);
       if (response) {
         switch (response.status) {
@@ -28,7 +31,6 @@ export default function ViewLogin({ setIsLoggedIn }) {
           case 401:
             setMensaje("Usuario y contraseña incorrectos");
             return;
-          case 500:
             setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
             return;
           default:
@@ -36,9 +38,9 @@ export default function ViewLogin({ setIsLoggedIn }) {
             return;
         }
       } else {
-        if(navigator.onLine){
+        if (navigator.onLine) {
           setMensaje("El servidor no responde. Por favor, espere unos instantes y vuelva a intentarlo, si el error persiste contactese con un administrador");
-        }else{
+        } else {
           setMensaje("No hay conexion a internet, verifique la red y vuelva a intentarlo");
         }
       }
@@ -50,14 +52,21 @@ export default function ViewLogin({ setIsLoggedIn }) {
 
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center justify-content-center">
-      <div className="mt-4">
-            <img
-              src="/assets/LOGOSDCapCut.png"
-              alt="Street Dog Logo"
-               width="350"
-               height="75"
-            />
-      </div>
+      <img
+        src="/assets/Backoffice.png"
+        alt="Fidebill Logo"
+        height="50"
+        className="mb-2"
+      />
+      {
+        isAdmin &&
+        <img
+          src="/assets/Administrador.png"
+          alt="Icono Administrador"
+          style={{marginBlock: "16px"}}
+          width="200"
+        />
+      }
       <br />
       <div className="card-rounded" style={{ maxWidth: "400px", width: "100%" }}>
         <div className="card-body p-5">
@@ -98,7 +107,7 @@ export default function ViewLogin({ setIsLoggedIn }) {
                     <span className="visually-hidden">Cargando...</span>
                   </div>
                 </div>
-              :
+                :
                 <button type="submit" className="btn btn-primary w-100 mt-3 custom-button">
                   Iniciar Sesión
                 </button>
@@ -150,13 +159,13 @@ export default function ViewLogin({ setIsLoggedIn }) {
         </div>
       }
       <br />
-      <div className="mt-4">
-            <img
-              src="/assets/PoweredByFidebill.png"
-              alt="FideBill Logo"
-              width="238"
-              height="44"
-            />
+      <div>
+        <img
+          src="/assets/PoweredByFidebill.png"
+          alt="FideBill Logo"
+          width="238"
+          height="44"
+        />
       </div>
     </div>
   );
