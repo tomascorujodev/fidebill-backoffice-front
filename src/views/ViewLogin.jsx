@@ -31,7 +31,6 @@ export default function ViewLogin({ setIsLoggedIn }) {
           case 401:
             setMensaje("Usuario y contraseña incorrectos");
             return;
-          case 500:
             setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
             return;
           default:
@@ -53,18 +52,19 @@ export default function ViewLogin({ setIsLoggedIn }) {
 
   return (
     <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center justify-content-center">
-      {/* <img
-        src="/assets/LogoFidebill.png"
+      <img
+        src="/assets/Backoffice.png"
         alt="Fidebill Logo"
-        height="200"
-      /> */}
+        height="50"
+        className="mb-2"
+      />
       {
         isAdmin &&
         <img
           src="/assets/Administrador.png"
           alt="Icono Administrador"
-          className="my-2"
-          width="300"
+          style={{marginBlock: "16px"}}
+          width="200"
         />
       }
       <br />
