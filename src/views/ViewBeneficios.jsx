@@ -73,7 +73,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                 }, 1000)
                 break;
             case 204:
-                setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
+                setMessage("No se encontró el beneficio a eliminar. Si el problema persiste, por favor, contacte con un administrador.")
                 break;
             case 401:
                 localStorage.clear();
