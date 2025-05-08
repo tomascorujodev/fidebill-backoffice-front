@@ -26,7 +26,7 @@
 .promo-card-header {
   position: relative;
   height: 217.5px;
-  width: 290px;
+  width: 100%;
   background: linear-gradient(135deg, #efecf3 20%, #722828 100%);
   border-radius: 12px;
   display: flex;
