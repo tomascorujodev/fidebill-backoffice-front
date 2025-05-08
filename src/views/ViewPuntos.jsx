@@ -4,6 +4,7 @@ import Card from "../Components/Card";
 import Button from "../Components/Button";
 import "../assets/CSS/ViewPuntos.css";
 import imprimirComprobante from "../Utils/imprimirComprobante";
+import CheckOnline from "../Utils/CheckOnline";
 
 export default function ViewPuntos() {
   const [documento, setDocumento] = useState("");
@@ -11,22 +12,53 @@ export default function ViewPuntos() {
   const [opcionPuntos, setOpcionPuntos] = useState(0);
   const [montoCompra, setMontoCompra] = useState(0);
   const [cantidadPuntos, setCantidadPuntos] = useState(0);
+  const [reintegroOpciones, setReintegroOpciones] = useState([3]);
+  const [porcentajeReintegro, setPorcentajeReintegro] = useState(3);
   const [mensaje, setMensaje] = useState("");
   const [fadeClass, setFadeClass] = useState("fade-out");
   const [effectId, setEffectId] = useState(null);
-  const [showModal, setShowModal] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [modalText, setModalText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    (async () => {
+      try {
+        let response = await GET("puntos/obtenerbeneficiosactivos");
+        if (!response) {
+          setMensaje(CheckOnline());
+        } else {
+          switch (response.status) {
+            case 200:
+              response = await response.json();
+              setReintegroOpciones(response);
+              setReintegroOpciones([3, ...data]);
+              break;
+            case 401:
+              setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
+              break;
+            case 500:
+              setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
+              break;
+            default:
+              setMensaje("Hubo un problema. Por favor, contacte con un administrador");
+              break;
+          }
+        }
+      } catch (error) {
+        setMensaje("Parece que ocurrió un problema. Reintente a la brevedad. Si el problema persiste, por favor, contacte con un administrador");
+        setCliente(null);
+      } finally{
+        setIsLoading(false);
+      }
+    })()
+  }, []);
 
   useEffect(() => {
     setMontoCompra(0);
     setCantidadPuntos(0);
   }, [opcionPuntos]);
-
-  useEffect(() => {
-    if(!showModal){
-    }
-  }, [showModal])
 
   useEffect(() => {
     if (effectId) {
@@ -84,16 +116,16 @@ export default function ViewPuntos() {
     setIsLoading(false);
   }
 
-  async function imprimirCompra(){
+  async function imprimirCompra() {
     let cuerpo;
-    if(opcionPuntos === 1){
+    if (opcionPuntos === 1) {
       cuerpo = [`MONTO COMPRA: ${montoCompra}`, `PUNTOS DE LA COMPRA: ${Math.round(montoCompra * 0.03)}`]
-      await imprimirComprobante({documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos+Math.round(montoCompra * 0.03)})
-    }else{
+      await imprimirComprobante({ documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos + Math.round(montoCompra * 0.03) })
+    } else {
       cuerpo = [`PUNTOS CANJEADOS: ${cantidadPuntos}`]
-      await imprimirComprobante({documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos-cantidadPuntos})
+      await imprimirComprobante({ documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos - cantidadPuntos })
     }
-    window.location.reload();
+    setCliente(null); setOpcionPuntos(0); setMontoCompra(0); setCantidadPuntos(0); setShowModal(false); setDocumento("");
   }
 
   async function cargarPuntos() {
@@ -103,6 +135,7 @@ export default function ViewPuntos() {
         let response = await POST(`puntos/cargarcompra`, {
           IdCliente: cliente.idCliente,
           MontoCompra: (Math.round(montoCompra * 100) / 100),
+          porcentajeReintegro: porcentajeReintegro
         });
         if (!response) {
           setMensaje("Ha ocurrido un error, verifique su conexión a internet");
@@ -190,7 +223,7 @@ export default function ViewPuntos() {
             onChange={e => setDocumento(e.target.value)}
           />
           <button
-            style={{ width:"25%", minHeight: "2rem", maxHeight: "4rem" }}
+            style={{ width: "25%", minHeight: "2rem", maxHeight: "4rem" }}
             className="btn btn-primary ms-2 center"
             onClick={buscarCliente}
             disabled={isLoading}
@@ -227,58 +260,61 @@ export default function ViewPuntos() {
 
       {opcionPuntos !== 0 && (
         <>
-        <br />
-        <div className="card-rounded">
-          {opcionPuntos === 1 && (
-            <Card
-              title={cliente?.nombre + " " + cliente?.apellido}
-              subtitle={"Puntos disponibles: " + cliente?.puntos}
-              label={"Ingrese el monto de la compra"}
-              setValue={setMontoCompra}
-              value={montoCompra}
-            >
-              <Button text={"Cargar Compra"} onClick={cargarPuntos} disabled={isLoading}/>
-            </Card>
-          )}
-          {opcionPuntos === 2 && (
-            <Card
-              title={cliente?.nombre + " " + cliente?.apellido}
-              subtitle={"Puntos disponibles: " + cliente?.puntos}
-              label={"Ingrese los puntos a canjear"}
-              setValue={setCantidadPuntos}
-              value={cantidadPuntos}
-            >
-              <Button text={"Canjear Puntos"} className="btn-warning" onClick={canjearPuntos} disabled={isLoading}/>
-            </Card>
-          )}
-        </div>
+          <br />
+          <div className="card-rounded">
+            {opcionPuntos === 1 && (
+              <Card
+                title={cliente?.nombre + " " + cliente?.apellido}
+                subtitle={"Puntos disponibles: " + cliente?.puntos}
+                label={"Ingrese el monto de la compra"}
+                setValue={setMontoCompra}
+                value={montoCompra}
+                reintegroOpciones={reintegroOpciones}
+                setPorcentajeReintegro={setPorcentajeReintegro}
+              >
+                <Button text={"Cargar Compra"} onClick={cargarPuntos} disabled={isLoading} />
+              </Card>
+            )}
+            {opcionPuntos === 2 && (
+              <Card
+                title={cliente?.nombre + " " + cliente?.apellido}
+                subtitle={"Puntos disponibles: " + cliente?.puntos}
+                label={"Ingrese los puntos a canjear"}
+                setValue={setCantidadPuntos}
+                value={cantidadPuntos}
+              >
+                <Button text={"Canjear Puntos"} className="btn-warning" onClick={canjearPuntos} disabled={isLoading} />
+              </Card>
+            )}
+          </div>
         </>
       )}
       {showModal && (
-              <div
-                className="modal fade show"
-                style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)", position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}
-                aria-modal="true"
-                role="dialog"
-              >
-                <div className="modal-dialog" style={{ maxWidth: "800px", top: "50%", transform: "translate(-0%, -50%)", margin: "auto" }}>
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Carga Existosa</h5>
-                      <Button text="" className="btn-close" onClick={() => setShowModal(null)} />
-                    </div>
-                    <div className="modal-body">
-                      <p>{modalText}</p>
-                      <p>¿Desea imprimir ticket de cliente?</p>
-                    </div>
-                    <div className="modal-footer">
-                      <Button text="No, gracias" className="btn-danger" onClick={() => window.location.reload()} />
-                      <Button text="Sí, imprimir" className="btn-success" onClick={imprimirCompra} />
-                    </div>
-                  </div>
-                </div>
+        <div
+          className="modal fade show"
+          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)", position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}
+          aria-modal="true"
+          role="dialog"
+        >
+          <div className="modal-dialog" style={{ maxWidth: "800px", top: "50%", transform: "translate(-0%, -50%)", margin: "auto" }}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Carga Existosa</h5>
               </div>
-            )}
+              <div className="modal-body">
+                <p>{modalText}</p>
+                <p>¿Desea imprimir ticket de cliente?</p>
+              </div>
+              <div className="modal-footer">
+                <Button text="No, gracias" className="btn-danger" onClick={() => {
+                  setCliente(null); setOpcionPuntos(0); setMontoCompra(0); setCantidadPuntos(0); setShowModal(false); setDocumento("");
+                }} />
+                <Button text="Sí, imprimir" className="btn-success" onClick={imprimirCompra} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
