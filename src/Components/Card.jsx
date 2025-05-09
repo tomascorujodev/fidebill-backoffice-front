@@ -1,4 +1,4 @@
-export default function Card({ title, subtitle, label, setValue, value = 0, reintegroOpciones = null, setPorcentajeReintegro = null, children = {} }) {
+export default function Card({ title, subtitle, label, setValue, value = 0, reintegroOpciones = null, setPorcentajeAplicado = null, children = {} }) {
   return (
     <>
       <h5 className="card-title">
@@ -20,11 +20,11 @@ export default function Card({ title, subtitle, label, setValue, value = 0, rein
             value={value}
           />
           {
-            reintegroOpciones && setPorcentajeReintegro &&
-            <select style={{ width: "90px" }} className="form-select" onChange={(e) => setPorcentajeReintegro(e.target.value)}>
+            reintegroOpciones && setPorcentajeAplicado &&
+            <select style={{ width: "90px" }} className="form-select" onChange={(e) => setPorcentajeAplicado(e.target.value)}>
               {
                 reintegroOpciones.map((opcion) => (
-                  <option key={opcion}>{opcion}%</option>
+                  <option value={opcion} key={opcion}>{opcion}%</option>
                 ))
               }
             </select>

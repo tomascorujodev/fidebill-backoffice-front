@@ -13,7 +13,7 @@ export default function ViewPuntos() {
   const [montoCompra, setMontoCompra] = useState(0);
   const [cantidadPuntos, setCantidadPuntos] = useState(0);
   const [reintegroOpciones, setReintegroOpciones] = useState([3]);
-  const [porcentajeReintegro, setPorcentajeReintegro] = useState(3);
+  const [porcentajeAplicado, setPorcentajeAplicado] = useState(3);
   const [mensaje, setMensaje] = useState("");
   const [fadeClass, setFadeClass] = useState("fade-out");
   const [effectId, setEffectId] = useState(null);
@@ -32,8 +32,7 @@ export default function ViewPuntos() {
           switch (response.status) {
             case 200:
               response = await response.json();
-              setReintegroOpciones(response);
-              setReintegroOpciones([3, ...data]);
+              setReintegroOpciones([3, ...response]);
               break;
             case 401:
               setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
@@ -79,8 +78,8 @@ export default function ViewPuntos() {
   }, [mensaje]);
 
   async function buscarCliente() {
-    if (documento.length < 3) {
-      setMensaje("Ingrese al menos 3 números");
+    if (documento.length < 4) {
+      setMensaje("Ingrese al menos 4 números");
       return;
     }
     setIsLoading(true);
@@ -119,8 +118,8 @@ export default function ViewPuntos() {
   async function imprimirCompra() {
     let cuerpo;
     if (opcionPuntos === 1) {
-      cuerpo = [`MONTO COMPRA: ${montoCompra}`, `PUNTOS DE LA COMPRA: ${Math.round(montoCompra * 0.03)}`]
-      await imprimirComprobante({ documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos + Math.round(montoCompra * 0.03) })
+      cuerpo = [`MONTO COMPRA: ${montoCompra}`, `PUNTOS DE LA COMPRA: ${Math.round(montoCompra * (porcentajeAplicado/ 100))}`]
+      await imprimirComprobante({ documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos + Math.round(montoCompra * (porcentajeAplicado/ 100)) })
     } else {
       cuerpo = [`PUNTOS CANJEADOS: ${cantidadPuntos}`]
       await imprimirComprobante({ documento: cliente?.documento, nombre: cliente?.nombre, apellido: cliente?.apellido, cuerpo: cuerpo, puntos: cliente?.puntos - cantidadPuntos })
@@ -135,14 +134,14 @@ export default function ViewPuntos() {
         let response = await POST(`puntos/cargarcompra`, {
           IdCliente: cliente.idCliente,
           MontoCompra: (Math.round(montoCompra * 100) / 100),
-          porcentajeReintegro: porcentajeReintegro
+          porcentajeAplicado: porcentajeAplicado
         });
         if (!response) {
           setMensaje("Ha ocurrido un error, verifique su conexión a internet");
         } else {
           switch (response.status) {
             case 200:
-              setModalText(`Se cargaron correctamente "${(Math.round(montoCompra * 100) / 100)}" puntos a "${cliente?.nombre} ${cliente?.apellido}"`)
+              setModalText(`Se cargaron correctamente "${(Math.round(montoCompra * (porcentajeAplicado/ 100)) )}" puntos a "${cliente?.nombre} ${cliente?.apellido}"`)
               setShowModal(true);
               break;
             case 204:
@@ -270,7 +269,7 @@ export default function ViewPuntos() {
                 setValue={setMontoCompra}
                 value={montoCompra}
                 reintegroOpciones={reintegroOpciones}
-                setPorcentajeReintegro={setPorcentajeReintegro}
+                setPorcentajeAplicado={setPorcentajeAplicado}
               >
                 <Button text={"Cargar Compra"} onClick={cargarPuntos} disabled={isLoading} />
               </Card>
