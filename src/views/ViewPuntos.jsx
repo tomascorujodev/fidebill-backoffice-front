@@ -86,7 +86,7 @@ export default function ViewPuntos() {
     try {
       let response = await GET("clientes/buscarclientepordocumento", { busqueda: documento });
       if (!response) {
-        setMensaje("Ha ocurrido un error, verifique su conexión a internet");
+        setMensaje(CheckOnline());
       } else {
         switch (response.status) {
           case 200:
