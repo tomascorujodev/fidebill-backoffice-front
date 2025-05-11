@@ -5,7 +5,7 @@ import ViewPuntos from "./views/ViewPuntos";
 import FormAgregarCliente from "./views/FormAgregarCliente";
 import BackOffice from "./layout/Backoffice";
 import ViewCompras from "./views/ViewCompras";
-import viewsoporte from "./views/viewsoporte";
+import ViewSoporte from "./views/ViewSoporte";
 import ViewLogin from "./views/ViewLogin";
 import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
