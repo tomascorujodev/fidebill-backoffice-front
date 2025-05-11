@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import jwtDecode from "../Utils/jwtDecode"
+import jwtDecode from "../utils/jwtDecode"
 import "../assets/css/Navbar.css";
 
 

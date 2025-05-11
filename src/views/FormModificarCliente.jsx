@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { GET, PATCH } from "../Services/Fetch";
+import { GET, PATCH } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { convertirFechaIngles } from "../Utils/ConvertirFechas";
-import { RegexValidations } from "../Utils/RegexValidations";
+import { convertirFechaIngles } from "../utils/ConvertirFechas";
+import { RegexValidations } from "../utils/RegexValidations";
 
 export default function FormModificarCliente() {
   const [isLoading, setIsLoading] = useState(false);

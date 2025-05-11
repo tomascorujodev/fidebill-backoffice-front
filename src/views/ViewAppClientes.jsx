@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { GET, PATCH, POSTFormData } from "../Services/Fetch";
+import { GET, PATCH, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import Carousel from "../Components/Carousel";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/css";
 import { useNavigate } from "react-router-dom";
-import { hexToHsv } from "../Utils/hexToHsv.js"
-import { hexToRgba } from "../Utils/hexToRgba.js";
+import { hexToHsv } from "../utils/hexToHsv.js"
+import { hexToRgba } from "../utils/hexToRgba.js";
 
 export default function ViewAppClientes() {
   const [action, setAction] = useState(null);

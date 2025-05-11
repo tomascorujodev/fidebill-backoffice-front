@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { GET, POST } from "../Services/Fetch";
-import { convertirFechaArgentina } from "../Utils/ConvertirFechas";
+import { GET, POST } from "../services/Fetch";
+import { convertirFechaArgentina } from "../utils/ConvertirFechas";
 import Pagination from "../Components/Pagination";
 import StatusLabel from "../Components/StatusLabel";
 import Button from "../Components/Button";

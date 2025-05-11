@@ -1,7 +1,7 @@
 import { useState } from "react"
 import "../assets/css/CardBenefit.css"
 import WeekDays from "./WeekDays"
-import { convertirFecha, convertirFechaMuestra } from "../Utils/ConvertirFechas";
+import { convertirFecha, convertirFechaMuestra } from "../utils/ConvertirFechas";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export default function CardBenefit({ id = null, tipo, descripcion, dias, porcentajeReintegro = null, fechaInicio, fechaFin, sucursales, urlImagen, eliminar = () => {} }) {

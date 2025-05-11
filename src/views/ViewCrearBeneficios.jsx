@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../Services/Fetch";
+import { GET, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
-import jwtDecode from "../Utils/jwtDecode";
+import jwtDecode from "../utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
 
 export default function ViewCrearBeneficios() {

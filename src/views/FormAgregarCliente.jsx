@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { POST } from "../Services/Fetch";
+import { POST } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 
 export default function FormAgregarCliente() {

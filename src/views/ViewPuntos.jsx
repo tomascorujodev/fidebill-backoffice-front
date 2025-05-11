@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { GET, POST } from "../Services/Fetch";
+import { GET, POST } from "../services/Fetch";
 import Card from "../Components/Card";
 import Button from "../Components/Button";
 import "../assets/css/ViewPuntos.css";
-import imprimirComprobante from "../Utils/imprimirComprobante";
+import imprimirComprobante from "../utils/imprimirComprobante";
 
 export default function ViewPuntos() {
   const [documento, setDocumento] = useState("");
