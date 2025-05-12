@@ -3,7 +3,7 @@ import { GET, POST } from "../services/Fetch";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import "../assets/css/ViewPuntos.css";
-import imprimirComprobante from "../Utils/imprimirComprobante";
+import imprimirComprobante from "../utils/imprimirComprobante";
 import CheckOnline from "../utils/CheckOnline";
 
 export default function ViewPuntos() {
