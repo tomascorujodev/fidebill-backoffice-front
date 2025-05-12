@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { GET, POST } from "../services/Fetch";
-import Card from "../Components/Card";
-import Button from "../Components/Button";
+import Card from "../components/Card";
+import Button from "../components/Button";
 import "../assets/css/ViewPuntos.css";
-import imprimirComprobante from "../utils/imprimirComprobante";
+import imprimirComprobante from "../Utils/imprimirComprobante";
 import CheckOnline from "../utils/CheckOnline";
 
 export default function ViewPuntos() {

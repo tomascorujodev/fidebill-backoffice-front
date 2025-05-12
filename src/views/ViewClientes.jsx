@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GET } from "../services/Fetch";
 import { convertirFecha } from "../utils/ConvertirFechas";
-import Pagination from "../Components/Pagination";
+import Pagination from "../components/Pagination";
 
 export default function ViewCompras() {
   const [clientes, setClientes] = useState([]);

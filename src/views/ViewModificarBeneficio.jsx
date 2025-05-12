@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { GET, PATCHFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../Components/CheckInput";
-import CardBenefit from "../Components/CardBenefit";
+import CheckInput from "../components/CheckInput";
+import CardBenefit from "../components/CardBenefit";
 import { useLocation, useNavigate } from "react-router-dom";
 import { convertirFechaIngles } from "../utils/ConvertirFechas";
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { GET, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../Components/CheckInput";
+import CheckInput from "../components/CheckInput";
 import jwtDecode from "../utils/jwtDecode";
-import CardBenefit from "../Components/CardBenefit";
+import CardBenefit from "../components/CardBenefit";
 
 export default function ViewCrearBeneficios() {
   const [isLoading, setIsLoading] = useState(false);

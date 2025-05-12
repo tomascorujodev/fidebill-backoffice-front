@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { GET, POST } from "../services/Fetch";
 import { convertirFechaArgentina } from "../utils/ConvertirFechas";
-import Pagination from "../Components/Pagination";
-import StatusLabel from "../Components/StatusLabel";
-import Button from "../Components/Button";
+import Pagination from "../components/Pagination";
+import StatusLabel from "../components/StatusLabel";
+import Button from "../components/Button";
 
 export default function ViewCompras() {
   const [compras, setCompras] = useState([]);

@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function ViewSoporte() {
   return (
     <div className="container mt-4">

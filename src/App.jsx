@@ -59,7 +59,7 @@ function App() {
                   <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
                 </>
               }
-              <Route path="ayuda" element={<ViewSoporte />} />
+              <Route path="ayuda" element={<viewsoporte />} />
             </Route>
             :
             <>
