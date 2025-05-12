@@ -3,19 +3,19 @@ import ViewMenu from "./views/ViewMenu";
 import ViewClientes from "./views/ViewClientes";
 import ViewPuntos from "./views/ViewPuntos";
 import FormAgregarCliente from "./views/FormAgregarCliente";
-import BackOffice from "./Layout/Backoffice";
+import BackOffice from "./layout/Backoffice";
 import ViewCompras from "./views/ViewCompras";
 import ViewSoporte from "./views/ViewSoporte";
 import ViewLogin from "./views/ViewLogin";
 import { useEffect, useState } from "react";
 import ViewCanjes from "./views/ViewCanjes";
-import { GET } from "./Services/Fetch";
+import { GET } from "./services/Fetch";
 import FormModificarCliente from "./views/FormModificarCliente";
 import ViewModificarBeneficio from "./views/ViewModificarBeneficio";
 import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
 import ViewAppClientes from "./views/ViewAppClientes";
-import jwtDecode from "./Utils/jwtDecode";
+import jwtDecode from "./utils/jwtDecode";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);

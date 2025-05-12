@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DELETE, GET } from "../Services/Fetch";
+import { DELETE, GET } from "../services/Fetch";
 import CardBenefit from "../Components/CardBenefit";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";

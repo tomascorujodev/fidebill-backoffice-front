@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { GET, PATCHFormData } from "../Services/Fetch";
+import { GET, PATCHFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../Components/CheckInput";
-import jwtDecode from "../Utils/jwtDecode";
+import jwtDecode from "../utils/jwtDecode";
 import CardBenefit from "../Components/CardBenefit";
 import { useLocation, useNavigate } from "react-router-dom";
-import { convertirFechaIngles } from "../Utils/ConvertirFechas";
+import { convertirFechaIngles } from "../utils/ConvertirFechas";
 
 export default function ViewModificarBeneficio() {
   const location = new URLSearchParams(useLocation().search)

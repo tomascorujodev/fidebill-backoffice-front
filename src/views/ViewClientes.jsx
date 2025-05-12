@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { GET } from "../Services/Fetch";
-import { convertirFecha } from "../Utils/ConvertirFechas";
+import { GET } from "../services/Fetch";
+import { convertirFecha } from "../utils/ConvertirFechas";
 import Pagination from "../Components/Pagination";
 
 export default function ViewCompras() {
