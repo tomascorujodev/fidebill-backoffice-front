@@ -31,8 +31,6 @@ export default function ViewLogin({ setIsLoggedIn }) {
           case 401:
             setMensaje("Usuario y contraseña incorrectos");
             return;
-            setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
-            return;
           default:
             setMensaje("Hubo un problema. Por favor, contacte con un administrador");
             return;

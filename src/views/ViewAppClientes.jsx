@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { GET, PATCH, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import Carousel from "../components/Carousel";
-import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/css";
 import { useNavigate } from "react-router-dom";
-import { hexToHsv } from "../utils/hexToHsv.js"
-import { hexToRgba } from "../utils/hexToRgba.js";
+import { SketchPicker } from "react-color";
 
 export default function ViewAppClientes() {
   const [action, setAction] = useState(null);
@@ -15,7 +13,8 @@ export default function ViewAppClientes() {
   const [imagenes, setImagenes] = useState({ imagen1: "", imagen2: "", imagen3: "" });
   const [urlImagenes, seturlImagenes] = useState({ urlImagen1: null, urlImagen2: null, urlImagen3: null });
   const [message, setMessage] = useState("");
-  const [color, setColor] = useColor("#00000000");
+  const [color, setColor] = useState("#00000000");
+  const [showPicker, setShowPicker] = useState(false);
   const [newColorSent, setNewColorSent] = useState(false);
   const [newImageSent, setNewImageSent] = useState({ imagen1: false, imagen2: false, imagen3: false });
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ export default function ViewAppClientes() {
         case 200:
           result = await result.json();
           setMessage("");
-          setColor({ hex: result.colorPrincipal, hsv: hexToHsv(result.colorPrincipal), rgb: hexToRgba(result.colorPrincipal) });
+          setColor(result.colorPrincipal);
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
           return;
         case 204:
@@ -86,7 +85,6 @@ export default function ViewAppClientes() {
 
       let keys = Object.keys(imagenes);
       let index = keys.indexOf(name) + 1;
-      console.log(imagenes[name])
       let response = await POSTFormData("ConfiguracionApp/cargarimagencarrousel", imagenes[name], { NumeroImagen: index });
 
       if (response) {
@@ -181,7 +179,7 @@ export default function ViewAppClientes() {
   async function submitNewColor() {
     setIsLoading(true);
     try {
-      let response = await PATCH("ConfiguracionApp/modificarcolorprincipal", color.hex);
+      let response = await PATCH("ConfiguracionApp/modificarcolorprincipal", color);
       if (response) {
         switch (response.status) {
           case 200:
@@ -244,7 +242,7 @@ export default function ViewAppClientes() {
                     <button className="btn btn-danger p-1 me-3 mt-2">
                       Eliminar imagen
                     </button>
-                    <button name="imagen1" className="btn btn-success p-1 me-3 mt-2" onClick={uploadImage}>
+                    <button name="imagen1" className="btn btn-success me-3 mt-2" onClick={uploadImage}>
                       Subir imagen
                     </button>
                   </div>
@@ -269,7 +267,7 @@ export default function ViewAppClientes() {
                     <button className="btn btn-danger p-1 me-3 mt-2">
                       Eliminar imagen
                     </button>
-                    <button name="imagen2" className="btn btn-success p-1 me-3 mt-2" onClick={uploadImage}>
+                    <button name="imagen2" className="btn btn-success me-3 mt-2" onClick={uploadImage}>
                       Subir imagen
                     </button>
                   </div>
@@ -294,7 +292,7 @@ export default function ViewAppClientes() {
                     <button name="imagen3" className="btn btn-danger p-1 me-3 mt-2">
                       Eliminar imagen
                     </button>
-                    <button name="imagen3" className="btn btn-success p-1 me-3 mt-2" onClick={uploadImage}>
+                    <button name="imagen3" className="btn btn-success me-3 mt-2" onClick={uploadImage}>
                       Subir imagen
                     </button>
                   </div>
@@ -307,29 +305,61 @@ export default function ViewAppClientes() {
           una relación de aspecto 2:1 (Ejemplo: 800 × 400, 1000 × 500, 1200 × 600).
         </p>
         <Carousel imagen1={urlImagenes.urlImagen1} imagen2={urlImagenes.urlImagen2} imagen3={urlImagenes.urlImagen3} />
-        <br/>
-        <div className="mb-3">
+        <br />
+        <div className="mb-2 d-flex flex-column">
           <h3 htmlFor="Nombre" className="form-label">
             Color Principal
           </h3>
-          <div style={{width: "400px"}} className="custom-layout">
-            <ColorPicker  hideInput={["rgb", "hsv"]}  color={color} onChange={setColor} />
-          </div>
-          {
-            newColorSent ?
-              <div className="d-flex justify-content-end flex-wrap">
-                El color se ha cambiado con exito!
-              </div>
-              :
-              isLoading ?
-                <Spinner />
-                :
-                <div className="d-flex justify-content-end flex-wrap">
-                  <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3 custom-button" onClick={submitNewColor}>
-                    Guardar Estilo
-                  </button>
+          <div className="d-flex flex-wrap align-items-center gap-2">
+            <input
+              type="text"
+              className="form-control"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              style={{ marginRight: 10, width: "150px", height: "30px" }}
+            />
+
+            <button
+              onClick={() => setShowPicker(!showPicker)}
+              style={{
+                display: "inline-block",
+                width: 30,
+                height: 30,
+                backgroundColor: color,
+                border: "1px solid #ccc",
+                cursor: "pointer",
+                borderRadius: 8,
+              }}
+            />
+            {
+              showPicker &&
+              <div style={{ position: "absolute", }}>
+                <div style={{ position: "absolute", left: "200px", bottom: "-70px", zIndex: 1 }}>
+                  <SketchPicker
+                    color={color}
+                    onChange={(updatedColor) => setColor(updatedColor.hex)}
+                  />
                 </div>
-          }
+              </div>
+            }
+            <div className="d-flex ms-4">
+              {
+                newColorSent ?
+                  <div className="">
+                    El color se ha cambiado con exito!
+                  </div>
+                  :
+                  isLoading ?
+                    <Spinner />
+                    :
+                    <div className="">
+                      <button style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3" onClick={submitNewColor}>
+                        Guardar Color
+                      </button>
+                    </div>
+              }
+            </div>
+          </div>
         </div>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header>
@@ -346,47 +376,3 @@ export default function ViewAppClientes() {
     </div>
   );
 }
-
-
-{/* <input
-type="text"
-className="form-control"
-value={color}
-onChange={(e) => setColor(e.target.value)}
-style={{ marginRight: 10, width: "150px", height: "30px" }}
-/>
-<div
-onClick={() => setShowPicker(!showPicker)}
-style={{
-  display: "inline-block",
-  width: 30,
-  height: 30,
-  backgroundColor: color,
-  border: "1px solid #ccc",
-  cursor: "pointer",
-  borderRadius: 8,
-}}
-/>
-{showPicker && (
-<div style={{ position: "relative", bottom: 200, zIndex: 2 }}>
-  <button
-    onClick={() => setShowPicker(false)}
-    style={{
-      right: -6,
-      top: -5,
-      position: "absolute",
-      background: "transparent",
-      border: "none",
-      fontSize: "14px",
-      cursor: "pointer",
-      marginBottom: "-10px",
-    }}
-  >
-    ✖
-  </button>
-  <SketchPicker
-    color={color}
-    onChange={(updatedColor) => setColor(updatedColor.hex)}
-  />
-</div>
-)} */}

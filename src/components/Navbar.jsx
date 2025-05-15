@@ -23,10 +23,10 @@ export default function Navbar() {
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
           <img
-            src="/assets/LOGOSDCapCut.png"
+            src="/assets/Street Dog_logo.png"
             alt="Street Dog Logo"
-            width="140"
-            height="30"
+            width="110"
+            height="35"
           />
         </a>
         <button

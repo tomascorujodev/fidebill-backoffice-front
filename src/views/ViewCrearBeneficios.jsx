@@ -136,6 +136,7 @@ export default function ViewCrearBeneficios() {
         switch (response.status) {
           case 200:
             setMessage("La promocion se ha cargado correctamente.");
+            setCreated(true);
             break;
           case 400:
             setMessage(
@@ -419,7 +420,7 @@ export default function ViewCrearBeneficios() {
           />
         </div>
         <div style={{ gridColumn: "3 / 4", gridRow: "7" }} className="mb-3 mx-4">
-          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPromocion(null) }}>Eliminar imagen</button>
+          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPromocion(null) }} disabled={created}>Eliminar imagen</button>
         </div>
         <div style={{ gridColumn: "10", gridRow: "2" }} className="mb-3">
           <CardBenefit
@@ -446,7 +447,6 @@ export default function ViewCrearBeneficios() {
                 <span className="visually-hidden">Cargando...</span>
               </div>
               :
-              !created ?
                 <button
                   style={{
                     gridColumn: "6",
@@ -456,13 +456,10 @@ export default function ViewCrearBeneficios() {
                   }}
                   className="btn btn-success mt-1"
                   onClick={handleSubmit}
+                  disabled={created}
                 >
                   Crear Beneficio
                 </button>
-                :
-                <div className="spinner-border mt-4 mr-4" role="status">
-                  <span className="visually-hidden">Cargando...</span>
-                </div>
           }
         </div>
       </div>
@@ -478,7 +475,7 @@ export default function ViewCrearBeneficios() {
             </Modal.Body>
           </Modal>
           :
-          <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
             <Modal.Header closeButton>
               <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
             </Modal.Header>
@@ -493,7 +490,7 @@ export default function ViewCrearBeneficios() {
                   :
                   <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
                 :
-                <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
+                <Button variant="secondary" onClick={() => {navigate("/beneficios/verbeneficios");}}>Cerrar</Button>
               }
             </Modal.Footer>
           </Modal>

@@ -9,6 +9,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
     const [showModal, setShowModal] = useState(false);
     const [eliminar, setEliminar] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [reload, setReload] = useState(0);
     const [message, setMessage] = useState("");
     const { empresa } = useParams();
 
@@ -49,7 +50,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             setLoading(false);
         }
         obtenerBeneficios();
-    }, [])
+    }, [reload])
 
     async function eliminarBeneficio() {
         setLoading(true)
@@ -68,12 +69,10 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             case 200:
                 result = await result.json();
                 setMessage("El beneficio se ha eliminado correctamente");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000)
+                setReload(reload+1);
                 break;
             case 204:
-                setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
+                setMessage("No se encontró el beneficio a eliminar. Si el problema persiste, por favor, contacte con un administrador.")
                 break;
             case 401:
                 localStorage.clear();

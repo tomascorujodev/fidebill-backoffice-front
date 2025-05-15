@@ -23,7 +23,7 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
       <div className="promo-card-header">
         <img
           style={!urlImagen ? { width: "110px" } : { width: "100%" }}
-          src={urlImagen || "/assets/LOGOSD350x110px.png"}
+          src={urlImagen || "/assets/Street Dog_logo.png"}
           className="promo-logo"
         />
         {id && <button className="modify-button bg-warning" onClick={() => navigate(`/beneficios/modificarbeneficio?id=${id}`)}>Modificar</button>}
