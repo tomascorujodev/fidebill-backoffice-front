@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GET, PATCH, POSTFormData } from "../services/Fetch";
+import { DELETE, GET, PATCH, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import Carousel from "../components/Carousel";
 import "react-color-palette/css";
@@ -10,12 +10,14 @@ export default function ViewAppClientes() {
   const [action, setAction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [imagenes, setImagenes] = useState({ imagen1: "", imagen2: "", imagen3: "" });
   const [urlImagenes, seturlImagenes] = useState({ urlImagen1: null, urlImagen2: null, urlImagen3: null });
   const [message, setMessage] = useState("");
   const [color, setColor] = useState("#00000000");
   const [showPicker, setShowPicker] = useState(false);
   const [newColorSent, setNewColorSent] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState({ imagen1: false, imagen2: false, imagen3: false });
   const [newImageSent, setNewImageSent] = useState({ imagen1: false, imagen2: false, imagen3: false });
   const navigate = useNavigate();
 
@@ -38,6 +40,7 @@ export default function ViewAppClientes() {
           setMessage("");
           setColor(result.colorPrincipal);
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
+          setImageLoaded({ imagen1: !!result.imagen1, imagen2: !!result.imagen2, imagen3: !!result.imagen3 });
           return;
         case 204:
           setMessage("La empresa aun no tiene creados sus estilos. Contacte con un administrador para mas información.");
@@ -91,6 +94,7 @@ export default function ViewAppClientes() {
         switch (response.status) {
           case 200:
             setMessage(`La imagen ${index} se guardo correctamente`);
+            setImageLoaded({...imageLoaded, [name]: true});
             setNewImageSent(
               (prev) => ({
                 ...prev,
@@ -214,6 +218,50 @@ export default function ViewAppClientes() {
     setIsLoading(false);
   }
 
+  async function deleteImage() {
+    try {
+      setIsLoading(true);
+      setShowDeleteModal(false);
+      let name = e.target.name;
+      console.log(name)
+      let response = await DELETE("ConfiguracionApp/eliminarimagencarrousel", name);
+
+      if (response) {
+        switch (response.status) {
+          case 200:
+            setMessage(`La imagen ${name} se elimino correctamente`);
+            setNewImageSent(
+              (prev) => ({
+                ...prev,
+                [name]: true,
+              })
+            );
+            break;
+          case 401:
+            setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+            break;
+          case 422:
+            setMessage("El formato de imagen es invalido");
+            break;
+          default:
+            setMessage("Ha ocurrido un error. Si el problema persiste, por favor, contacte con un administrador");
+            break;
+        }
+      } else {
+        if (navigator.onLine) {
+          setMessage("El servidor no responde. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+        } else {
+          setMessage("Hubo un problema al cargar la imagen. Por favor, verifique la conexión y vuelva a intentarlo.");
+        }
+      }
+    } catch {
+      setMessage("Hubo un problema al agregar la imagen. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+      setShowModal(true);
+      setIsLoading(false);
+    }
+    setShowModal(true);
+    setIsLoading(false);
+  }
 
   return (
     <div className="container">
@@ -239,10 +287,10 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button className="btn btn-danger p-1 me-3 mt-2">
+                    <button name="1" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen1 && "disabled"}`} onClick={(e) => {setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 1 del carrusel?"); setAction(e);}}>
                       Eliminar imagen
                     </button>
-                    <button name="imagen1" className="btn btn-success me-3 mt-2" onClick={uploadImage}>
+                    <button name="imagen1" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen1 && "disabled"}`} onClick={uploadImage}>
                       Subir imagen
                     </button>
                   </div>
@@ -264,10 +312,10 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button className="btn btn-danger p-1 me-3 mt-2">
+                    <button name="2" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen2 && "disabled"}`} onClick={(e) => {setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 2 del carrusel?"); setAction(e);}}>
                       Eliminar imagen
                     </button>
-                    <button name="imagen2" className="btn btn-success me-3 mt-2" onClick={uploadImage}>
+                    <button name="imagen2" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen2 && "disabled"}`} onClick={uploadImage}>
                       Subir imagen
                     </button>
                   </div>
@@ -275,7 +323,7 @@ export default function ViewAppClientes() {
           </div>
           <hr className="m-2"></hr>
           <div>
-            <label htmlFor="imagen3" className="ms-1 fs-4 form-label">
+            <label name="3" htmlFor="imagen3" className="ms-1 fs-4 form-label">
               Imagen 3
             </label>
             <input type="file" name="imagen3" id="imagen3" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
@@ -289,10 +337,10 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button name="imagen3" className="btn btn-danger p-1 me-3 mt-2">
+                    <button name="imagen3" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen3 && "disabled"}`} onClick={(e) => {setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 3 del carrusel?"); setAction(e);}}>
                       Eliminar imagen
                     </button>
-                    <button name="imagen3" className="btn btn-success me-3 mt-2" onClick={uploadImage}>
+                    <button name="imagen3" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen3 && "disabled"}`} onClick={uploadImage}>
                       Subir imagen
                     </button>
                   </div>
@@ -372,6 +420,22 @@ export default function ViewAppClientes() {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+          <Modal.Header>
+            <Modal.Title>Eliminar imagen</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{message}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => { setShowDeleteModal(false); }}>
+              Cancelar
+            </Button>
+            <Button variant="danger" onClick={deleteImage}>
+              {isLoading ? <Spinner /> : "Borrar"}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
       </div>
     </div>
   );
