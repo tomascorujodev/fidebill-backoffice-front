@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SketchPicker } from "react-color";
 
 export default function ViewAppClientes() {
-  const [action, setAction] = useState(null);
+  const [action, setAction] = useState(() => {});
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -94,7 +94,7 @@ export default function ViewAppClientes() {
         switch (response.status) {
           case 200:
             setMessage(`La imagen ${index} se guardo correctamente`);
-            setImageLoaded({...imageLoaded, [name]: true});
+            setImageLoaded({ ...imageLoaded, [name]: true });
             setNewImageSent(
               (prev) => ({
                 ...prev,
@@ -222,8 +222,7 @@ export default function ViewAppClientes() {
     try {
       setIsLoading(true);
       setShowDeleteModal(false);
-      let name = e.target.name;
-      console.log(name)
+      let name = action.target.name;
       let response = await DELETE("ConfiguracionApp/eliminarimagencarrousel", name);
 
       if (response) {
@@ -256,11 +255,11 @@ export default function ViewAppClientes() {
       }
     } catch {
       setMessage("Hubo un problema al agregar la imagen. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+    } finally {
+      setAction(() => {});
       setShowModal(true);
       setIsLoading(false);
     }
-    setShowModal(true);
-    setIsLoading(false);
   }
 
   return (
@@ -273,9 +272,12 @@ export default function ViewAppClientes() {
           </h3>
           <hr className="m-2"></hr>
           <div>
-            <label htmlFor="imagen1" className="ms-1 fs-4 form-label">
-              Imagen 1
-            </label>
+            <div className="d-flex">
+              <label htmlFor="imagen1" className="ms-1 me-4 fs-4 form-label">
+                Imagen 1
+              </label>
+              {imageLoaded.imagen1 && <img style={{ height: "30px" }} src="/assets/IconoOk.png" />}
+            </div>
             <input type="file" name="imagen1" id="imagen1" className="form-control mb-2" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
             {
               newImageSent.imagen1 ?
@@ -287,7 +289,7 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button name="1" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen1 && "disabled"}`} onClick={(e) => {setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 1 del carrusel?"); setAction(e);}}>
+                    <button name="1" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen1 && "disabled"}`} onClick={(e) => { setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 1 del carrusel?"); setAction(e); }}>
                       Eliminar imagen
                     </button>
                     <button name="imagen1" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen1 && "disabled"}`} onClick={uploadImage}>
@@ -298,9 +300,12 @@ export default function ViewAppClientes() {
           </div>
           <hr className="m-2"></hr>
           <div>
-            <label htmlFor="imagen2" className="ms-1 fs-4 form-label">
-              Imagen 2
-            </label>
+            <div className="d-flex">
+              <label htmlFor="imagen1" className="ms-1 me-4 fs-4 form-label">
+                Imagen 2
+              </label>
+              {imageLoaded.imagen2 && <img style={{ height: "30px" }} src="/assets/IconoOk.png" />}
+            </div>
             <input type="file" name="imagen2" id="imagen2" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
             {
               newImageSent.imagen2 ?
@@ -312,7 +317,7 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button name="2" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen2 && "disabled"}`} onClick={(e) => {setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 2 del carrusel?"); setAction(e);}}>
+                    <button name="2" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen2 && "disabled"}`} onClick={(e) => { setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 2 del carrusel?"); setAction(e); }}>
                       Eliminar imagen
                     </button>
                     <button name="imagen2" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen2 && "disabled"}`} onClick={uploadImage}>
@@ -323,9 +328,12 @@ export default function ViewAppClientes() {
           </div>
           <hr className="m-2"></hr>
           <div>
-            <label name="3" htmlFor="imagen3" className="ms-1 fs-4 form-label">
-              Imagen 3
-            </label>
+            <div className="d-flex">
+              <label htmlFor="imagen1" className="ms-1 me-4 fs-4 form-label">
+                Imagen 3
+              </label>
+              {imageLoaded.imagen3 && <img style={{ height: "30px" }} src="/assets/IconoOk.png" />}
+            </div>
             <input type="file" name="imagen3" id="imagen3" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={cargarImagen} />
             {
               newImageSent.imagen3 ?
@@ -337,7 +345,7 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button name="imagen3" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen3 && "disabled"}`} onClick={(e) => {setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 3 del carrusel?"); setAction(e);}}>
+                    <button name="imagen3" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen3 && "disabled"}`} onClick={(e) => { setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 3 del carrusel?"); setAction(e); }}>
                       Eliminar imagen
                     </button>
                     <button name="imagen3" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen3 && "disabled"}`} onClick={uploadImage}>
