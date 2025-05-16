@@ -37,7 +37,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                     localStorage.clear();
                     setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
                     setTimeout(() => {
-                        window.location.replace(`/${empresa}`)
+                        window.location.replace("/admin");
                     }, 4000)
                     break;
                 case 500:
@@ -78,7 +78,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                 localStorage.clear();
                 setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
                 setTimeout(() => {
-                    window.location.replace(`/${empresa}`)
+                    window.location.replace("/admin")
                 }, 4000)
                 break;
             case 500:

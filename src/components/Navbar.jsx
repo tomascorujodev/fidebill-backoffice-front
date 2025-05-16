@@ -128,8 +128,8 @@ export default function Navbar() {
               </svg>
               <p style={{ marginTop: "2px" }}>
                 {
-                  sessionStorage.getItem("token")
-                    ? jwtDecode(sessionStorage.getItem("token")).Usuario
+                  token?.Usuario
+                    ? token?.Usuario
                     : "Usuario no disponible"
                 }
               </p>

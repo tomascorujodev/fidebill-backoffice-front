@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SketchPicker } from "react-color";
 
 export default function ViewAppClientes() {
-  const [action, setAction] = useState(() => {});
+  const [action, setAction] = useState(() => { });
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -50,7 +50,7 @@ export default function ViewAppClientes() {
           localStorage.clear();
           setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
           setTimeout(() => {
-            window.location.replace(`/${empresa}`)
+            window.location.replace("/admin");
           }, 4000)
           break;
         case 500:
@@ -223,40 +223,43 @@ export default function ViewAppClientes() {
       setIsLoading(true);
       setShowDeleteModal(false);
       let name = action.target.name;
-      let response = await DELETE("ConfiguracionApp/eliminarimagencarrousel", name);
-
-      if (response) {
-        switch (response.status) {
-          case 200:
-            setMessage(`La imagen ${name} se elimino correctamente`);
-            setNewImageSent(
-              (prev) => ({
-                ...prev,
-                [name]: true,
-              })
-            );
-            break;
-          case 401:
-            setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
-            break;
-          case 422:
-            setMessage("El formato de imagen es invalido");
-            break;
-          default:
-            setMessage("Ha ocurrido un error. Si el problema persiste, por favor, contacte con un administrador");
-            break;
-        }
-      } else {
-        if (navigator.onLine) {
-          setMessage("El servidor no responde. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
-        } else {
-          setMessage("Hubo un problema al cargar la imagen. Por favor, verifique la conexión y vuelva a intentarlo.");
-        }
+      let response = await DELETE("ConfiguracionApp/eliminarimagencarrousel", { imagen: name });
+      if (!response) {
+        setMessage(CheckOnline());
+        return;
+      }
+      switch (response.status) {
+        case 200:
+          setMessage(`La imagen ${name} se elimino correctamente`);
+          setNewImageSent(
+            (prev) => ({
+              ...prev,
+              ["imagen"+name]: false,
+            })
+          );
+          setImageLoaded((prev) => ({
+            ...prev,
+            ["imagen"+name]: false,
+          }));
+          break;
+        case 204:
+          setMessage("La imagen ya ha sido eliminada");
+          setImageLoaded((prev) => ({
+            ...prev,
+            ["imagen"+name]: false,
+          }));
+          break;
+        case 401:
+          setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+          break;
+        default:
+          setMessage("Ha ocurrido un error. Si el problema persiste, por favor, contacte con un administrador");
+          break;
       }
     } catch {
       setMessage("Hubo un problema al agregar la imagen. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
     } finally {
-      setAction(() => {});
+      setAction(() => { });
       setShowModal(true);
       setIsLoading(false);
     }
