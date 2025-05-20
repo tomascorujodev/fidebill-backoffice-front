@@ -22,7 +22,7 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
   fechaFin = formatDate(fechaFin);
   return (
     <div className={`promo-card ${expanded ? "expanded" : ""}`}>
-      <div style={{background: `linear-gradient(135deg, #efecf3 25%,${token} 100%)`}} className="promo-card-header">
+      <div style={{background: `linear-gradient(135deg, #efecf3 25%,${token.ColorPrincipal} 100%)`}} className="promo-card-header">
         <img
           style={!urlImagen ? { width: "110px" } : { width: "100%" }}
           src={urlImagen || `/assets/${token?.NombreEmpresa}_logo.png`}
