@@ -20,7 +20,6 @@ export default function ViewLogin({ setIsLoggedIn }) {
       if (response) {
         switch (response.status) {
           case 200:
-            console.log(response);
             response = await response.json();
             sessionStorage.setItem("token", response.token);
             setIsLoggedIn(true);
