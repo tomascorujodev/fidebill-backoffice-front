@@ -9,7 +9,8 @@ export default function ViewSoporte() {
           </p>
           <div className="alert alert-info mt-4">
             Estamos disponibles para resolver cualquier problema o consulta que tengas.
-            Envianos un correo a <a href="mailto:soportefidebill@gmail.com">soportefidebill@gmail.com</a> o escribinos al +54 223 312 2315.
+            Envianos un correo a <a href="mailto:soportefidebill@gmail.com">soportefidebill@gmail.com</a> o escribinos al &nbsp;
+            <b>+54 223 548 4897.</b>
           </div>
           <br />
         </div>
