@@ -112,10 +112,7 @@ export default function ViewLogin({ setIsLoggedIn }) {
             }
           </form>
           <div className="text-center mt-3">
-            <a href="#" style={{fontSize: "0.9rem"}} className="text-decoration-none">
-              ¿Olvidaste tu contraseña?
-            </a>
-            {!isAdmin && <Link style={{fontSize: "0.9rem"}} className="d-flex justify-content-center mt-2" to={"/admin"}>iniciar sesion como administrador</Link>}
+            {!isAdmin && <Link style={{fontSize: "0.9rem"}} className="d-flex justify-content-center mt-2" to={"/admin"}>iniciar sesión como administrador</Link>}
           </div>
         </div>
       </div>
