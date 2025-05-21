@@ -1,6 +1,9 @@
 import jsPDF from "jspdf";
+import jwtDecode from "../utils/jwtDecode";
 
 export default async function imprimirComprobante({documento, nombre, apellido, cuerpo, puntos}){
+
+    const token = jwtDecode(sessionStorage.getItem("token"));
     let counter = 42;
     const doc = new jsPDF({
     unit: "mm",
@@ -10,7 +13,7 @@ export default async function imprimirComprobante({documento, nombre, apellido, 
 
     doc.setFont("Courier", "normal");
     doc.setFontSize(8);
-    doc.addImage("/assets/Street Dog_logo.png", 'PNG', 9, 2, 40, 13);
+    doc.addImage(`/assets/${token?.NombreEmpresa}_logo.png`, 'PNG', 15, 1, 27, 13);
     doc.text(`NRO DOCUMENTO: ${documento}`, 2, 18);
     doc.text(`CLIENTE: ${nombre + " " + apellido}`, 2, 26);
     doc.text("--------------------------------", 2, 34);
