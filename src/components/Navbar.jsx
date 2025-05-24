@@ -25,8 +25,9 @@ export default function Navbar() {
           <img
             src={`/assets/${token?.NombreEmpresa}_logo.png`}
             alt="Empresa Logo"
-            width="84"
+            width="100"
             height="50"
+            style={{objectFit: "contain"}}
           />
         </a>
         <button
