@@ -4,6 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../components/CheckInput";
 import jwtDecode from "../utils/jwtDecode";
 import CardBenefit from "../components/CardBenefit";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewCrearBeneficios() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +26,7 @@ export default function ViewCrearBeneficios() {
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
   const [isConfirmation, setIsConfirmation] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function cargaInicial() {
