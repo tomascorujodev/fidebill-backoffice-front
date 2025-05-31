@@ -16,6 +16,7 @@ export default function ViewModificarBeneficio() {
   const [dias, setDias] = useState([false, false, false, false, false, false, false]);
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
+  const [ok, setOk] = useState(false);
   const [habilitarFechaInicio, setHabilitarFechaInicio] = useState(true);
   const [habilitarFechaFin, setHabilitarFechaFin] = useState(true);
   const [urlImagen, setUrlImagen] = useState(null);
@@ -177,7 +178,8 @@ export default function ViewModificarBeneficio() {
         switch (response.status) {
           case 200:
             setMessage("La promocion se ha modificado correctamente.");
-            setLoadingPage(true)
+            setLoadingPage(true);
+            setOk(true);
             setTimeout(() => {
               navigate("/beneficios/verbeneficios");
             }, 4000)
@@ -390,7 +392,7 @@ export default function ViewModificarBeneficio() {
             :
             <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
               <Modal.Header closeButton>
-                <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
+                <Modal.Title>{ok ? "Confirmado" : isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
               </Modal.Header>
               <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
               <Modal.Footer>
