@@ -63,7 +63,7 @@ export default function ViewModificarBeneficio() {
         setSucursalesDisponibles(tmp);
 
         setTipo(beneficio.tipo);
-        setPorcentajeReintegro(beneficio.porcentajeReintegro);
+        beneficio.porcentajeReintegro && setPorcentajeReintegro(beneficio.porcentajeReintegro);
         setDescripcion(beneficio.descripcion);
         setDias(beneficio.dias);
         setFechaInicio(convertirFechaIngles(beneficio.fechaInicio));
@@ -155,7 +155,7 @@ export default function ViewModificarBeneficio() {
             if (sucursalConId.direccionLocal === sucursal) {
               tmp.push(sucursalConId.idUsuarioEmpresa);
             }
-          })
+          }) 
         });
       }
       let response = await PATCHFormData(
@@ -166,10 +166,10 @@ export default function ViewModificarBeneficio() {
           Tipo: modifiedStates.tipo ? tipo : null,
           Descripcion: modifiedStates.descripcion ? descripcion : null,
           Dias: modifiedStates.dias ? dias : null,
-          PorcentajeReintegro: modifiedStates.porcentajeReintegro && tipo === "Reintegro de puntos" ? porcentajeReintegro : null,
+          PorcentajeReintegro: porcentajeReintegro,
           FechaInicio: habilitarFechaInicio && modifiedStates.fechaInicio ? fechaInicio : null,
-          FechaFin: habilitarFechaFin && modifiedStates.fechaFin ? fechaFin : null,
-          Sucursales: modifiedStates.sucursales ? (tmp ? tmp : "Todas") : null,
+          FechaFin: habilitarFechaFin && (modifiedStates.fechaFin ? fechaFin : null),
+          Sucursales: tmp,
           UrlImagenEliminar: (modifiedStates.UrlImagenEliminar || modifiedStates.imagenPromocion) && UrlImagenEliminar ? UrlImagenEliminar : null
         }
       );
@@ -266,6 +266,7 @@ export default function ViewModificarBeneficio() {
       [field]: true
     }));
   };
+
   return (
     <div className="container">
       <div className="card-rounded">
