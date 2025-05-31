@@ -479,7 +479,7 @@ export default function ViewCrearBeneficios() {
           :
           <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
             <Modal.Header closeButton>
-              <Modal.Title>{isConfirmation ? "Confirmación" : "Error"}</Modal.Title>
+              <Modal.Title>{isConfirmation ? "Confirmación" : created ? "Aviso" : "Error"}</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ alignSelf: "center" }}>{message}</Modal.Body>
             <Modal.Footer>
