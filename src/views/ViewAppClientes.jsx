@@ -19,6 +19,7 @@ export default function ViewAppClientes() {
   const [newColorSent, setNewColorSent] = useState(false);
   const [imageLoaded, setImageLoaded] = useState({ imagen1: false, imagen2: false, imagen3: false });
   const [newImageSent, setNewImageSent] = useState({ imagen1: false, imagen2: false, imagen3: false });
+  const [redesSociales, setRedesSociales] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,12 @@ export default function ViewAppClientes() {
           setColor(result.colorPrincipal);
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
           setImageLoaded({ imagen1: !!result.imagen1, imagen2: !!result.imagen2, imagen3: !!result.imagen3 });
+          setRedesSociales([
+            { key: "Telefono (para llamadas)", value: result.telefono },
+            { key: "Whatsapp", value: result.whatsapp },
+            { key: "Instagram", value: result.instagram },
+            { key: "Facebook", value: result.facebook },
+          ]);
           return;
         case 204:
           setMessage("La empresa aun no tiene creados sus estilos. Contacte con un administrador para mas información.");
@@ -234,19 +241,19 @@ export default function ViewAppClientes() {
           setNewImageSent(
             (prev) => ({
               ...prev,
-              ["imagen"+name]: false,
+              ["imagen" + name]: false,
             })
           );
           setImageLoaded((prev) => ({
             ...prev,
-            ["imagen"+name]: false,
+            ["imagen" + name]: false,
           }));
           break;
         case 204:
           setMessage("La imagen ya ha sido eliminada");
           setImageLoaded((prev) => ({
             ...prev,
-            ["imagen"+name]: false,
+            ["imagen" + name]: false,
           }));
           break;
         case 401:
@@ -419,6 +426,22 @@ export default function ViewAppClientes() {
               }
             </div>
           </div>
+        </div>
+        <div className="mb-2 d-flex flex-column">
+          <h3 className="form-label">
+            Redes Sociales
+          </h3>
+          {redesSociales && redesSociales.map(red => (
+            <>
+              <h5 className="form-label">
+                {red.key}
+              </h5>
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <input className="form-control" value={red.value} />
+              </div>
+            </>
+          ))}
+
         </div>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header>
