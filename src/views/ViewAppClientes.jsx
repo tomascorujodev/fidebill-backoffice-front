@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DELETE, GET, PATCH, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import Carousel from "../components/Carousel";
@@ -43,10 +43,10 @@ export default function ViewAppClientes() {
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
           setImageLoaded({ imagen1: !!result.imagen1, imagen2: !!result.imagen2, imagen3: !!result.imagen3 });
           setRedesSociales([
-            { key: "Telefono (para llamadas)", value: result.telefono },
-            { key: "Whatsapp", value: result.whatsapp },
-            { key: "Instagram", value: result.instagram },
-            { key: "Facebook", value: result.facebook },
+            { key: "Whatsapp", value: result?.whatsapp },
+            { key: "Instagram", value: result?.instagram },
+            { key: "Facebook", value: result?.facebook },
+            { key: "Telefono", value: result?.telefono },
           ]);
           return;
         case 204:
@@ -272,6 +272,39 @@ export default function ViewAppClientes() {
     }
   }
 
+  async function saveSocialMedia(e) {
+    try {
+      setIsLoading(true);
+      let name = e.target.name;
+      let red = redesSociales.find(r => r.key === name);
+      let response = await PATCH(`ConfiguracionApp/modificarcontacto`, { Contacto: name, Valor: red.value});
+      if (!response) {
+        setMessage(CheckOnline());
+        return;
+      }
+      switch (response.status) {
+        case 200:
+          setMessage("El contacto se actualizo correctamente");
+          break;
+        case 204:
+          setMessage("La imagen ya ha sido eliminada");
+          break;
+        case 401:
+          setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+          break;
+        default:
+          setMessage("Ha ocurrido un error inesperado. Si el problema persiste, por favor, contacte con un administrador");
+          break;
+      }
+    } catch {
+      setMessage("Hubo un problema al intentar modificar los medios de contacto. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador.");
+    } finally {
+      setAction(() => { });
+      setShowModal(true);
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="container">
       <div className="card-rounded">
@@ -432,14 +465,28 @@ export default function ViewAppClientes() {
             Redes Sociales
           </h3>
           {redesSociales && redesSociales.map(red => (
-            <>
+            <React.Fragment key={red.key}>
               <h5 className="form-label">
                 {red.key}
               </h5>
               <div className="d-flex flex-wrap align-items-center gap-2">
-                <input className="form-control" value={red.value} />
+                <input 
+                  className="form-control" 
+                  onChange={(e) => {setRedesSociales(redesSociales.map(r => r.key === red.key ? { ...r, value: e.target.value } : r))}}
+                  value={red?.value ? red?.value : ""} 
+                />
+                {
+                  isLoading ?
+                    <Spinner />
+                    :
+                    <div className="">
+                      <button id={`button${red.key}`} name={red.key} style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3" onClick={(e) => {saveSocialMedia(e)}}>
+                        Guardar {red.key}
+                      </button>
+                    </div>
+                }
               </div>
-            </>
+            </React.Fragment>
           ))}
 
         </div>
