@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SketchPicker } from "react-color";
 
 export default function ViewAppClientes() {
-  const [action, setAction] = useState(() => { });
+  const [action, setAction] = useState(() => () => { });
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -43,10 +43,10 @@ export default function ViewAppClientes() {
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
           setImageLoaded({ imagen1: !!result.imagen1, imagen2: !!result.imagen2, imagen3: !!result.imagen3 });
           setRedesSociales([
-            { key: "Whatsapp", value: result?.whatsapp },
-            { key: "Instagram", value: result?.instagram },
-            { key: "Facebook", value: result?.facebook },
-            { key: "Telefono", value: result?.telefono },
+            { key: "Whatsapp", value: result?.whatsapp, try: "https://wa.me/" },
+            { key: "Instagram", value: result?.instagram, try: `https://instagram.com/` },
+            { key: "Facebook", value: result?.facebook, try: `https://www.facebook.com/` },
+            { key: "Telefono", value: result?.telefono, try: `tel:` },
           ]);
           return;
         case 204:
@@ -266,7 +266,7 @@ export default function ViewAppClientes() {
     } catch {
       setMessage("Hubo un problema al agregar la imagen. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
     } finally {
-      setAction(() => { });
+      setAction(() => () => { });
       setShowModal(true);
       setIsLoading(false);
     }
@@ -277,7 +277,7 @@ export default function ViewAppClientes() {
       setIsLoading(true);
       let name = e.target.name;
       let red = redesSociales.find(r => r.key === name);
-      let response = await PATCH(`ConfiguracionApp/modificarcontacto`, { Contacto: name, Valor: red.value});
+      let response = await PATCH(`ConfiguracionApp/modificarcontacto`, { Contacto: name, Valor: red.value });
       if (!response) {
         setMessage(CheckOnline());
         return;
@@ -299,7 +299,7 @@ export default function ViewAppClientes() {
     } catch {
       setMessage("Hubo un problema al intentar modificar los medios de contacto. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador.");
     } finally {
-      setAction(() => { });
+      setAction(() => () => { });
       setShowModal(true);
       setIsLoading(false);
     }
@@ -461,34 +461,42 @@ export default function ViewAppClientes() {
           </div>
         </div>
         <div className="mb-2 d-flex flex-column">
-          <h3 className="form-label">
+          <h3 className="form-label mb-4">
             Redes Sociales
           </h3>
           {redesSociales && redesSociales.map(red => (
-            <React.Fragment key={red.key}>
+            <React.Fragment className="mb-2" key={red.key}>
               <h5 className="form-label">
                 {red.key}
               </h5>
               <div className="d-flex flex-wrap align-items-center gap-2">
-                <input 
-                  className="form-control" 
-                  onChange={(e) => {setRedesSociales(redesSociales.map(r => r.key === red.key ? { ...r, value: e.target.value } : r))}}
-                  value={red?.value ? red?.value : ""} 
+                <input
+                  className="form-control"
+                  onChange={(e) => { setRedesSociales(redesSociales.map(r => r.key === red.key ? { ...r, value: e.target.value } : r)) }}
+                  value={red?.value ? red?.value : ""}
                 />
-                {
-                  isLoading ?
-                    <Spinner />
-                    :
-                    <div className="">
-                      <button id={`button${red.key}`} name={red.key} style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success mt-3" onClick={(e) => {saveSocialMedia(e)}}>
-                        Guardar {red.key}
-                      </button>
-                    </div>
-                }
+                <div className="d-flex w-100 justify-content-between">
+                  {
+                    red.try &&
+                    <a className="d-block" target="_blank" href={`${red.try}${red?.value ? red?.value : ""}`}>{red.try}{red?.value ? red?.value : ""}</a>
+                  }
+                  {
+                    isLoading ?
+                      <Spinner />
+                      :
+                      <div>
+                        <button id={`button${red.key}`} name={red.key} style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success" onClick={(e) => { saveSocialMedia(e) }}>
+                          Guardar {red.key}
+                        </button>
+                      </div>
+                  }
+                </div>
               </div>
             </React.Fragment>
           ))}
-
+          <p style={{ color: "gray", fontSize: "12px" }}>
+            📌 Verifica que todos los datos sean correctos haciendo click en cada enlace
+          </p>
         </div>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header>
