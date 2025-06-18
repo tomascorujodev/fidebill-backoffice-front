@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DELETE, GET, PATCH, POSTFormData } from "../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
 import Carousel from "../components/Carousel";
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SketchPicker } from "react-color";
 
 export default function ViewAppClientes() {
-  const [action, setAction] = useState(() => { });
+  const [action, setAction] = useState(() => () => { });
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -19,6 +19,7 @@ export default function ViewAppClientes() {
   const [newColorSent, setNewColorSent] = useState(false);
   const [imageLoaded, setImageLoaded] = useState({ imagen1: false, imagen2: false, imagen3: false });
   const [newImageSent, setNewImageSent] = useState({ imagen1: false, imagen2: false, imagen3: false });
+  const [redesSociales, setRedesSociales] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,12 @@ export default function ViewAppClientes() {
           setColor(result.colorPrincipal);
           seturlImagenes({ urlImagen1: result.imagen1, urlImagen2: result.imagen2, urlImagen3: result.imagen3 });
           setImageLoaded({ imagen1: !!result.imagen1, imagen2: !!result.imagen2, imagen3: !!result.imagen3 });
+          setRedesSociales([
+            { key: "Whatsapp", value: result?.whatsapp, try: "https://wa.me/" },
+            { key: "Instagram", value: result?.instagram, try: `https://instagram.com/` },
+            { key: "Facebook", value: result?.facebook, try: `https://www.facebook.com/` },
+            { key: "Telefono", value: result?.telefono, try: `tel:` },
+          ]);
           return;
         case 204:
           setMessage("La empresa aun no tiene creados sus estilos. Contacte con un administrador para mas información.");
@@ -234,19 +241,19 @@ export default function ViewAppClientes() {
           setNewImageSent(
             (prev) => ({
               ...prev,
-              ["imagen"+name]: false,
+              ["imagen" + name]: false,
             })
           );
           setImageLoaded((prev) => ({
             ...prev,
-            ["imagen"+name]: false,
+            ["imagen" + name]: false,
           }));
           break;
         case 204:
           setMessage("La imagen ya ha sido eliminada");
           setImageLoaded((prev) => ({
             ...prev,
-            ["imagen"+name]: false,
+            ["imagen" + name]: false,
           }));
           break;
         case 401:
@@ -259,7 +266,40 @@ export default function ViewAppClientes() {
     } catch {
       setMessage("Hubo un problema al agregar la imagen. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
     } finally {
-      setAction(() => { });
+      setAction(() => () => { });
+      setShowModal(true);
+      setIsLoading(false);
+    }
+  }
+
+  async function saveSocialMedia(e) {
+    try {
+      setIsLoading(true);
+      let name = e.target.name;
+      let red = redesSociales.find(r => r.key === name);
+      let response = await PATCH(`ConfiguracionApp/modificarcontacto`, { Contacto: name, Valor: red.value });
+      if (!response) {
+        setMessage(CheckOnline());
+        return;
+      }
+      switch (response.status) {
+        case 200:
+          setMessage("El contacto se actualizo correctamente");
+          break;
+        case 204:
+          setMessage("La imagen ya ha sido eliminada");
+          break;
+        case 401:
+          setMessage("Su sesion expiro. Por favor, vuelva a iniciar sesion");
+          break;
+        default:
+          setMessage("Ha ocurrido un error inesperado. Si el problema persiste, por favor, contacte con un administrador");
+          break;
+      }
+    } catch {
+      setMessage("Hubo un problema al intentar modificar los medios de contacto. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador.");
+    } finally {
+      setAction(() => () => { });
       setShowModal(true);
       setIsLoading(false);
     }
@@ -419,6 +459,44 @@ export default function ViewAppClientes() {
               }
             </div>
           </div>
+        </div>
+        <div className="mb-2 d-flex flex-column">
+          <h3 className="form-label mb-4">
+            Redes Sociales
+          </h3>
+          {redesSociales && redesSociales.map(red => (
+            <React.Fragment className="mb-2" key={red.key}>
+              <h5 className="form-label">
+                {red.key}
+              </h5>
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <input
+                  className="form-control"
+                  onChange={(e) => { setRedesSociales(redesSociales.map(r => r.key === red.key ? { ...r, value: e.target.value } : r)) }}
+                  value={red?.value ? red?.value : ""}
+                />
+                <div className="d-flex w-100 justify-content-between">
+                  {
+                    red.try &&
+                    <a className="d-block" target="_blank" href={`${red.try}${red?.value ? red?.value : ""}`}>{red.try}{red?.value ? red?.value : ""}</a>
+                  }
+                  {
+                    isLoading ?
+                      <Spinner />
+                      :
+                      <div>
+                        <button id={`button${red.key}`} name={red.key} style={{ marginTop: "0px", marginBottom: "10px" }} className="btn btn-success" onClick={(e) => { saveSocialMedia(e) }}>
+                          Guardar {red.key}
+                        </button>
+                      </div>
+                  }
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
+          <p style={{ color: "gray", fontSize: "12px" }}>
+            📌 Verifica que todos los datos sean correctos haciendo click en cada enlace
+          </p>
         </div>
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header>
