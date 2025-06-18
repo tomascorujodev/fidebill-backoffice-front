@@ -141,7 +141,7 @@ export default function ViewPuntos() {
         } else {
           switch (response.status) {
             case 200:
-              setModalText(`Se cargaron correctamente "${(Math.round(montoCompra * (porcentajeAplicado/ 100)) )}" puntos a "${cliente?.nombre} ${cliente?.apellido}"`)
+              setModalText(`Se cargaron correctamente "${parseFloat((montoCompra * (porcentajeAplicado / 100)).toFixed(2))}" puntos a "${cliente?.nombre} ${cliente?.apellido}"`)
               setShowModal(true);
               break;
             case 204:

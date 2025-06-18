@@ -156,7 +156,7 @@ export default function ViewModificarBeneficio() {
             if (sucursalConId.direccionLocal === sucursal) {
               tmp.push(sucursalConId.idUsuarioEmpresa);
             }
-          }) 
+          })
         });
       }
       let response = await PATCHFormData(
