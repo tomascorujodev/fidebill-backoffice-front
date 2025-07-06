@@ -5,17 +5,18 @@ import CheckInput from "../components/CheckInput";
 import jwtDecode from "../utils/jwtDecode";
 import { useNavigate } from "react-router-dom";
 
-export default function ViewPremios() {
+export default function ViewCatalogo() {
   const [isLoading, setIsLoading] = useState(false);
-  const [nombrePremio, setNombrePremio] = useState("");
+  const [nombreProducto, setNombreProducto] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [sellosRequeridos, setSellosRequeridos] = useState(5);
+  const [precioPuntos, setPrecioPuntos] = useState(100);
+  const [stock, setStock] = useState(1);
   const [dias, setDias] = useState([false, false, false, false, false, false, false]);
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [habilitarFechaInicio, setHabilitarFechaInicio] = useState(true);
   const [habilitarFechaFin, setHabilitarFechaFin] = useState(true);
-  const [imagenPremio, setImagenPremio] = useState(null);
+  const [imagenProducto, setImagenProducto] = useState(null);
   const [urlImagen, setUrlImagen] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
@@ -61,20 +62,26 @@ export default function ViewPremios() {
   async function handleSubmit(e) {
     e.preventDefault();
     
-    if (!nombrePremio.trim()) {
-      setMessage("El nombre del premio es obligatorio");
+    if (!nombreProducto.trim()) {
+      setMessage("El nombre del producto es obligatorio");
       setShowModal(true);
       return;
     }
 
     if (!descripcion.trim()) {
-      setMessage("La descripción del premio es obligatoria");
+      setMessage("La descripción del producto es obligatoria");
       setShowModal(true);
       return;
     }
 
-    if (sellosRequeridos < 1 || sellosRequeridos > 50) {
-      setMessage("Los sellos requeridos deben estar entre 1 y 50");
+    if (precioPuntos < 1) {
+      setMessage("El precio en puntos debe ser mayor a 0");
+      setShowModal(true);
+      return;
+    }
+
+    if (stock < 1) {
+      setMessage("El stock debe ser mayor a 0");
       setShowModal(true);
       return;
     }
@@ -115,7 +122,7 @@ export default function ViewPremios() {
 
     if (!isConfirmation) {
       setIsConfirmation(true);
-      setMessage("Está a punto de crear un premio visible para sus clientes. Los clientes podrán canjear este premio al acumular los sellos requeridos. ¿Desea publicar?");
+      setMessage("Está a punto de crear un producto visible para sus clientes. Los clientes podrán canjear este producto por puntos. ¿Desea publicar?");
       setShowModal(true);
       return;
     }
@@ -142,12 +149,13 @@ export default function ViewPremios() {
 
       // Aquí iría la llamada al endpoint cuando esté disponible
       // let response = await POSTFormData(
-      //   "premios/crearpremio",
-      //   imagenPremio,
+      //   "catalogo/crearproducto",
+      //   imagenProducto,
       //   {
-      //     Nombre: nombrePremio,
+      //     Nombre: nombreProducto,
       //     Descripcion: descripcion,
-      //     SellosRequeridos: sellosRequeridos,
+      //     PrecioPuntos: precioPuntos,
+      //     Stock: stock,
       //     Dias: dias,
       //     FechaInicio: habilitarFechaInicio ? fechaInicio : null,
       //     FechaFin: habilitarFechaFin ? fechaFin : null,
@@ -157,7 +165,7 @@ export default function ViewPremios() {
 
       // Simulación de respuesta exitosa por ahora
       setTimeout(() => {
-        setMessage("El premio se ha creado correctamente.");
+        setMessage("El producto se ha creado correctamente.");
         setCreated(true);
         setShowModal(true);
         setIsLoading(false);
@@ -167,7 +175,7 @@ export default function ViewPremios() {
       // if (response) {
       //   switch (response.status) {
       //     case 200:
-      //       setMessage("El premio se ha creado correctamente.");
+      //       setMessage("El producto se ha creado correctamente.");
       //       setCreated(true);
       //       break;
       //     case 400:
@@ -212,12 +220,12 @@ export default function ViewPremios() {
     let archivo = e.target.files[0];
     if (archivo && ["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)) {
       if (archivo.size <= 1048576) {
-        setImagenPremio(archivo);
+        setImagenProducto(archivo);
         setUrlImagen(URL.createObjectURL(archivo));
       } else {
         setMessage("La imagen excede el tamaño máximo permitido de 1MB");
         setShowModal(true);
-        setImagenPremio(null);
+        setImagenProducto(null);
         setUrlImagen(null);
         e.target.value = null;
       }
@@ -225,7 +233,7 @@ export default function ViewPremios() {
       setMessage("El formato de archivo no es compatible");
       setShowModal(true);
       setUrlImagen(null);
-      setImagenPremio(null);
+      setImagenProducto(null);
       e.target.value = "";
     }
   }
@@ -269,10 +277,10 @@ export default function ViewPremios() {
           gap: "16px"
         }}
       >
-        <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Premios</h2>
+        <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Catálogo</h2>
         <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Nombre(*)</h4>
         <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Descripción(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Sellos</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Precios</h4>
         <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Días</h4>
         <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Fechas</h4>
         <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Sucursales</h4>
@@ -292,7 +300,7 @@ export default function ViewPremios() {
         <div style={{ gridColumn: "5", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
           <h4>Vista Previa</h4>
           <p style={{ color: "gray", fontSize: "12px" }}>
-            📌 Los clientes podrán canjear este premio al acumular {sellosRequeridos} sellos.
+            📌 Los clientes podrán canjear este producto por {precioPuntos} puntos.
           </p>
         </div>
 
@@ -306,9 +314,9 @@ export default function ViewPremios() {
           className="form-control"
           type="text"
           maxLength="100"
-          placeholder="Ej: Descuento 50% en pizza"
-          value={nombrePremio}
-          onChange={(e) => setNombrePremio(e.target.value)}
+          placeholder="Ej: Pizza Margherita Grande"
+          value={nombreProducto}
+          onChange={(e) => setNombreProducto(e.target.value)}
         />
 
         <div style={{ gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }} className="mb-3">
@@ -316,27 +324,44 @@ export default function ViewPremios() {
             style={{ maxHeight: "95px" }}
             className="form-control"
             maxLength="500"
-            placeholder="Describe el premio que recibirán los clientes..."
+            placeholder="Describe el producto, sus características, ingredientes..."
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
           />
         </div>
 
-        <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3 d-flex align-items-center">
-          <label htmlFor="sellosRequeridos" className="me-3">
-            Sellos requeridos:
-          </label>
-          <input
-            type="number"
-            min="1"
-            max="50"
-            className="form-control"
-            style={{ width: "100px" }}
-            id="sellosRequeridos"
-            value={sellosRequeridos}
-            onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
-          />
-          <span className="ms-2 text-muted">(1-50)</span>
+        <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3">
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="precioPuntos" className="form-label">
+                Puntos:
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="10000"
+                className="form-control"
+                id="precioPuntos"
+                value={precioPuntos}
+                onChange={(e) => setPrecioPuntos(parseInt(e.target.value) || 1)}
+              />
+            </div>
+            
+            <div className="col-md-6 mb-3">
+              <label htmlFor="stock" className="form-label">
+                Stock disponible:
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="1000"
+                className="form-control"
+                id="stock"
+                value={stock}
+                onChange={(e) => setStock(parseInt(e.target.value) || 1)}
+              />
+            </div>
+          </div>
         </div>
 
         <div style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }} className="mb-3">
@@ -456,27 +481,32 @@ export default function ViewPremios() {
         </div>
 
         <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
-          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPremio(null) }} disabled={created}>Eliminar imagen</button>
+          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenProducto(null) }} disabled={created}>Eliminar imagen</button>
         </div>
 
-        {/* Vista previa del premio */}
+        {/* Vista previa del producto */}
         <div style={{ gridColumn: "5", gridRow: "2 / 7" }} className="mb-3">
           <div className="card border-0 shadow-sm" style={{ maxWidth: "300px" }}>
             {urlImagen && (
               <img 
                 src={urlImagen} 
                 className="card-img-top" 
-                alt="Premio"
+                alt="Producto"
                 style={{ height: "150px", objectFit: "cover" }}
               />
             )}
             <div className="card-body">
-              <h5 className="card-title">{nombrePremio || "Nombre del Premio"}</h5>
-              <p className="card-text small">{descripcion || "Descripción del premio"}</p>
+              <h5 className="card-title">{nombreProducto || "Nombre del Producto"}</h5>
+              <p className="card-text small">{descripcion || "Descripción del producto"}</p>
               <div className="d-flex justify-content-between align-items-center">
                 <span className="badge bg-primary">
-                  {sellosRequeridos} {sellosRequeridos === 1 ? 'Sello' : 'Sellos'}
+                  {precioPuntos} puntos
                 </span>
+              </div>
+              <div className="mt-2">
+                <small className="text-muted">
+                  Stock: {stock} unidades
+                </small>
               </div>
             </div>
           </div>
@@ -503,7 +533,7 @@ export default function ViewPremios() {
                   onClick={handleSubmit}
                   disabled={created}
                 >
-                  Crear Premio
+                  Crear Producto
                 </button>
           }
         </div>
@@ -536,7 +566,7 @@ export default function ViewPremios() {
                   :
                   <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
                 :
-                <Button variant="secondary" onClick={() => {navigate("/premios");}}>Cerrar</Button>
+                <Button variant="secondary" onClick={() => {navigate("/catalogo");}}>Cerrar</Button>
               }
             </Modal.Footer>
           </Modal>

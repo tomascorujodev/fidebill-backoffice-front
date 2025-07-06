@@ -17,6 +17,7 @@ import ViewBeneficios from "./views/ViewBeneficios";
 import ViewAppClientes from "./views/ViewAppClientes";
 import ViewFunciones from "./views/ViewFunciones";
 import ViewPremios from "./views/ViewPremios";
+import ViewCatalogo from "./views/ViewCatalogo";
 import jwtDecode from "./utils/jwtDecode";
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
               <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
               <Route path="/funciones" element={<ViewFunciones></ViewFunciones>}></Route>
               <Route path="premios/crearpremio" element={<ViewPremios></ViewPremios>}></Route>
+              <Route path="catalogo/crearproducto" element={<ViewCatalogo></ViewCatalogo>}></Route>
               <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
               <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>} />
               <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>} />
