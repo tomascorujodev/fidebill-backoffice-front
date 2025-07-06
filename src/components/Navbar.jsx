@@ -82,6 +82,11 @@ export default function Navbar() {
                       Aplicación
                     </Link>
                   </li>
+                     <li className="nav-item">
+                    <Link className="nav-link" to="/funciones" style={{ color: "black" }}>
+                      Funciones
+                    </Link>
+                  </li>
                 </>
                 :
                 <>
