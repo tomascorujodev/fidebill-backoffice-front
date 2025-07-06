@@ -77,6 +77,30 @@ export default function Navbar() {
                       </li>
                     </ul>
                   </li>
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle"
+                      id="navbarDropdownPremios"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style={{ color: "black" }}
+                    >
+                      Premios
+                    </Link>
+                    <ul className="dropdown-menu" aria-labelledby="navbarDropdownPremios" >
+                      <li>
+                        <Link className="dropdown-item" to="premios/crearpremio">
+                          Crear
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="premios/verpremios">
+                          Activos
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/appclientes" style={{ color: "black" }}>
                       Aplicación

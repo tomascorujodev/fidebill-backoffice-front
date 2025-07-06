@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { PATCH } from "../services/Fetch";
 
 export default function ViewFunciones() {
   const [funciones, setFunciones] = useState({
@@ -23,13 +24,56 @@ export default function ViewFunciones() {
 
   const handleSave = async () => {
     setIsLoading(true);
-    // Aquí iría la lógica para guardar en el backend
-    // Por ahora solo simulamos el guardado
-    setTimeout(() => {
-      setMessage("Configuración guardada correctamente");
+    try {
+      
+      const opciones = {
+        beneficios: funciones.beneficios,
+        puntos: funciones.puntos,
+        premios: funciones.premios,
+        catalogo: funciones.catalogo
+      };
+
+      const response = await PATCH("FuncionesController/alternarfunciones", opciones);
+      
+      if (!response) {
+        if (navigator.onLine) {
+          setMessage("El servidor no responde. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+        } else {
+          setMessage("Hubo un problema al guardar la configuración. Por favor, verifique la conexión y vuelva a intentarlo.");
+        }
+        setShowModal(true);
+        setIsLoading(false);
+        return;
+      }
+
+      switch (response.status) {
+        case 200:
+          setMessage("Configuración guardada correctamente");
+          break;
+        case 401:
+          setMessage("Su sesión expiró. Por favor, vuelva a iniciar sesión");
+          setTimeout(() => {
+            sessionStorage.clear();
+            window.location.replace("/admin");
+          }, 4000);
+          break;
+        case 403:
+          setMessage("No tiene permisos para realizar esta acción");
+          break;
+        case 500:
+          setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+          break;
+        default:
+          setMessage("Ha ocurrido un problema inesperado. Si el problema persiste, por favor, contacte con un administrador");
+          break;
+      }
+    } catch (error) {
+      console.error("Error al guardar configuración:", error);
+      setMessage("Hubo un problema al guardar la configuración. Por favor, vuelva a intentarlo en unos minutos. Si el problema persiste contacte con un administrador");
+    } finally {
       setShowModal(true);
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   function Spinner() {
