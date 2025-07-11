@@ -18,6 +18,7 @@ import ViewAppClientes from "./views/ViewAppClientes";
 import ViewFunciones from "./views/ViewFunciones";
 import ViewPremios from "./views/ViewPremios";
 import ViewCatalogo from "./views/ViewCatalogo";
+import ViewFacturacion from "./views/ViewFacturacion";
 import jwtDecode from "./utils/jwtDecode";
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
                 </>
               }
               <Route path="ayuda" element={<ViewSoporte />} />
+              <Route path="/facturacion" element={<ViewFacturacion />} />
             </Route>
             :
             <>

@@ -98,6 +98,16 @@ export default function Sidebar() {
               </li>
 
               <li className="sidebar-item">
+                <Link className="sidebar-link" to="/facturacion">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-receipt me-2" viewBox="0 0 16 16">
+                    <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0L11 1.293l.646-.647a.5.5 0 0 1 .708 0L13 1.293l.646-.647a.5.5 0 0 1 .434-.14.5.5 0 0 1 .066.719l-1.5 1.5a.5.5 0 0 1-.708 0L11 2.207l-.646.647a.5.5 0 0 1-.708 0L9 2.207l-.646.647a.5.5 0 0 1-.708 0L7 2.207l-.646.647a.5.5 0 0 1-.708 0L5 2.207l-.646.647a.5.5 0 0 1-.708 0L3 2.207l-.646.647a.5.5 0 0 1-.708 0L1 2.207l-.646.647a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .066-.719z"/>
+                    <path d="M14 4.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-9zM2 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0 2a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0 2a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0 2a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"/>
+                  </svg>
+                  Facturación
+                </Link>
+              </li>
+
+              <li className="sidebar-item">
                 <Link className="sidebar-link" to="/appclientes">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-phone me-2" viewBox="0 0 16 16">
                     <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
