@@ -265,7 +265,7 @@ export default function ViewPremios() {
         style={{
           display: "grid",
           gridTemplateColumns: "250px 1fr 1fr 1fr 1fr 1fr",
-          gridTemplateRows: "90px 90px 110px 90px 110px 90px 90px 170px 90px",
+          gridTemplateRows: "90px 90px 110px 90px 110px 90px 140px 90px 90px 90px",
           gap: "16px"
         }}
       >
@@ -399,7 +399,7 @@ export default function ViewPremios() {
         </div>
 
         <div
-          style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "150px", paddingRight: "16px" }}
+          style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "120px", paddingRight: "16px" }}
           className="mb-3"
         >
           <select
@@ -460,7 +460,7 @@ export default function ViewPremios() {
         </div>
 
         {/* Vista previa del premio */}
-        <div style={{ gridColumn: "5", gridRow: "2 / 7" }} className="mb-3">
+        <div style={{ gridColumn: "5", gridRow: "2 / 8" }} className="mb-3">
           <div className="card border-0 shadow-sm" style={{ maxWidth: "300px" }}>
             {urlImagen && (
               <img 
@@ -483,7 +483,7 @@ export default function ViewPremios() {
         </div>
 
         <div
-          className="d-flex aling-content-center justify-content-center"
+          className="d-flex aling-content-center justify-content-end"
           style={{ gridColumn: "3", gridRow: "9" }}
         >
           {
@@ -494,12 +494,10 @@ export default function ViewPremios() {
               :
                 <button
                   style={{
-                    gridColumn: "6",
-                    gridRow: "9",
                     width: "170px",
                     height: "40px",
                   }}
-                  className="btn btn-success mt-1"
+                  className="btn btn-success"
                   onClick={handleSubmit}
                   disabled={created}
                 >

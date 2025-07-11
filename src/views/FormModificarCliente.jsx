@@ -312,16 +312,18 @@ export default function FormModificarCliente() {
               <span className="visually-hidden">Cargando...</span>
             </div>
           ) : (
-            <button
-              style={{ 
-                marginTop: "0px", 
-                marginBottom: "10px"
-              }}
-              type="submit"
-              className="btn btn-warning w-25 mt-3 custom-button"
-            >
-              Modificar Cliente
-            </button>
+            <div className="d-flex justify-content-end">
+              <button
+                style={{ 
+                  marginTop: "0px", 
+                  marginBottom: "10px"
+                }}
+                type="submit"
+                className="btn btn-warning w-25 mt-3 custom-button"
+              >
+                Modificar Cliente
+              </button>
+            </div>
           )}
         </form>
         <Modal show={showModal}>

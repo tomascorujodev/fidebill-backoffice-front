@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ViewCrearBeneficios() {
   const [isLoading, setIsLoading] = useState(false);
+  const [titulo, setTitulo] = useState("");
   const [tipo, setTipo] = useState("");
   const [created, setCreated] = useState(false);
   const [descripcion, setDescripcion] = useState("");
@@ -61,6 +62,11 @@ export default function ViewCrearBeneficios() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!titulo.trim()) {
+      setMessage("El título es obligatorio");
+      setShowModal(true);
+      return;
+    }
     if (habilitarFechaInicio && !fechaInicio) {
       setMessage("La fecha de inicio aun no ha sido establecida");
       setShowModal(true);
@@ -124,6 +130,7 @@ export default function ViewCrearBeneficios() {
         "beneficios/cargarbeneficio",
         imagenPromocion,
         {
+          Titulo: titulo,
           Tipo: tipo,
           Descripcion: descripcion,
           Dias: dias,
@@ -235,13 +242,14 @@ export default function ViewCrearBeneficios() {
         style={{
           display: "grid",
           gridTemplateColumns: "250px 1fr 1fr 1fr 1 fr 1fr",
-          gridTemplateRows: "90px 90px 110px 60px 110px 170px 100px 90px",
+          gridTemplateRows: "90px 90px 90px 110px 60px 110px 170px 100px 90px",
         }}
       >
         <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Beneficios</h2>
-        <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Tipo(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Descripcion(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Fecha</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Titulo(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Tipo(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Descripcion(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Fecha</h4>
         <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Sucursales</h4>
         <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Imagen</h4>
 
@@ -263,10 +271,22 @@ export default function ViewCrearBeneficios() {
             una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
           </p>
         </div>
-        <select
+        <input
           style={{
             gridColumn: "2",
             gridRow: "2",
+            display: "flex",
+            height: "40px",
+          }}
+          className="form-control"
+          id="Titulo"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+        />
+        <select
+          style={{
+            gridColumn: "2",
+            gridRow: "3",
             display: "flex",
             height: "40px",
           }}
@@ -283,7 +303,7 @@ export default function ViewCrearBeneficios() {
           <span
             style={{
               gridColumn: "3",
-              gridRow: "2",
+              gridRow: "3",
               display: "flex",
               height: "40px",
               width: "100px",
@@ -304,7 +324,7 @@ export default function ViewCrearBeneficios() {
             />
           </span>
         )}
-        <div style={{ gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }} className="mb-3">
+        <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3">
           <textarea
             style={{ maxHeight: "95px" }}
             className="form-control"
@@ -314,7 +334,7 @@ export default function ViewCrearBeneficios() {
             onChange={(e) => setDescripcion(e.target.value)}
           />
         </div>
-        <div style={{ gridColumn: "2 / 5", gridRow: "4", paddingRight: "16px" }}>
+        <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>
           <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} />
           <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} />
           <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} />
@@ -324,7 +344,7 @@ export default function ViewCrearBeneficios() {
           <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} />
         </div>
         <div
-          style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }}
+          style={{ gridColumn: "2 / 4", gridRow: "6", paddingRight: "16px" }}
           className="mb-3 d-flex align-content-center"
         >
           <div>
@@ -367,7 +387,7 @@ export default function ViewCrearBeneficios() {
           </div>
         </div>
         <div
-          style={{ gridColumn: "2 / 4", gridRow: "6", maxHeight: "150px", paddingRight: "16px" }}
+          style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "150px", paddingRight: "16px" }}
           className="mb-3"
         >
           <select
@@ -413,7 +433,7 @@ export default function ViewCrearBeneficios() {
             ))}
           </div>
         </div>
-        <div style={{ gridColumn: "2 / 3", gridRow: "7", paddingRight: "16px" }} className="mb-3">
+        <div style={{ gridColumn: "2 / 3", gridRow: "8", paddingRight: "16px" }} className="mb-3">
           <input
             type="file"
             className="form-control"
@@ -421,13 +441,13 @@ export default function ViewCrearBeneficios() {
             onChange={handleUploadImage}
           />
         </div>
-        <div style={{ gridColumn: "3 / 4", gridRow: "7" }} className="mb-3 mx-4">
+        <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
           <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPromocion(null) }} disabled={created}>Eliminar imagen</button>
         </div>
         <div style={{ gridColumn: "10", gridRow: "2" }} className="mb-3">
           <CardBenefit
             descripcion={descripcion}
-            titulo={descripcion}
+            titulo={titulo}
             tipo={tipo}
             dias={dias}
             porcentajeReintegro={
@@ -441,7 +461,7 @@ export default function ViewCrearBeneficios() {
         </div>
         <div
           className="d-flex aling-content-center justify-content-center"
-          style={{ gridColumn: "3", gridRow: "8" }}
+          style={{ gridColumn: "3", gridRow: "9" }}
         >
           {
             isLoading ?
@@ -452,7 +472,7 @@ export default function ViewCrearBeneficios() {
                 <button
                   style={{
                     gridColumn: "6",
-                    gridRow: "8",
+                    gridRow: "9",
                     width: "170px",
                     height: "40px",
                   }}

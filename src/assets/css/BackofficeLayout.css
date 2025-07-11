@@ -72,7 +72,7 @@ body {
 }
 
 .table thead th {
-  background: linear-gradient(135deg, #0c2d5e 0%, #1e4a8c 100%);
+  background: #0c2d5e;
   color: white;
   border: none;
   font-weight: 600;
