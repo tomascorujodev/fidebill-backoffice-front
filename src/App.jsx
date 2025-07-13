@@ -19,6 +19,7 @@ import ViewFunciones from "./views/ViewFunciones";
 import ViewPremios from "./views/ViewPremios";
 import ViewCatalogo from "./views/ViewCatalogo";
 import ViewFacturacion from "./views/ViewFacturacion";
+import ViewPedidosPendientes from "./views/ViewPedidosPendientes";
 import jwtDecode from "./utils/jwtDecode";
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
               }
               <Route path="ayuda" element={<ViewSoporte />} />
               <Route path="/facturacion" element={<ViewFacturacion />} />
+              <Route path="/pedidos-pendientes" element={<ViewPedidosPendientes />} />
             </Route>
             :
             <>
