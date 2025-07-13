@@ -29,28 +29,51 @@ export default function ViewPremios() {
 
   useEffect(() => {
     async function cargaInicial() {
-      let locales = await GET("beneficios/obtenerlocales");
+      let locales = await GET("premios/obtenerlocales");
       if (locales) {
-        locales = await locales.json();
-        setSucursalesConId(locales);
-        let tmp = [];
-        locales.map((local) => {
-          tmp.push(local.direccionLocal);
-        });
-        setSucursalesDisponibles(tmp);
+        switch (locales.status) {
+          case 200:
+            locales = await locales.json();
+            setSucursalesConId(locales);
+            let tmp = [];
+            locales.map((local) => {
+              tmp.push(local.direccionLocal);
+            });
+            setSucursalesDisponibles(tmp);
+            break;
+          case 204:
+            setMessage("No hay sucursales disponibles para su empresa");
+            setShowModal(true);
+            break;
+          case 401:
+            setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+            setTimeout(() => {
+              navigate("/");
+            }, 3000);
+            setShowModal(true);
+            break;
+          case 500:
+            setMessage("Error al cargar las sucursales. Por favor, contacte con un administrador");
+            setShowModal(true);
+            break;
+          default:
+            setMessage("Error desconocido al cargar las sucursales");
+            setShowModal(true);
+            break;
+        }
       } else {
         if (navigator.onLine) {
           setMessage(
             "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con un administrador"
           );
         } else {
-          setMessage("Se perdio la conexion a internet");
+          setMessage("Se perdió la conexión a internet");
         }
         setShowModal(true);
       }
     }
     cargaInicial();
-  }, []);
+  }, [navigate]);
 
   function handleChangeDays(e) {
     const newDias = [...dias];
@@ -140,70 +163,84 @@ export default function ViewPremios() {
         });
       }
 
-      // Aquí iría la llamada al endpoint cuando esté disponible
-      // let response = await POSTFormData(
-      //   "premios/crearpremio",
-      //   imagenPremio,
-      //   {
-      //     Nombre: nombrePremio,
-      //     Descripcion: descripcion,
-      //     SellosRequeridos: sellosRequeridos,
-      //     Dias: dias,
-      //     FechaInicio: habilitarFechaInicio ? fechaInicio : null,
-      //     FechaFin: habilitarFechaFin ? fechaFin : null,
-      //     Sucursales: tmp,
-      //   }
-      // );
+      // Preparar los datos para el backend
+      const premioData = {
+        Nombre: nombrePremio,
+        Descripcion: descripcion,
+        Sellos: sellosRequeridos,
+        Dias: dias,
+        FechaInicio: habilitarFechaInicio ? fechaInicio : null,
+        FechaFin: habilitarFechaFin ? fechaFin : null,
+        Sucursales: tmp
+      };
 
-      // Simulación de respuesta exitosa por ahora
-      setTimeout(() => {
-        setMessage("El premio se ha creado correctamente.");
-        setCreated(true);
-        setShowModal(true);
-        setIsLoading(false);
-      }, 1000);
+      // Llamada al endpoint del backend
+      let response = await POSTFormData(
+        "premios/cargar",
+        imagenPremio,
+        premioData
+      );
 
-      // Código comentado para cuando esté el endpoint
-      // if (response) {
-      //   switch (response.status) {
-      //     case 200:
-      //       setMessage("El premio se ha creado correctamente.");
-      //       setCreated(true);
-      //       break;
-      //     case 400:
-      //       setMessage(
-      //         "Verifique que todos los campos sean correctos y vuelva a intentarlo"
-      //       );
-      //       break;
-      //     case 401:
-      //       navigate("/")
-      //       break;
-      //     case 500:
-      //       setMessage(
-      //         "No se pudo procesar su petición. Por favor, contacte con un administrador"
-      //       );
-      //       break;
-      //     default:
-      //       response = await response.json();
-      //       setMessage(response.message);
-      //       break;
-      //   }
-      // } else {
-      //   if (navigator.onLine) {
-      //     setMessage(
-      //       "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con un administrador"
-      //     );
-      //   } else {
-      //     setMessage("Se perdio la conexion a internet");
-      //   }
-      // }
-      // setShowModal(true);
-    } catch {
+      if (response) {
+        switch (response.status) {
+          case 200:
+            setMessage("El premio se ha creado correctamente.");
+            setCreated(true);
+            // Limpiar el formulario después de crear exitosamente
+            setNombrePremio("");
+            setDescripcion("");
+            setSellosRequeridos(5);
+            setDias([false, false, false, false, false, false, false]);
+            setFechaInicio("");
+            setFechaFin("");
+            setHabilitarFechaInicio(true);
+            setHabilitarFechaFin(true);
+            setImagenPremio(null);
+            setUrlImagen(null);
+            setSucursales(["Todas"]);
+            setSelectedSucursal("");
+            break;
+          case 400:
+            setMessage(
+              "Verifique que todos los campos sean correctos y vuelva a intentarlo"
+            );
+            break;
+          case 401:
+            setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+            setTimeout(() => {
+              navigate("/");
+            }, 3000);
+            break;
+          case 500:
+            setMessage(
+              "No se pudo procesar su petición. Por favor, contacte con un administrador"
+            );
+            break;
+          default:
+            try {
+              const errorData = await response.json();
+              setMessage(errorData.message || "Error desconocido");
+            } catch {
+              setMessage("Error al procesar la respuesta del servidor");
+            }
+            break;
+        }
+      } else {
+        if (navigator.onLine) {
+          setMessage(
+            "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con un administrador"
+          );
+        } else {
+          setMessage("Se perdió la conexión a internet");
+        }
+      }
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error al crear premio:", error);
       setMessage(
-        "¡ups! Hubo un error al intentar procesar su peticion. Por favor intentelo nuevamente, y si el error persiste, contacte con un administrador."
+        "¡Ups! Hubo un error al intentar procesar su petición. Por favor inténtelo nuevamente, y si el error persiste, contacte con un administrador."
       );
       setShowModal(true);
-      setIsLoading(false);
     }
     setIsLoading(false);
   }
@@ -519,7 +556,7 @@ export default function ViewPremios() {
             </Modal.Body>
           </Modal>
           :
-          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
+          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false); setCreated(false); }}>
             <Modal.Header closeButton>
               <Modal.Title>{isConfirmation ? "Confirmación" : created ? "Aviso" : "Error"}</Modal.Title>
             </Modal.Header>
@@ -534,7 +571,7 @@ export default function ViewPremios() {
                   :
                   <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
                 :
-                <Button variant="secondary" onClick={() => {navigate("/premios");}}>Cerrar</Button>
+                <Button variant="secondary" onClick={() => {navigate("/beneficios/verbeneficios");}}>Cerrar</Button>
               }
             </Modal.Footer>
           </Modal>
