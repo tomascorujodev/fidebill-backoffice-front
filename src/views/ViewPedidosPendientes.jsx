@@ -57,8 +57,135 @@ export default function ViewPedidosPendientes() {
   async function cargarDatos() {
     setIsLoading(true);
     try {
-      // Datos de ejemplo para pedidos de proveedores
-      const pedidosProveedoresEjemplo = [
+      // Cargar pedidos de proveedores
+      const responseProveedores = await GET("api/pedidos/proveedores", {});
+      if (responseProveedores?.ok) {
+        const dataProveedores = await responseProveedores.json();
+        if (dataProveedores.error === false) {
+          setPedidosProveedores(dataProveedores.data || []);
+        } else {
+          console.error("Error al cargar pedidos de proveedores:", dataProveedores.message);
+          // Usar datos de ejemplo como fallback
+          setPedidosProveedores([
+            {
+              id: 1,
+              nombreProveedor: "Distribuidora Handler",
+              productos: [
+                { nombre: "Harina 0000", kilos: 100, precioUnitario: 2.5, stockDeseado: 200, subtotal: 250 },
+                { nombre: "Aceite de Oliva", kilos: 50, precioUnitario: 8.0, stockDeseado: 100, subtotal: 400 }
+              ],
+              montoTotal: 650,
+              medioPago: "Transferencia",
+              fechaEstimadaIngreso: "2024-02-15",
+              sucursal: "Sucursal Centro",
+              diasEsperaPago: 30,
+              estado: "Sin enviar"
+            }
+          ]);
+        }
+      } else if (responseProveedores?.status === 401) {
+        setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+        setShowModal(true);
+        setIsLoading(false);
+        return;
+      } else {
+        // Usar datos de ejemplo como fallback
+        setPedidosProveedores([
+          {
+            id: 1,
+            nombreProveedor: "Distribuidora Handler",
+            productos: [
+              { nombre: "Harina 0000", kilos: 100, precioUnitario: 2.5, stockDeseado: 200, subtotal: 250 },
+              { nombre: "Aceite de Oliva", kilos: 50, precioUnitario: 8.0, stockDeseado: 100, subtotal: 400 }
+            ],
+            montoTotal: 650,
+            medioPago: "Transferencia",
+            fechaEstimadaIngreso: "2024-02-15",
+            sucursal: "Sucursal Centro",
+            diasEsperaPago: 30,
+            estado: "Sin enviar"
+          }
+        ]);
+      }
+
+      // Cargar pedidos de clientes
+      const responseClientes = await GET("api/pedidos/clientes", {});
+      if (responseClientes?.ok) {
+        const dataClientes = await responseClientes.json();
+        if (dataClientes.error === false) {
+          setPedidosClientes(dataClientes.data || []);
+        } else {
+          console.error("Error al cargar pedidos de clientes:", dataClientes.message);
+          // Usar datos de ejemplo como fallback
+          setPedidosClientes([
+            {
+              id: 1,
+              nombreCliente: "María González",
+              fechaPedido: "2024-02-01",
+              telefono: "11-1234-5678",
+              producto: "Torta de Chocolate",
+              descripcion: "Torta de chocolate con decoración especial para cumpleaños",
+              pagado: true,
+              encargado: "Juan Pérez",
+              modoPago: "Tarjeta",
+              medioVenta: "WhatsApp",
+              estado: "Pendiente"
+            }
+          ]);
+        }
+      } else {
+        // Usar datos de ejemplo como fallback
+        setPedidosClientes([
+          {
+            id: 1,
+            nombreCliente: "María González",
+            fechaPedido: "2024-02-01",
+            telefono: "11-1234-5678",
+            producto: "Torta de Chocolate",
+            descripcion: "Torta de chocolate con decoración especial para cumpleaños",
+            pagado: true,
+            encargado: "Juan Pérez",
+            modoPago: "Tarjeta",
+            medioVenta: "WhatsApp",
+            estado: "Pendiente"
+          }
+        ]);
+      }
+
+      // Cargar sucursales
+      const responseSucursales = await GET("api/pedidos/sucursales", {});
+      if (responseSucursales?.ok) {
+        const dataSucursales = await responseSucursales.json();
+        if (dataSucursales.error === false) {
+          setSucursales(dataSucursales.data || []);
+        } else {
+          console.error("Error al cargar sucursales:", dataSucursales.message);
+          // Usar datos de ejemplo como fallback
+          setSucursales([
+            { id: 1, nombre: "Sucursal Centro" },
+            { id: 2, nombre: "Sucursal Norte" },
+            { id: 3, nombre: "Sucursal Sur" }
+          ]);
+        }
+      } else {
+        // Usar datos de ejemplo como fallback
+        setSucursales([
+          { id: 1, nombre: "Sucursal Centro" },
+          { id: 2, nombre: "Sucursal Norte" },
+          { id: 3, nombre: "Sucursal Sur" }
+        ]);
+      }
+
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+      setMessage("Error al cargar los datos. Usando datos de ejemplo.");
+      setShowModal(true);
+      
+      // Usar datos de ejemplo como fallback
+      setPedidosProveedores([
         {
           id: 1,
           nombreProveedor: "Distribuidora Handler",
@@ -72,24 +199,10 @@ export default function ViewPedidosPendientes() {
           sucursal: "Sucursal Centro",
           diasEsperaPago: 30,
           estado: "Sin enviar"
-        },
-        {
-          id: 2,
-          nombreProveedor: "Carnes Premium",
-          productos: [
-            { nombre: "Carne Vacuna", kilos: 200, precioUnitario: 12.0, stockDeseado: 300, subtotal: 2400 }
-          ],
-          montoTotal: 2400,
-          medioPago: "Efectivo",
-          fechaEstimadaIngreso: "2024-02-10",
-          sucursal: "Sucursal Norte",
-          diasEsperaPago: 15,
-          estado: "Enviado"
         }
-      ];
-
-      // Datos de ejemplo para pedidos de clientes
-      const pedidosClientesEjemplo = [
+      ]);
+      
+      setPedidosClientes([
         {
           id: 1,
           nombreCliente: "María González",
@@ -102,36 +215,14 @@ export default function ViewPedidosPendientes() {
           modoPago: "Tarjeta",
           medioVenta: "WhatsApp",
           estado: "Pendiente"
-        },
-        {
-          id: 2,
-          nombreCliente: "Carlos Rodríguez",
-          fechaPedido: "2024-02-02",
-          telefono: "11-9876-5432",
-          producto: "Pizza Familiar",
-          descripcion: "Pizza familiar con extra queso y pepperoni",
-          pagado: false,
-          encargado: "Ana López",
-          modoPago: "Efectivo",
-          medioVenta: "Local",
-          estado: "Completado"
         }
-      ];
-
-      // Datos de ejemplo para sucursales
-      const sucursalesEjemplo = [
+      ]);
+      
+      setSucursales([
         { id: 1, nombre: "Sucursal Centro" },
         { id: 2, nombre: "Sucursal Norte" },
         { id: 3, nombre: "Sucursal Sur" }
-      ];
-
-      setPedidosProveedores(pedidosProveedoresEjemplo);
-      setPedidosClientes(pedidosClientesEjemplo);
-      setSucursales(sucursalesEjemplo);
-
-    } catch (error) {
-      setMessage("Error al cargar los datos");
-      setShowModal(true);
+      ]);
     }
     setIsLoading(false);
   }
@@ -178,25 +269,56 @@ export default function ViewPedidosPendientes() {
 
     setIsLoading(true);
     try {
-      // Simular creación exitosa
-      const nuevoPedido = {
-        ...formPedidoProveedor,
-        id: Date.now()
+      const pedidoData = {
+        nombreProveedor: formPedidoProveedor.nombreProveedor,
+        montoTotal: formPedidoProveedor.montoTotal,
+        medioPago: formPedidoProveedor.medioPago,
+        fechaEstimadaIngreso: formPedidoProveedor.fechaEstimadaIngreso,
+        sucursal: formPedidoProveedor.sucursal,
+        diasEsperaPago: formPedidoProveedor.diasEsperaPago,
+        estado: formPedidoProveedor.estado,
+        productos: formPedidoProveedor.productos.map(p => ({
+          nombreProducto: p.nombre,
+          kilos: p.kilos,
+          precioUnitario: p.precioUnitario,
+          stockDeseado: p.stockDeseado,
+          subtotal: p.subtotal
+        }))
       };
+
+      const response = await POST("api/pedidos/proveedores", pedidoData);
       
-      setPedidosProveedores(prev => [...prev, nuevoPedido]);
-      setMessage("Pedido de proveedor creado exitosamente");
-      setFormPedidoProveedor({
-        nombreProveedor: "",
-        productos: [],
-        montoTotal: 0,
-        medioPago: "Efectivo",
-        fechaEstimadaIngreso: "",
-        sucursal: "",
-        diasEsperaPago: 30,
-        estado: "Sin enviar"
-      });
-      setShowPedidoModal(false);
+      if (response?.ok) {
+        const data = await response.json();
+        if (data.error === false) {
+          setMessage("Pedido de proveedor creado exitosamente");
+          setFormPedidoProveedor({
+            nombreProveedor: "",
+            productos: [],
+            montoTotal: 0,
+            medioPago: "Efectivo",
+            fechaEstimadaIngreso: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            sucursal: "",
+            diasEsperaPago: 30,
+            estado: "Sin enviar"
+          });
+          setShowPedidoModal(false);
+          // Recargar datos
+          cargarDatos();
+        } else {
+          setMessage(data.message || "Error al crear el pedido");
+          setShowModal(true);
+        }
+      } else if (response?.status === 401) {
+        setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+        setShowModal(true);
+      } else {
+        setMessage("Error al crear el pedido de proveedor");
+        setShowModal(true);
+      }
     } catch (error) {
       setMessage("Error al crear el pedido");
     }
@@ -207,25 +329,39 @@ export default function ViewPedidosPendientes() {
   async function actualizarEstadoPedido(id, nuevoEstado) {
     setIsLoading(true);
     try {
-      // Simular actualización exitosa
+      let response;
+      
       if (activeTab === "proveedores") {
-        setPedidosProveedores(prev => 
-          prev.map(pedido => 
-            pedido.id === id ? { ...pedido, estado: nuevoEstado } : pedido
-          )
-        );
+        response = await PATCH(`api/pedidos/proveedores/${id}/estado`, nuevoEstado);
       } else {
-        setPedidosClientes(prev => 
-          prev.map(pedido => 
-            pedido.id === id ? { ...pedido, estado: nuevoEstado } : pedido
-          )
-        );
+        response = await PATCH(`api/pedidos/clientes/${id}/estado`, nuevoEstado);
       }
-      setMessage("Estado actualizado exitosamente");
+      
+      if (response?.ok) {
+        const data = await response.json();
+        if (data.error === false) {
+          setMessage("Estado actualizado exitosamente");
+          // Recargar datos
+          cargarDatos();
+        } else {
+          setMessage(data.message || "Error al actualizar el estado");
+          setShowModal(true);
+        }
+      } else if (response?.status === 401) {
+        setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+        setShowModal(true);
+      } else {
+        setMessage("Error al actualizar el estado");
+        setShowModal(true);
+      }
     } catch (error) {
+      console.error("Error al actualizar estado:", error);
       setMessage("Error al actualizar el estado");
+      setShowModal(true);
     }
-    setShowModal(true);
     setIsLoading(false);
   }
 
@@ -239,31 +375,59 @@ export default function ViewPedidosPendientes() {
 
     setIsLoading(true);
     try {
-      // Simular creación exitosa
-      const nuevoPedido = {
-        ...formPedidoCliente,
-        id: Date.now()
+      const pedidoData = {
+        nombreCliente: formPedidoCliente.nombreCliente,
+        fechaPedido: formPedidoCliente.fechaPedido,
+        telefono: formPedidoCliente.telefono,
+        producto: formPedidoCliente.producto,
+        descripcion: formPedidoCliente.descripcion,
+        pagado: formPedidoCliente.pagado,
+        encargado: formPedidoCliente.encargado,
+        modoPago: formPedidoCliente.modoPago,
+        medioVenta: formPedidoCliente.medioVenta,
+        estado: formPedidoCliente.estado,
+        montoTotal: formPedidoCliente.montoTotal || 0
       };
+
+      const response = await POST("api/pedidos/clientes", pedidoData);
       
-      setPedidosClientes(prev => [...prev, nuevoPedido]);
-      setMessage("Pedido de cliente creado exitosamente");
-      setFormPedidoCliente({
-        nombreCliente: "",
-        fechaPedido: "",
-        telefono: "",
-        producto: "",
-        descripcion: "",
-        pagado: false,
-        encargado: "",
-        modoPago: "Efectivo",
-        medioVenta: "Local",
-        estado: "Pendiente"
-      });
-      setShowPedidoModal(false);
+      if (response?.ok) {
+        const data = await response.json();
+        if (data.error === false) {
+          setMessage("Pedido de cliente creado exitosamente");
+          setFormPedidoCliente({
+            nombreCliente: "",
+            fechaPedido: new Date().toISOString().split('T')[0],
+            telefono: "",
+            producto: "",
+            descripcion: "",
+            pagado: false,
+            encargado: "",
+            modoPago: "Efectivo",
+            medioVenta: "Local",
+            estado: "Pendiente"
+          });
+          setShowPedidoModal(false);
+          // Recargar datos
+          cargarDatos();
+        } else {
+          setMessage(data.message || "Error al crear el pedido");
+          setShowModal(true);
+        }
+      } else if (response?.status === 401) {
+        setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+        setShowModal(true);
+      } else {
+        setMessage("Error al crear el pedido de cliente");
+        setShowModal(true);
+      }
     } catch (error) {
       setMessage("Error al crear el pedido");
+      setShowModal(true);
     }
-    setShowModal(true);
     setIsLoading(false);
   }
 

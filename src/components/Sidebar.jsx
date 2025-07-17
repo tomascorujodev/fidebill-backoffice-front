@@ -73,12 +73,22 @@ export default function Sidebar() {
               </li>
 
               <li className="sidebar-item">
+                <Link className="sidebar-link" to="/productos">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box me-2" viewBox="0 0 16 16">
+                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.383l-6.5 3.5V15h7a1 1 0 0 0 1-1zM7.5 15V7.883l-6.5-3.5V14a1 1 0 0 0 1 1zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 3.78A.5.5 0 0 1 16.5 4.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V4.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                  </svg>
+                  Productos
+                </Link>
+              </li>
+
+              <li className="sidebar-item">
                 <div className="sidebar-dropdown">
                   <button className="sidebar-link dropdown-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#catalogoCollapse">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-collection me-2" viewBox="0 0 16 16">
-                      <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM1 6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-gift me-2" viewBox="0 0 16 16">
+                      <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 14.5V7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43zM9 3H2.932l.04-.248c.02-.156.045-.345.045-.43a1.5 1.5 0 0 1 3 0z"/>
+                      <path d="M15 4h-3V3h2.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5M1 4h3v1H1.5a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
                     </svg>
-                    Catálogo
+                    Beneficios
                   </button>
                   <div className="collapse" id="catalogoCollapse">
                     <ul className="sidebar-submenu">
