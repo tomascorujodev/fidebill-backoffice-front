@@ -465,7 +465,7 @@ export default function ViewAppClientes() {
             Redes Sociales
           </h3>
           {redesSociales && redesSociales.map(red => (
-            <React.Fragment className="mb-2" key={red.key}>
+            <React.Fragment key={red.key}>
               <h5 className="form-label">
                 {red.key}
               </h5>
