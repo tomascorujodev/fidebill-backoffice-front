@@ -18,6 +18,9 @@ import ViewAppClientes from "./views/ViewAppClientes";
 import ViewFunciones from "./views/ViewFunciones";
 import ViewFacturacion from "./views/ViewFacturacion";
 import ViewPedidosPendientes from "./views/ViewPedidosPendientes";
+import ViewSellos from "./views/ViewSellos";
+import ViewGestionCatalogo from "./views/ViewGestionCatalogo";
+import ViewGestionPremios from "./views/ViewGestionPremios";
 import jwtDecode from "./utils/jwtDecode";
 import VerPremios from "./views/premios/VerPremios.jsx";
 import CrearPremios from "./views/premios/CrearPremios.jsx";
@@ -59,6 +62,7 @@ function App() {
               <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
               <Route path="canjes" element={<ViewCanjes></ViewCanjes>} />
               <Route path="puntos" element={<ViewPuntos />} />
+              <Route path="sellos" element={<ViewSellos />} />
               {
                 tokenDecoded?.rol && (
                   <>
@@ -80,6 +84,8 @@ function App() {
                   </>
                 )
               }
+              <Route path="gestion-catalogo" element={<ViewGestionCatalogo />} />
+              <Route path="gestion-premios" element={<ViewGestionPremios />} />
               <Route path="ayuda" element={<ViewSoporte />} />
               {/* <Route path="/facturacion" element={<ViewFacturacion />} />
               <Route path="/pedidos-pendientes" element={<ViewPedidosPendientes />} /> */}
