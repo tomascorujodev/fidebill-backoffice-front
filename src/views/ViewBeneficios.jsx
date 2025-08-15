@@ -15,7 +15,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
 
     useEffect(() => {
         async function obtenerBeneficios() {
-            let result = await GET("beneficios/obtenerbeneficios")
+            let result = await GET("beneficios/obtener")
             if (!result) {
                 if (navigator.onLine) {
                     setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo")
@@ -28,7 +28,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             switch (result.status) {
                 case 200:
                     result = await result.json();
-                    setBeneficios(result.beneficiosAgrupados);
+                    setBeneficios(result);
                     break;
                 case 204:
                     setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
@@ -53,42 +53,47 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
     }, [reload])
 
     async function eliminarBeneficio() {
-        setLoading(true)
-        let result = await DELETE("beneficios/eliminarbeneficio", { IdBeneficio: eliminar })
-        setEliminar(null);
-        if (!result) {
-            if (navigator.onLine) {
-                setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo. Si el problema persiste comuniquese con un administrador")
-            } else {
-                setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
+        try {
+
+            setLoading(true)
+            let result = await DELETE("beneficios/eliminar", { IdBeneficio: eliminar })
+            setEliminar(null);
+            if (!result) {
+                if (navigator.onLine) {
+                    setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo. Si el problema persiste comuniquese con un administrador")
+                } else {
+                    setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
+                }
+                setLoading(false);
+                return;
             }
+            switch (result.status) {
+                case 200:
+                    setMessage("El beneficio se ha eliminado correctamente");
+                    setReload(reload + 1);
+                    break;
+                case 204:
+                    setMessage("No se encontró el beneficio a eliminar. Si el problema persiste, por favor, contacte con un administrador.")
+                    break;
+                case 401:
+                    localStorage.clear();
+                    setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
+                    setTimeout(() => {
+                        window.location.replace("/admin")
+                    }, 4000)
+                    break;
+                case 500:
+                    setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                    break;
+                default:
+                    setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                    break;
+            }
+        } catch {
+            setMessage("Ha ocurrido un error. Si el problema persiste, por favor, contacte con un administrados");
+        } finally {
             setLoading(false);
-            return;
         }
-        switch (result.status) {
-            case 200:
-                result = await result.json();
-                setMessage("El beneficio se ha eliminado correctamente");
-                setReload(reload+1);
-                break;
-            case 204:
-                setMessage("No se encontró el beneficio a eliminar. Si el problema persiste, por favor, contacte con un administrador.")
-                break;
-            case 401:
-                localStorage.clear();
-                setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
-                setTimeout(() => {
-                    window.location.replace("/admin")
-                }, 4000)
-                break;
-            case 500:
-                setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
-                break;
-            default:
-                setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
-                break;
-        }
-        setLoading(false);
     }
 
     return (

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../services/Fetch";
+import { GET, POSTFormData } from "../../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../components/CheckInput";
-import jwtDecode from "../utils/jwtDecode";
+import CheckInput from "../../components/CheckInput";
+import jwtDecode from "../../utils/jwtDecode";
 import { useNavigate } from "react-router-dom";
 
-export default function ViewCatalogo() {
+export default function CrearCatalogo() {
   const [isLoading, setIsLoading] = useState(false);
   const [nombreProducto, setNombreProducto] = useState("");
   const [descripcion, setDescripcion] = useState("");

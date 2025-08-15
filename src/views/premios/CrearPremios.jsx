@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../services/Fetch";
+import { GET, POSTFormData } from "../../services/Fetch.js";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../components/CheckInput";
-import jwtDecode from "../utils/jwtDecode";
+import CheckInput from "../../components/CheckInput.jsx";
+import jwtDecode from "../../utils/jwtDecode.jsx";
 import { useNavigate } from "react-router-dom";
+import CardPremio from "../../components/CardPremio.jsx";
 
-export default function ViewPremios() {
+export default function CrearPremios() {
   const [isLoading, setIsLoading] = useState(false);
   const [nombrePremio, setNombrePremio] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -29,14 +30,14 @@ export default function ViewPremios() {
 
   useEffect(() => {
     async function cargaInicial() {
-      let locales = await GET("premios/obtenerlocales");
+      let locales = await GET("beneficios/obtenerlocales");
       if (locales) {
         switch (locales.status) {
           case 200:
             locales = await locales.json();
             setSucursalesConId(locales);
             let tmp = [];
-            locales.map((local) => {
+            locales?.map((local) => {
               tmp.push(local.direccionLocal);
             });
             setSucursalesDisponibles(tmp);
@@ -83,7 +84,7 @@ export default function ViewPremios() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
+
     if (!nombrePremio.trim()) {
       setMessage("El nombre del premio es obligatorio");
       setShowModal(true);
@@ -142,7 +143,7 @@ export default function ViewPremios() {
       setShowModal(true);
       return;
     }
-    
+
     setIsConfirmation(false);
     setIsLoading(true);
     try {
@@ -163,7 +164,6 @@ export default function ViewPremios() {
         });
       }
 
-      // Preparar los datos para el backend
       const premioData = {
         Nombre: nombrePremio,
         Descripcion: descripcion,
@@ -174,7 +174,6 @@ export default function ViewPremios() {
         Sucursales: tmp
       };
 
-      // Llamada al endpoint del backend
       let response = await POSTFormData(
         "premios/cargar",
         imagenPremio,
@@ -186,7 +185,6 @@ export default function ViewPremios() {
           case 200:
             setMessage("El premio se ha creado correctamente.");
             setCreated(true);
-            // Limpiar el formulario después de crear exitosamente
             setNombrePremio("");
             setDescripcion("");
             setSellosRequeridos(5);
@@ -448,38 +446,39 @@ export default function ViewPremios() {
             <option value="" disabled>
               Seleccione una sucursal
             </option>
-            {sucursalesDisponibles.map((sucursal, index) => (
+            {sucursalesDisponibles && sucursalesDisponibles.map((sucursal, index) => (
               <option key={index} value={sucursal}>
                 {sucursal}
               </option>
             ))}
           </select>
           <div className="mt-2 border p-2" style={{ minHeight: "50px" }}>
-            {sucursales.map((sucursal, index) => (
-              <span
-                key={index}
-                style={{ fontSize: "14px" }}
-                className="badge bg-light text-dark me-2 mb-2"
-              >
-                {sucursal}{" "}
-                <button
-                  name={sucursal}
-                  type="button"
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#e06971",
-                    fontSize: "20px",
-                  }}
-                  onMouseEnter={(e) => (e.target.style.color = "#ff0000")}
-                  onMouseLeave={(e) => (e.target.style.color = "#dc3545")}
-                  className="btn btn-sm btn-danger ms-2"
-                  onClick={(e) => handleRemoveSucursal(e)}
+            {sucursales &&
+              sucursales?.map((sucursal, index) => (
+                <span
+                  key={index}
+                  style={{ fontSize: "14px" }}
+                  className="badge bg-light text-dark me-2 mb-2"
                 >
-                  X
-                </button>
-              </span>
-            ))}
+                  {sucursal}{" "}
+                  <button
+                    name={sucursal}
+                    type="button"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#e06971",
+                      fontSize: "20px",
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = "#ff0000")}
+                    onMouseLeave={(e) => (e.target.style.color = "#dc3545")}
+                    className="btn btn-sm btn-danger ms-2"
+                    onClick={(e) => handleRemoveSucursal(e)}
+                  >
+                    X
+                  </button>
+                </span>
+              ))}
           </div>
         </div>
 
@@ -495,30 +494,7 @@ export default function ViewPremios() {
         <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
           <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPremio(null) }} disabled={created}>Eliminar imagen</button>
         </div>
-
-        {/* Vista previa del premio */}
-        <div style={{ gridColumn: "5", gridRow: "2 / 8" }} className="mb-3">
-          <div className="card border-0 shadow-sm" style={{ maxWidth: "300px" }}>
-            {urlImagen && (
-              <img 
-                src={urlImagen} 
-                className="card-img-top" 
-                alt="Premio"
-                style={{ height: "150px", objectFit: "cover" }}
-              />
-            )}
-            <div className="card-body">
-              <h5 className="card-title">{nombrePremio || "Nombre del Premio"}</h5>
-              <p className="card-text small">{descripcion || "Descripción del premio"}</p>
-              <div className="d-flex justify-content-between align-items-center">
-                <span className="badge bg-primary">
-                  {sellosRequeridos} {sellosRequeridos === 1 ? 'Sello' : 'Sellos'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <CardPremio urlImagen={urlImagen} nombrePremio={nombrePremio} descripcion={descripcion} sellosRequeridos={sellosRequeridos} />
         <div
           className="d-flex aling-content-center justify-content-end"
           style={{ gridColumn: "3", gridRow: "9" }}
@@ -529,17 +505,17 @@ export default function ViewPremios() {
                 <span className="visually-hidden">Cargando...</span>
               </div>
               :
-                <button
-                  style={{
-                    width: "170px",
-                    height: "40px",
-                  }}
-                  className="btn btn-success"
-                  onClick={handleSubmit}
-                  disabled={created}
-                >
-                  Crear Premio
-                </button>
+              <button
+                style={{
+                  width: "170px",
+                  height: "40px",
+                }}
+                className="btn btn-success"
+                onClick={handleSubmit}
+                disabled={created}
+              >
+                Crear Premio
+              </button>
           }
         </div>
       </div>
@@ -571,7 +547,7 @@ export default function ViewPremios() {
                   :
                   <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
                 :
-                <Button variant="secondary" onClick={() => {navigate("/beneficios/verbeneficios");}}>Cerrar</Button>
+                <Button variant="secondary" onClick={() => { navigate("/beneficios/verbeneficios"); }}>Cerrar</Button>
               }
             </Modal.Footer>
           </Modal>

@@ -28,7 +28,7 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
           src={urlImagen || `/assets/${token?.NombreEmpresa}_logo.png`}
           className="promo-logo"
         />
-        {id && <button className="modify-button bg-warning" onClick={() => navigate(`/beneficios/modificarbeneficio?id=${id}`)}>Modificar</button>}
+        {id && <button className="modify-button bg-warning" onClick={() => navigate(`/beneficios/modificar?id=${id}`)}>Modificar</button>}
         {id && <button style={{marginTop: "40px"}} className="modify-button bg-danger" onClick={() => eliminar(id)}>Eliminar</button>}
         {
           porcentajeReintegro &&

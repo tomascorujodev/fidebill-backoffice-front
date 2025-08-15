@@ -127,7 +127,7 @@ export default function ViewCrearBeneficios() {
         });
       }
       let response = await POSTFormData(
-        "beneficios/cargarbeneficio",
+        "beneficios/cargar",
         imagenPromocion,
         {
           Titulo: titulo,
