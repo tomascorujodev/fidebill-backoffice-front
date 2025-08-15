@@ -20,6 +20,9 @@ import ViewPremios from "./views/ViewPremios";
 import ViewCatalogo from "./views/ViewCatalogo";
 import ViewFacturacion from "./views/ViewFacturacion";
 import ViewPedidosPendientes from "./views/ViewPedidosPendientes";
+import ViewSellos from "./views/ViewSellos";
+import ViewGestionCatalogo from "./views/ViewGestionCatalogo";
+import ViewGestionPremios from "./views/ViewGestionPremios";
 import jwtDecode from "./utils/jwtDecode";
 
 function App() {
@@ -59,6 +62,7 @@ function App() {
               <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
               <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
               <Route path="puntos" element={<ViewPuntos />} />
+              <Route path="sellos" element={<ViewSellos />} />
               {
                 tokenDecoded?.rol &&
                 <>
@@ -67,6 +71,8 @@ function App() {
                   <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
                 </>
               }
+              <Route path="gestion-catalogo" element={<ViewGestionCatalogo />} />
+              <Route path="gestion-premios" element={<ViewGestionPremios />} />
               <Route path="ayuda" element={<ViewSoporte />} />
               <Route path="/facturacion" element={<ViewFacturacion />} />
               <Route path="/pedidos-pendientes" element={<ViewPedidosPendientes />} />
