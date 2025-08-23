@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import "../assets/css/ViewPuntos.css";
-import Button from "../components/Button";
+import "../../assets/css/ViewPuntos.css";
+import Button from "../../components/Button";
+import CardPremio from '../../components/CardPremio';
+import { GET } from '../../services/Fetch';
 
 export default function ViewSellos() {
   const [documento, setDocumento] = useState("");
   const [cliente, setCliente] = useState(null);
-  const [opcionSellos, setOpcionSellos] = useState(0); // 0: ninguna, 1: cargar, 2: canjear
+  const [opcionSellos, setOpcionSellos] = useState(0);
   const [premios, setPremios] = useState([]);
   const [premioSeleccionado, setPremioSeleccionado] = useState(null);
   const [mensaje, setMensaje] = useState("");
@@ -14,25 +16,24 @@ export default function ViewSellos() {
   const [showModal, setShowModal] = useState(false);
   const [modalText, setModalText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  // Simulación de búsqueda de cliente y premios
-  const buscarCliente = () => {
-    if (documento.length < 4) {
-      setMensaje("Ingrese al menos 4 números");
-      return;
-    }
-    setIsLoading(true);
-    setTimeout(() => {
-      setCliente({ nombre: "Juan", apellido: "Pérez", documento: documento, sellos: { 1: 3, 2: 1 } });
-      setPremios([
-        { id: 1, nombre: "Premio 1", sellosNecesarios: 3 },
-        { id: 2, nombre: "Premio 2", sellosNecesarios: 5 },
-      ]);
+  // cree el procedure [BO_CL_obtener_sellos_x_cliente], ahora resta usarlo en el back para traer todos los premios del usuario
+  // ya esta implementado, hay que ver si anda y terminar el SP de cargar sellos
+  async function buscarCliente(){
+    try {
+      if (documento.length < 4) {
+        setMensaje("Ingrese al menos 4 números");
+        return;
+      }
+      setIsLoading(true);
+      let response = await GET("clientes/buscarclientepordocumento", {busqueda: documento});
+      setCliente(await response.json());
+    } catch {
+      setMensaje("Ha ocurrido un error inesperado. Por favor, reintente en unos momentos.");
+    }finally{
       setIsLoading(false);
-    }, 800);
+    }
   };
 
-  // Mensaje fade out
   React.useEffect(() => {
     if (effectId) {
       clearTimeout(effectId);
@@ -51,7 +52,6 @@ export default function ViewSellos() {
     }
   }, [mensaje]);
 
-  // Simulación de cargar sello
   const cargarSello = () => {
     setCliente((prev) => {
       const nuevosSellos = { ...prev.sellos };
@@ -62,7 +62,6 @@ export default function ViewSellos() {
     setShowModal(true);
   };
 
-  // Simulación de canjear premio
   const canjearPremio = () => {
     if ((cliente.sellos[premioSeleccionado.id] || 0) >= premioSeleccionado.sellosNecesarios) {
       setCliente((prev) => {
@@ -77,7 +76,6 @@ export default function ViewSellos() {
     }
   };
 
-  // Reset tras modal
   const resetear = () => {
     setOpcionSellos(0);
     setPremioSeleccionado(null);
@@ -137,20 +135,9 @@ export default function ViewSellos() {
           <div className="card-rounded">
             <h5 className="mb-3">Premios Disponibles</h5>
             <div className="row">
-              {premios.map((premio) => (
-                <div className="col-md-6 mb-3" key={premio.id}>
-                  <div className={`card h-100 ${premioSeleccionado?.id === premio.id ? 'border-primary' : ''}`}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setPremioSeleccionado(premio)}
-                  >
-                    <div className="card-body">
-                      <h6 className="card-title">{premio.nombre}</h6>
-                      <p className="card-text mb-1">Sellos necesarios: <b>{premio.sellosNecesarios}</b></p>
-                      <p className="card-text">Sellos del cliente: <b>{cliente.sellos[premio.id] || 0}</b></p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {premios.map((premio) =>
+                <CardPremio id={premio.id} urlImagen={premio?.urlImagen} nombrePremio={premio?.nombre} descripcion={premio?.descripcion} sellosRequeridos={premio?.sellosNecesarios} eliminar={premio?.descripcion} />
+              )}
             </div>
             {premioSeleccionado && (
               <div className="mt-4">

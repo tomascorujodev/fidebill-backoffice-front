@@ -3,7 +3,6 @@ import "../assets/css/ViewPuntos.css";
 import Button from "../components/Button";
 
 export default function ViewGestionPremios() {
-  // Datos simulados de premios reclamados
   const [premiosReclamados, setPremiosReclamados] = useState([
     {
       id: 1,
