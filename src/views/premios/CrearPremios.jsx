@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
 import { GET, POSTFormData } from "../../services/Fetch.js";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../../components/CheckInput.jsx";
 import jwtDecode from "../../utils/jwtDecode.jsx";
 import { useNavigate } from "react-router-dom";
 import CardPremio from "../../components/CardPremio.jsx";
+
 
 export default function CrearPremios() {
   const [isLoading, setIsLoading] = useState(false);
@@ -299,9 +300,9 @@ export default function CrearPremios() {
         className="card-rounded"
         style={{
           display: "grid",
-          gridTemplateColumns: "250px 1fr 1fr 1fr 1fr 1fr",
-          gridTemplateRows: "90px 90px 110px 90px 110px 90px 140px 90px 90px 90px",
-          gap: "16px"
+          gridTemplateColumns: "250px 1fr 1fr 80px 1fr 1fr",
+          gridTemplateRows: "90px 100px 120px 100px 120px 100px 150px 100px 100px 100px",
+          gap: "28px"
         }}
       >
         <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Premios</h2>
@@ -317,17 +318,20 @@ export default function CrearPremios() {
           style={{
             gridColumn: "4",
             gridRow: "1 / span 8",
-            borderLeft: "1px solid gray",
+            borderLeft: "2px solid #e0e0e0",
             height: "auto",
             alignSelf: "stretch",
             justifySelf: "center",
           }}
         ></div>
 
-        <div style={{ gridColumn: "5", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
-          <h4>Vista Previa</h4>
-          <p style={{ color: "gray", fontSize: "12px" }}>
-            📌 Los clientes podrán canjear este premio al acumular {sellosRequeridos} sellos.
+        <div style={{ gridColumn: "5 / 7", gridRow: "1", alignSelf: "start", paddingLeft: "20px", paddingBottom: "24px" }}>
+          <h4 style={{ color: "#333", marginBottom: "16px", fontSize: "20px" }}>Vista Previa</h4>
+          <p style={{ color: "#666", fontSize: "14px", marginBottom: "18px", lineHeight: "1.4" }}>
+            📌 Los clientes podrán canjear este premio al acumular <strong>{sellosRequeridos}</strong> sellos.
+          </p>
+          <p style={{ color: "#666", fontSize: "13px", marginBottom: "24px", lineHeight: "1.4" }}>
+            💡 Recomendación: Para una mejor visualización, suba imágenes con una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
           </p>
         </div>
 
@@ -494,7 +498,28 @@ export default function CrearPremios() {
         <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
           <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPremio(null) }} disabled={created}>Eliminar imagen</button>
         </div>
-        <CardPremio urlImagen={urlImagen} nombrePremio={nombrePremio} descripcion={descripcion} sellosRequeridos={sellosRequeridos} />
+        <div style={{ 
+          gridColumn: "5 / 7", 
+          gridRow: "2 / span 6", 
+          paddingLeft: "20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingTop: "20px"
+        }}>
+          <CardPremio 
+            urlImagen={urlImagen} 
+            nombrePremio={nombrePremio} 
+            descripcion={descripcion} 
+            sellosRequeridos={sellosRequeridos}
+            dias={dias}
+            fechaInicio={habilitarFechaInicio ? fechaInicio : null}
+            fechaFin={habilitarFechaFin ? fechaFin : null}
+            sucursales={sucursales}
+          />
+        </div>
+
         <div
           className="d-flex aling-content-center justify-content-end"
           style={{ gridColumn: "3", gridRow: "9" }}

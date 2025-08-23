@@ -30,6 +30,13 @@
     margin-top: 70px; /* Navbar más pequeño en móviles */
     border-radius: 0;
   }
+  
+  /* En móviles, mantener el container estándar de Bootstrap */
+  .container {
+    max-width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
 }
 
 /* Estilos globales para mejorar la apariencia */
@@ -38,12 +45,48 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+/* Container personalizado más ancho para aprovechar todo el espacio */
+.container {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Ajuste específico para el content-area */
+.content-area .container {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Asegurar que el contenido use todo el ancho disponible */
+.content-area .container > * {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Ajuste para las cards que usan grid */
+.content-area .card-rounded {
+  width: 100% !important;
+  max-width: none !important;
+}
+
 /* Mejoras para las cards */
 .card-rounded {
   background: #ffffff;
   border: 2px solid #e0e0e0;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Ajustes para formularios y vistas que usan grid */
+.card-rounded[style*="display: grid"] {
+  width: 100% !important;
+  max-width: none !important;
 }
 
 /* Estilos para botones */

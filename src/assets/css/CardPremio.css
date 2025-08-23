@@ -1,0 +1,281 @@
+/* Card horizontal para premios - simula entrada de sellos */
+.premio-card-horizontal {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: 350px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin: 15px auto;
+}
+
+.premio-card-horizontal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen del premio */
+.premio-imagen {
+  position: relative;
+  width: 120px;
+  min-width: 120px;
+  background: linear-gradient(135deg, #efecf3 20%, #722828 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.premio-img {
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+}
+
+.premio-actions {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.btn-modificar, .btn-eliminar {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-modificar {
+  background-color: #ffc107;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+}
+
+/* Contenido principal */
+.premio-contenido {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.premio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.premio-titulo {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: 700;
+  line-height: 1.2;
+  flex: 1;
+}
+
+.premio-badge {
+  background-color: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.premio-descripcion {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-height: 42px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+/* Información compacta */
+.premio-info {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-bottom: 10px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.info-label {
+  color: #888;
+  font-weight: 600;
+  min-width: auto;
+}
+
+.info-valor {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Entrada de sellos */
+.sellos-entrada {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  margin-top: auto;
+}
+
+.sellos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sellos-titulo {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.sellos-progreso {
+  background-color: #007bff;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sellos-linea {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sello-punto {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.sello-punto.pendiente {
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  color: #999;
+  border: 2px solid #d0d0d0;
+}
+
+.sello-punto.completado {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: 2px solid #28a745;
+  transform: scale(1.1);
+}
+
+.sello-punto.completado::after {
+  content: "✓";
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .premio-card-horizontal {
+    flex-direction: column;
+    max-width: 100%;
+    height: auto;
+    min-height: 250px;
+  }
+  
+  .premio-imagen {
+    width: 100%;
+    min-width: auto;
+    height: 100px;
+  }
+  
+  .premio-img {
+    height: 80px;
+  }
+  
+  .premio-contenido {
+    padding: 20px;
+  }
+  
+  .premio-titulo {
+    font-size: 18px;
+  }
+  
+  .sellos-linea {
+    gap: 8px;
+  }
+  
+  .sello-punto {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .premio-card-horizontal {
+    max-width: 100%;
+    min-height: 200px;
+  }
+  
+  .premio-imagen {
+    height: 80px;
+  }
+  
+  .premio-img {
+    height: 60px;
+  }
+  
+  .premio-contenido {
+    padding: 15px;
+  }
+  
+  .premio-titulo {
+    font-size: 16px;
+  }
+  
+  .sellos-linea {
+    gap: 6px;
+  }
+  
+  .sello-punto {
+    width: 24px;
+    height: 24px;
+  }
+}
+
