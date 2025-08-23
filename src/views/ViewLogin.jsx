@@ -49,6 +49,7 @@ export default function ViewLogin({ setIsLoggedIn }) {
   }
 
   return (
+    
     <div className="container-fluid bg-light min-vh-100 d-flex flex-column align-items-center justify-content-center">
       <img
         src="/assets/Backoffice.png"
