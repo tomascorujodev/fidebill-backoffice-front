@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../assets/css/ViewLogin.css";
 import { POST } from "../services/Fetch";
 import { Link, useLocation } from "react-router-dom";
+import "../assets/css/ViewLogin.css";
 
 export default function ViewLogin({ setIsLoggedIn }) {
   const [username, setUsername] = useState("");
@@ -67,7 +67,7 @@ export default function ViewLogin({ setIsLoggedIn }) {
         />
       }
       <br />
-      <div className="card-rounded" style={{ maxWidth: "400px", width: "100%" }}>
+      <div className="card-rounded-login" style={{ maxWidth: "400px", width: "100%" }}>
         <div className="card-body p-5">
           <h2 className="card-title text-center mb-4">Iniciar Sesión</h2>
           <form onSubmit={handleSubmit}>

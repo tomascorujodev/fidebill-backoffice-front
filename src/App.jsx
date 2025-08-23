@@ -16,8 +16,6 @@ import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
 import ViewAppClientes from "./views/ViewAppClientes";
 import ViewFunciones from "./views/ViewFunciones";
-import ViewFacturacion from "./views/ViewFacturacion";
-import ViewPedidosPendientes from "./views/ViewPedidosPendientes";
 import ViewGestionCatalogo from "./views/ViewGestionCatalogo";
 import ViewGestionPremios from "./views/ViewGestionPremios";
 import jwtDecode from "./utils/jwtDecode";
@@ -89,8 +87,6 @@ function App() {
                   </>
                 )
               }
-              {/* <Route path="/facturacion" element={<ViewFacturacion />} />
-              <Route path="/pedidos-pendientes" element={<ViewPedidosPendientes />} /> */}
             </Route>
             :
             <>
