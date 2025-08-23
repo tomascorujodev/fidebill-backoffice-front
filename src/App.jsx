@@ -18,7 +18,6 @@ import ViewAppClientes from "./views/ViewAppClientes";
 import ViewFunciones from "./views/ViewFunciones";
 import ViewFacturacion from "./views/ViewFacturacion";
 import ViewPedidosPendientes from "./views/ViewPedidosPendientes";
-import ViewSellos from "./views/ViewSellos";
 import ViewGestionCatalogo from "./views/ViewGestionCatalogo";
 import ViewGestionPremios from "./views/ViewGestionPremios";
 import jwtDecode from "./utils/jwtDecode";
@@ -26,6 +25,7 @@ import VerPremios from "./views/premios/VerPremios.jsx";
 import CrearPremios from "./views/premios/CrearPremios.jsx";
 import ModificarPremio from "./views/premios/ModificarPremios.jsx";
 import CrearCatalogo from "./views/catalogo/CrearCatalogo.jsx";
+import ViewSellos from "./views/premios/ViewSellos.jsx";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -62,7 +62,12 @@ function App() {
               <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
               <Route path="canjes" element={<ViewCanjes></ViewCanjes>} />
               <Route path="puntos" element={<ViewPuntos />} />
-              <Route path="sellos" element={<ViewSellos />} />
+              <Route path="premios">
+                <Route path="sellos" element={<ViewSellos />} />
+                <Route path="historial" element={<ViewGestionPremios />} />
+              </Route>
+              <Route path="gestion-premios" element={<ViewGestionCatalogo />} />
+              <Route path="ayuda" element={<ViewSoporte />} />
               {
                 tokenDecoded?.rol && (
                   <>
@@ -77,16 +82,13 @@ function App() {
                       <Route path="ver" element={<VerPremios />} />
                       <Route path="modificar" element={<ModificarPremio />} />
                     </Route>
-                    
+
                     <Route path="catalogos">
-                      <Route path="crear" element={<CrearCatalogo/>}></Route>
+                      <Route path="crear" element={<CrearCatalogo />}></Route>
                     </Route>
                   </>
                 )
               }
-              <Route path="gestion-catalogo" element={<ViewGestionCatalogo />} />
-              <Route path="gestion-premios" element={<ViewGestionPremios />} />
-              <Route path="ayuda" element={<ViewSoporte />} />
               {/* <Route path="/facturacion" element={<ViewFacturacion />} />
               <Route path="/pedidos-pendientes" element={<ViewPedidosPendientes />} /> */}
             </Route>
