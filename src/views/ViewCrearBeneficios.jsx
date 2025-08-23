@@ -241,8 +241,8 @@ export default function ViewCrearBeneficios() {
         className="card-rounded"
         style={{
           display: "grid",
-          gridTemplateColumns: "250px 1fr 1fr 1fr 1 fr 1fr",
-          gridTemplateRows: "90px 90px 90px 110px 60px 110px 170px 100px 90px",
+          gridTemplateColumns: "250px 1fr 1fr 1fr 1fr 1fr",
+          gridTemplateRows: "90px 90px 110px 90px 110px 90px 140px 90px 90px",
         }}
       >
         <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Beneficios</h2>
@@ -250,8 +250,8 @@ export default function ViewCrearBeneficios() {
         <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Tipo(*)</h4>
         <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Descripcion(*)</h4>
         <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Fecha</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Sucursales</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Imagen</h4>
+  <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Sucursales</h4>
+  <h4 style={{ gridColumn: "1", gridRow: "8", paddingRight: "16px" }}>Imagen</h4>
 
         <div
           style={{
@@ -264,7 +264,7 @@ export default function ViewCrearBeneficios() {
           }}
         ></div>
 
-        <div style={{ gridColumn: "10", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
+  <div style={{ gridColumn: "5", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
           <h4>Vista Previa</h4>
           <p style={{ color: "gray", fontSize: "12px" }}>
             📌 Recomendación: Para una mejor visualización, suba imágenes con
@@ -273,7 +273,7 @@ export default function ViewCrearBeneficios() {
         </div>
         <input
           style={{
-            gridColumn: "2",
+            gridColumn: "2 / 4",
             gridRow: "2",
             display: "flex",
             height: "40px",
@@ -285,7 +285,7 @@ export default function ViewCrearBeneficios() {
         />
         <select
           style={{
-            gridColumn: "2",
+            gridColumn: "2 / 4",
             gridRow: "3",
             display: "flex",
             height: "40px",
@@ -444,7 +444,7 @@ export default function ViewCrearBeneficios() {
         <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
           <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPromocion(null) }} disabled={created}>Eliminar imagen</button>
         </div>
-        <div style={{ gridColumn: "10", gridRow: "2" }} className="mb-3">
+  <div style={{ gridColumn: "5", gridRow: "2" }} className="mb-3">
           <CardBenefit
             descripcion={descripcion}
             titulo={titulo}

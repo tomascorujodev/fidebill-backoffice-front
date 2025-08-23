@@ -75,7 +75,14 @@
   font-size: 15px;
   line-height: 1.5;
   margin-bottom: 20px;
-  overflow: auto;
+  /* Keep card size fixed in preview: clamp text and hide overflow to remove scrollbars */
+  overflow: hidden;
+  display: -webkit-box;
+  /* standard property for line clamping */
+  line-clamp: 4;
+  -webkit-line-clamp: 4; /* show ~4 lines then truncate */
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }
 
 .promo-details {
@@ -182,5 +189,13 @@
 
   .promo-description {
     font-size: 14px;
+    /* ensure no scrollbar on small screens */
+    overflow: hidden;
   }
+}
+
+/* Hide native scrollbar for webkit browsers when overflow appears */
+.promo-description::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
