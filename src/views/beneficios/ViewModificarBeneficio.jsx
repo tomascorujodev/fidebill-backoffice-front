@@ -12,6 +12,7 @@ export default function ViewModificarBeneficio() {
   const [loadingPage, setLoadingPage] = useState(true);
   const [tipo, setTipo] = useState("");
   const [porcentajeReintegro, setPorcentajeReintegro] = useState(3);
+  const [titulo, setTitulo] = useState(null);
   const [descripcion, setDescripcion] = useState("");
   const [dias, setDias] = useState([false, false, false, false, false, false, false]);
   const [fechaInicio, setFechaInicio] = useState("");
@@ -63,6 +64,7 @@ export default function ViewModificarBeneficio() {
         setSucursalesDisponibles(tmp);
 
         setTipo(beneficio.tipo);
+        setTitulo(beneficio.titulo);
         beneficio.porcentajeReintegro && setPorcentajeReintegro(beneficio.porcentajeReintegro);
         setDescripcion(beneficio.descripcion);
         setDias(beneficio.dias);
@@ -198,7 +200,7 @@ export default function ViewModificarBeneficio() {
         }
       }
       setShowModal(true);
-    } catch (err){
+    } catch (err) {
       console.log(err);
       setMessage("¡ups! Hubo un error al intentar procesar su peticion. Por favor intentelo nuevamente, y si el error persiste, contacte con un administrador.");
       setShowModal(true);
@@ -269,18 +271,19 @@ export default function ViewModificarBeneficio() {
             style={{
               display: "grid",
               gridTemplateColumns: "210px 1fr 1fr 1fr 1fr 1fr",
-              gridTemplateRows: "90px 90px 110px 90px 110px 90px 140px 90px 90px",
+              gridTemplateRows: "80px 90px 90px 80px 100px 80px 80px 140px 90px",
               gap: "16px",
             }}
           >
             <h2 style={{ gridColumn: "1 / 4", gridRow: "1", paddingRight: "16px", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Modificar Beneficio</h2>
-            <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Tipo(*)</h4>
-            <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Descripción(*)</h4>
-            <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Porcentaje</h4>
-            <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Días</h4>
-            <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Fechas</h4>
-            <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Sucursales</h4>
-            <h4 style={{ gridColumn: "1", gridRow: "8", paddingRight: "16px" }}>Imagen</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Titulo(*)</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Tipo(*)</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Descripción(*)</h4>
+            <h4 style={{ alignContent: "center", gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Porcentaje</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Días</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Fechas</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "8", paddingRight: "16px" }}>Sucursales</h4>
+            <h4 style={{ gridColumn: "1", gridRow: "9", paddingRight: "16px" }}>Imagen</h4>
 
             <div
               style={{
@@ -300,8 +303,21 @@ export default function ViewModificarBeneficio() {
               </p>
             </div>
 
+              <input
+                style={{ gridColumn: "2 / 4", gridRow: "2", display: "flex", height: "40px" }}
+                type="text"
+                max="50"
+                className="form-control"
+                id="titulo"
+                name="titulo"
+                value={titulo}
+                onChange={(e) => {
+                  setTitulo(e.target.value);
+                }}
+              />
+
             <select
-              style={{ gridColumn: "2 / 4", gridRow: "2", display: "flex", height: "40px" }}
+              style={{ gridColumn: "2 / 4", gridRow: "3", display: "flex", height: "40px" }}
               className="form-control"
               id="Tipo"
               name="tipo"
@@ -316,7 +332,7 @@ export default function ViewModificarBeneficio() {
             </select>
 
             {tipo === "Reintegro de puntos" && (
-              <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3 d-flex align-items-center">
+              <div style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }} className="mb-3 d-flex align-items-center">
                 <label htmlFor="PorcentajeReintegro" className="me-3">
                   Porcentaje:
                 </label>
@@ -337,7 +353,7 @@ export default function ViewModificarBeneficio() {
             )}
 
             <textarea
-              style={{ maxHeight: "95px", gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }}
+              style={{ maxHeight: "95px", gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }}
               className="form-control"
               maxLength="1500"
               id="Descripcion"
@@ -348,9 +364,8 @@ export default function ViewModificarBeneficio() {
               }}
             />
 
-            <div style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }} className="mb-3">
+            <div style={{ gridColumn: "2 / 4", gridRow: "6", paddingRight: "16px" }} className="mb-3">
               <div className="mb-3">
-                <label className="form-label">Días disponibles:</label>
                 <div className="d-flex gap-2">
                   <CheckInput value={dias[0]} dia={"L"} name={"0"} evento={handleChangeDays} />
                   <CheckInput value={dias[1]} dia={"M"} name={"1"} evento={handleChangeDays} />
@@ -363,7 +378,7 @@ export default function ViewModificarBeneficio() {
               </div>
             </div>
 
-            <div style={{ gridColumn: "2 / 4", gridRow: "6", paddingRight: "16px" }} className="mb-3 d-flex align-content-center">
+            <div style={{ gridColumn: "2 / 4", gridRow: "7", paddingRight: "16px" }} className="mb-3 d-flex align-content-center">
               <div>
                 <label htmlFor="CheckFechaInicio" className="pe-4">Fecha de Inicio</label>
                 <input type="checkbox" id="CheckFechaInicio" name="fechaInicio" checked={habilitarFechaInicio} onChange={(e) => { setHabilitarFechaInicio(!habilitarFechaInicio); }} />
@@ -377,7 +392,7 @@ export default function ViewModificarBeneficio() {
               </div>
             </div>
 
-            <div style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "120px", paddingRight: "16px" }} className="mb-3">
+            <div style={{ gridColumn: "2 / 4", gridRow: "8", maxHeight: "120px", paddingRight: "16px" }} className="mb-3">
               <select className="form-control" id="Sucursales" name="sucursales" value={selectedSucursal} onChange={(e) => { handleSelectSucursal(e); }}>
                 <option value="" disabled>
                   Seleccione una sucursal
@@ -400,18 +415,18 @@ export default function ViewModificarBeneficio() {
               </div>
             </div>
 
-            <div style={{ minWidth: "170px", gridColumn: "2 / 3", gridRow: "8" }} className="mb-3">
+            <div style={{ minWidth: "170px", gridColumn: "2 / 3", gridRow: "9" }} className="mb-3">
               <input type="file" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={handleUploadImage} />
             </div>
 
-            <div style={{ gridColumn: "3", gridRow: "8", display: "flex", justifyContent: "center" }} className="mb-3">
+            <div style={{ gridColumn: "3", gridRow: "9", display: "flex", justifyContent: "center" }} className="mb-3">
               <button style={{ width: "160px", height: "40px" }} className="btn btn-danger" name="EliminarImagen" onClick={() => { setEliminarImagen(true); setUrlImagen(null); }}>Eliminar imagen</button>
             </div>
 
             <div style={{ gridColumn: "5", gridRow: "2", paddingLeft: "16px" }}>
               <CardBenefit
                 descripcion={descripcion}
-                titulo={descripcion}
+                titulo={titulo}
                 tipo={tipo}
                 dias={dias}
                 porcentajeReintegro={tipo === "Reintegro de puntos" && porcentajeReintegro}
@@ -422,13 +437,13 @@ export default function ViewModificarBeneficio() {
               />
             </div>
 
-      <div className="d-flex align-content-center" style={{ gridColumn: "3 / 4", gridRow: "9", justifyContent: "center", paddingRight: "16px" }}>
+            <div className="d-flex align-content-center" style={{ gridColumn: "3 / 4", gridRow: "10", justifyContent: "center", paddingRight: "16px" }}>
               {isLoading ? (
                 <div className="spinner-border mt-4 mr-4" role="status">
                   <span className="visually-hidden">Cargando...</span>
                 </div>
               ) : (
-        <button style={{ width: "200px", height: "40px" }} className="btn btn-success" onClick={handleSubmit}>Actualizar Beneficio</button>
+                <button style={{ width: "200px", height: "40px" }} className="btn btn-success" onClick={handleSubmit}>Actualizar Beneficio</button>
               )}
             </div>
           </div>
