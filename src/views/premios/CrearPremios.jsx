@@ -6,7 +6,6 @@ import jwtDecode from "../../utils/jwtDecode.jsx";
 import { useNavigate } from "react-router-dom";
 import CardPremio from "../../components/CardPremio.jsx";
 
-
 export default function CrearPremios() {
   const [isLoading, setIsLoading] = useState(false);
   const [nombrePremio, setNombrePremio] = useState("");
@@ -300,8 +299,8 @@ export default function CrearPremios() {
         className="card-rounded"
         style={{
           display: "grid",
-          gridTemplateColumns: "250px 1fr 1fr 80px 1fr 1fr",
-          gridTemplateRows: "90px 100px 120px 100px 120px 100px 150px 100px 100px 100px",
+          gridTemplateColumns: "200px 1.5fr 0.6fr 20px 1fr 1fr",
+          gridTemplateRows: "90px 80px 90px 100px 80px 100px 150px 100px 100px 100px",
           gap: "28px"
         }}
       >
@@ -325,7 +324,7 @@ export default function CrearPremios() {
           }}
         ></div>
 
-        <div style={{ gridColumn: "5 / 7", gridRow: "1", alignSelf: "start", paddingLeft: "20px", paddingBottom: "24px" }}>
+        <div style={{ gridColumn: "5 / 7", gridRow: "2", alignSelf: "start", paddingLeft: "20px", paddingBottom: "24px" }}>
           <h4 style={{ color: "#333", marginBottom: "16px", fontSize: "20px" }}>Vista Previa</h4>
           <p style={{ color: "#666", fontSize: "14px", marginBottom: "18px", lineHeight: "1.4" }}>
             📌 Los clientes podrán canjear este premio al acumular <strong>{sellosRequeridos}</strong> sellos.
@@ -378,19 +377,14 @@ export default function CrearPremios() {
           <span className="ms-2 text-muted">(1-50)</span>
         </div>
 
-        <div style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }} className="mb-3">
-          <div className="mb-3">
-            <label className="form-label">Días disponibles:</label>
-            <div className="d-flex gap-2">
-              <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} />
-              <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} />
-              <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} />
-              <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} />
-              <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} />
-              <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} />
-              <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} />
-            </div>
-          </div>
+        <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>
+          <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} />
+          <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} />
+          <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} />
+          <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} />
+          <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} />
+          <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} />
+          <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} />
         </div>
 
         <div
@@ -445,7 +439,7 @@ export default function CrearPremios() {
             className="form-control"
             id="Sucursales"
             value={selectedSucursal}
-            onChange={handleSelectSucursal}
+            onChange={handleSelectSucursal} car
           >
             <option value="" disabled>
               Seleccione una sucursal
@@ -495,24 +489,24 @@ export default function CrearPremios() {
           />
         </div>
 
-        <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
+        <div style={{ gridColumn: "3 / 4", gridRow: "8" }}>
           <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPremio(null) }} disabled={created}>Eliminar imagen</button>
         </div>
-        <div style={{ 
-          gridColumn: "5 / 7", 
-          gridRow: "2 / span 6", 
+        <div style={{
+          gridColumn: "5 / 7",
+          gridRow: "3 / 6",
           paddingLeft: "20px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          paddingTop: "20px"
+          paddingTop: "70px"
         }}>
-          <CardPremio 
-            urlImagen={urlImagen} 
-            nombrePremio={nombrePremio} 
-            descripcion={descripcion} 
-            sellosRequeridos={sellosRequeridos}
+          <CardPremio
+            urlImagen={urlImagen}
+            nombre={nombrePremio}
+            descripcion={descripcion}
+            sellos={sellosRequeridos}
             dias={dias}
             fechaInicio={habilitarFechaInicio ? fechaInicio : null}
             fechaFin={habilitarFechaFin ? fechaFin : null}

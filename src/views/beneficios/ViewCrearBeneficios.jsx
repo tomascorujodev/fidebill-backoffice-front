@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../services/Fetch";
+import { GET, POSTFormData } from "../../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../components/CheckInput";
-import jwtDecode from "../utils/jwtDecode";
-import CardBenefit from "../components/CardBenefit";
+import CheckInput from "../../components/CheckInput";
+import jwtDecode from "../../utils/jwtDecode";
+import CardBenefit from "../../components/CardBenefit";
 import { useNavigate } from "react-router-dom";
 
 export default function ViewCrearBeneficios() {
@@ -127,7 +127,7 @@ export default function ViewCrearBeneficios() {
         });
       }
       let response = await POSTFormData(
-        "beneficios/cargarbeneficio",
+        "beneficios/cargar",
         imagenPromocion,
         {
           Titulo: titulo,
@@ -153,7 +153,12 @@ export default function ViewCrearBeneficios() {
             );
             break;
           case 401:
-            navigate("/")
+            setMessage(
+              "Su session ha expirado."
+            );
+            setTimeout(() =>{
+              window.location.reload();
+            }, 2200)
             break;
           case 500:
             setMessage(
@@ -241,7 +246,7 @@ export default function ViewCrearBeneficios() {
         className="card-rounded"
         style={{
           display: "grid",
-          gridTemplateColumns: "250px 1fr 1fr 0.2fr 1fr 0.1fr",
+          gridTemplateColumns: "220px 1fr 1fr 0.2fr 1fr 0.1fr",
           gridTemplateRows: "120px 90px 110px 90px 110px 90px 140px 90px 90px",
         }}
       >
@@ -280,6 +285,7 @@ export default function ViewCrearBeneficios() {
           }}
           className="form-control"
           id="Titulo"
+          maxLength={50}
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
         />
@@ -446,8 +452,8 @@ export default function ViewCrearBeneficios() {
         </div>
         <div style={{ gridColumn: "5", gridRow: "2" }} className="mb-3">
           <CardBenefit
-            descripcion={descripcion}
             titulo={titulo}
+            descripcion={descripcion}
             tipo={tipo}
             dias={dias}
             porcentajeReintegro={

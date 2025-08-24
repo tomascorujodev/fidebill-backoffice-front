@@ -5,7 +5,7 @@ import { convertirFecha, convertirFechaMuestra } from "../utils/ConvertirFechas"
 import { Navigate, useNavigate } from "react-router-dom";
 import jwtDecode from "../utils/jwtDecode";
 
-export default function CardBenefit({ id = null, tipo, descripcion, dias, porcentajeReintegro = null, fechaInicio, fechaFin, sucursales, urlImagen, eliminar = () => {} }) {
+export default function CardBenefit({ id = null, titulo, tipo, descripcion, dias, porcentajeReintegro = null, fechaInicio, fechaFin, sucursales, urlImagen, eliminar = () => { } }) {
   const [expanded, setExpanded] = useState(false);
   const token = jwtDecode(sessionStorage.getItem("token"));
   const navigate = useNavigate()
@@ -22,14 +22,14 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
   fechaFin = formatDate(fechaFin);
   return (
     <div className={`promo-card ${expanded ? "expanded" : ""}`}>
-      <div style={{background: `linear-gradient(135deg, #efecf3 25%,${token.ColorPrincipal} 100%)`}} className="promo-card-header">
+      <div style={{ background: `linear-gradient(135deg, #efecf3 25%,${token.ColorPrincipal} 100%)` }} className="promo-card-header">
         <img
           style={!urlImagen ? { width: "110px" } : { width: "100%" }}
           src={urlImagen || `/assets/${token?.NombreEmpresa}_logo.png`}
           className="promo-logo"
         />
         {id && <button className="modify-button bg-warning" onClick={() => navigate(`/beneficios/modificar?id=${id}`)}>Modificar</button>}
-        {id && <button style={{marginTop: "40px"}} className="modify-button bg-danger" onClick={() => eliminar(id)}>Eliminar</button>}
+        {id && <button style={{ marginTop: "40px" }} className="modify-button bg-danger" onClick={() => eliminar(id)}>Eliminar</button>}
         {
           porcentajeReintegro &&
           <div className="promo-badge">{porcentajeReintegro}% de reintegro</div>
@@ -37,8 +37,10 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
       </div>
 
       <div className="promo-card-body">
-        <h3 className="promo-title">{tipo}</h3>
-        <p className="promo-description">{descripcion}</p>
+        <div className="promo-card-body-main">
+          <h3 className="promo-title">{titulo}</h3>
+          <p className="promo-description">{descripcion}</p>
+        </div>
 
         {expanded && (
           <div className="promo-details">
@@ -46,7 +48,7 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
               <span className="detail-label">Días válidos:</span>
               <WeekDays diasActivos={dias} />
             </div>
-            
+
             <div className="promo-detail-item">
               <span className="detail-label">Vigencia:</span>
               <span className="detail-value text-dark">
@@ -78,7 +80,7 @@ export default function CardBenefit({ id = null, tipo, descripcion, dias, porcen
           </div>
         )}
 
-        <button style={{ marginTop: "auto" }} className="promo-button" onClick={() => setExpanded(!expanded)}>
+        <button className="promo-button" onClick={() => setExpanded(!expanded)}>
           {expanded ? "Ocultar detalles" : "Más detalles"}
         </button>
       </div>

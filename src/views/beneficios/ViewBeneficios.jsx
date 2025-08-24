@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
-import { DELETE, GET } from "../services/Fetch";
-import CardBenefit from "../components/CardBenefit";
+import { DELETE, GET } from "../../services/Fetch";
+import CardBenefit from "../../components/CardBenefit";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
 
 export default function ViewBeneficios({ setIsLoggedIn }) {
     const [beneficios, setBeneficios] = useState(null);
-    const [showModal, setShowModal] = useState(false);
     const [eliminar, setEliminar] = useState(null);
     const [loading, setLoading] = useState(true);
     const [reload, setReload] = useState(0);
     const [message, setMessage] = useState("");
-    const { empresa } = useParams();
-
+    
     useEffect(() => {
         async function obtenerBeneficios() {
-            let result = await GET("beneficios/obtenerbeneficios")
+            let result = await GET("beneficios/obtener")
             if (!result) {
                 if (navigator.onLine) {
                     setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo")
@@ -28,7 +26,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             switch (result.status) {
                 case 200:
                     result = await result.json();
-                    setBeneficios(result.beneficiosAgrupados);
+                    setBeneficios(result);
                     break;
                 case 204:
                     setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
@@ -113,7 +111,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                         {
                             (beneficios && beneficios.length > 0) &&
                             beneficios.map(beneficio => (
-                                <CardBenefit key={beneficio.idBeneficio} id={beneficio.idBeneficio} descripcion={beneficio.descripcion} titulo={beneficio.direccionLocal}
+                                <CardBenefit key={beneficio.idBeneficio} id={beneficio.idBeneficio} titulo={beneficio.titulo} descripcion={beneficio.descripcion}
                                     tipo={beneficio.tipo}
                                     dias={beneficio.dias}
                                     porcentajeReintegro={beneficio.porcentajeReintegro}

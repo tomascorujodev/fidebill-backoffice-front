@@ -26,7 +26,6 @@
   position: relative;
   height: 217.5px;
   width: 100%;
-  background: linear-gradient(135deg, #efecf3 20%, #722828 100%);
   border-radius: 12px;
   display: flex;
   justify-content: center;
@@ -69,19 +68,16 @@
 }
 
 .promo-description {
-  max-height: 72px;
   color: #000000;
   font-size: 15px;
   line-height: 1.5;
   margin-bottom: 20px;
-  /* Keep card size fixed in preview: clamp text and hide overflow to remove scrollbars */
-  overflow: hidden;
-  display: -webkit-box;
-  /* standard property for line clamping */
-  line-clamp: 4;
-  -webkit-line-clamp: 4; /* show ~4 lines then truncate */
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.promo-card-body-main{
+  height: 117px;
+  overflow: auto;
 }
 
 .promo-details {
@@ -91,7 +87,7 @@
   margin-bottom: 20px;
   max-height: 0;
   opacity: 0;
-  overflow: hidden;
+  overflow: auto;
   transition: max-height 0.5s ease, opacity 0.5s ease;
 }
 
@@ -150,6 +146,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-top: 10px;
 }
 
 .promo-button:hover {
@@ -177,24 +174,10 @@
   .promo-card {
     justify-items: center
   }
-
-  .promo-card-header {
-    height: 120px;
-  }
-
   .promo-title {
     font-size: 20px;
   }
-
   .promo-description {
     font-size: 14px;
-    /* ensure no scrollbar on small screens */
-    overflow: hidden;
   }
-}
-
-/* Hide native scrollbar for webkit browsers when overflow appears */
-.promo-description::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
 }
