@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "../../assets/css/ViewPuntos.css";
 import Button from "../../components/Button";
+import BuscarCliente from "../../components/BuscarCliente.jsx";
 import CardPremio from '../../components/CardPremio';
 import { GET } from '../../services/Fetch';
+import CheckOnline from '../../utils/CheckOnline.jsx';
+import { convertirFecha } from '../../utils/ConvertirFechas.jsx';
 
 export default function ViewSellos() {
-  const [documento, setDocumento] = useState("");
   const [cliente, setCliente] = useState(null);
   const [opcionSellos, setOpcionSellos] = useState(0);
   const [premios, setPremios] = useState([]);
@@ -16,25 +18,49 @@ export default function ViewSellos() {
   const [showModal, setShowModal] = useState(false);
   const [modalText, setModalText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // cree el procedure [BO_CL_obtener_sellos_x_cliente], ahora resta usarlo en el back para traer todos los premios del usuario
-  // ya esta implementado, hay que ver si anda y terminar el SP de cargar sellos
-  async function buscarCliente(){
-    try {
-      if (documento.length < 4) {
-        setMensaje("Ingrese al menos 4 números");
-        return;
-      }
-      setIsLoading(true);
-      let response = await GET("clientes/buscarclientepordocumento", {busqueda: documento});
-      setCliente(await response.json());
-    } catch {
-      setMensaje("Ha ocurrido un error inesperado. Por favor, reintente en unos momentos.");
-    }finally{
-      setIsLoading(false);
-    }
-  };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!cliente) return;
+    (async () => {
+      try {
+        let response = await GET("premios/obtenerselloscliente", { idCliente: cliente.idCliente });
+        if (!response) {
+          setMensaje(CheckOnline());
+        } else {
+          switch (response.status) {
+            case 200:
+              response = await response.json();
+              setPremios(response);
+              break;
+            case 204:
+              setMensaje("No se encontraron sellos");
+              setPremios([]);
+              break;
+            case 401:
+              setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
+              setPremios([]);
+              break;
+            case 500:
+              setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
+              setPremios([]);
+              break;
+            default:
+              setMensaje("Hubo un problema. Por favor, contacte con un administrador");
+              setPremios([]);
+              break;
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        setMensaje("Hubo un problema al intentar obtener los sellos");
+        setPremios([]);
+      } finally {
+        setIsLoading(false);
+      }
+    })()
+  }, [cliente]);
+
+  useEffect(() => {
     if (effectId) {
       clearTimeout(effectId);
     }
@@ -85,28 +111,7 @@ export default function ViewSellos() {
   return (
     <div className="container mt-2">
       <div style={{ boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem" }} className="card-rounded">
-        <h2>Gestión de Sellos</h2>
-        <br />
-        <label htmlFor="documento" className="form-label">
-          Documento del Cliente
-        </label>
-        <div className="d-flex mb-4">
-          <input
-            type="text"
-            className="form-control w-75"
-            id="documento"
-            value={documento}
-            onChange={e => setDocumento(e.target.value)}
-          />
-          <button
-            style={{ width: "25%", minHeight: "2rem", maxHeight: "4rem" }}
-            className="btn btn-primary ms-2 center"
-            onClick={buscarCliente}
-            disabled={isLoading}
-          >
-            Buscar Cliente
-          </button>
-        </div>
+        <BuscarCliente titulo={"Gestión de Sellos"} setCliente={setCliente} setMensaje={setMensaje} isLoading={isLoading} setIsLoading={setIsLoading} />
         {cliente && (
           <span>
             <h5 className="card-title mb-4">
@@ -135,8 +140,8 @@ export default function ViewSellos() {
           <div className="card-rounded">
             <h5 className="mb-3">Premios Disponibles</h5>
             <div className="row">
-              {premios.map((premio) =>
-                <CardPremio id={premio.id} urlImagen={premio?.urlImagen} nombrePremio={premio?.nombre} descripcion={premio?.descripcion} sellosRequeridos={premio?.sellosNecesarios} eliminar={premio?.descripcion} />
+              {(premios && premios?.length > 0 ) && premios.map((premio) =>
+                <CardPremio key={premio.idPremio} id={premio.idPremio} nombre={premio?.nombre} descripcion={premio?.descripcion} dias={premio?.dias} sellos={premio?.sellos} sellosAcumulados={premio?.sellosAcumulados} fechaInicio={premio?.fechaInicio} fechaFin={premio?.fechaFin} sucursales={(premio?.sucursales && premio?.sucursales.lenght > 0) && premio?.sucursales.map(s => s.NombreUsuarioEmpresa)} urlImagen={premio?.urlImagen}/>
               )}
             </div>
             {premioSeleccionado && (

@@ -1,9 +1,7 @@
-/* Card horizontal para premios - simula entrada de sellos */
 .premio-card-horizontal {
   display: flex;
-  width: 100%;
-  max-width: 100%;
-  height: 350px;
+  width: 580px;
+  height: 250px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -46,7 +44,8 @@
   gap: 4px;
 }
 
-.btn-modificar, .btn-eliminar {
+.btn-modificar,
+.btn-eliminar {
   padding: 4px 8px;
   border: none;
   border-radius: 4px;
@@ -64,11 +63,11 @@
   background-color: #dc3545;
 }
 
-/* Contenido principal */
 .premio-contenido {
-  flex: 1;
-  padding: 20px;
   display: flex;
+  max-width: 460px;
+  padding-inline: 20px;
+  padding-block: 15px;
   flex-direction: column;
   gap: 15px;
   justify-content: space-between;
@@ -78,8 +77,6 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 4px;
 }
 
 .premio-titulo {
@@ -87,8 +84,6 @@
   font-size: 20px;
   color: #333;
   font-weight: 700;
-  line-height: 1.2;
-  flex: 1;
 }
 
 .premio-badge {
@@ -104,21 +99,14 @@
 .premio-descripcion {
   color: #666;
   font-size: 15px;
-  line-height: 1.4;
-  margin: 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
   max-height: 42px;
-  overflow: hidden;
-  margin-bottom: 8px;
+  margin: 0;
 }
 
-/* Información compacta */
 .premio-info {
   display: flex;
   flex-direction: row;
   gap: 30px;
-  margin-bottom: 10px;
 }
 
 .info-item {
@@ -139,13 +127,12 @@
   font-weight: 500;
 }
 
-/* Entrada de sellos */
 .sellos-entrada {
+  display: flex;
   background-color: #f8f9fa;
   border-radius: 8px;
   padding: 12px;
   border: 2px solid #e9ecef;
-  margin-top: auto;
 }
 
 .sellos-header {
@@ -155,13 +142,8 @@
   margin-bottom: 12px;
 }
 
-.sellos-titulo {
-  font-weight: 600;
-  color: #495057;
-  font-size: 14px;
-}
-
 .sellos-progreso {
+  height: 25px;
   background-color: #007bff;
   color: white;
   padding: 4px 8px;
@@ -172,6 +154,14 @@
 
 .sellos-linea {
   display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.sellos-centrar {
+  display: flex;
+  width: 80%;
   gap: 8px;
   justify-content: center;
   align-items: center;
@@ -218,29 +208,29 @@
     height: auto;
     min-height: 250px;
   }
-  
+
   .premio-imagen {
     width: 100%;
     min-width: auto;
     height: 100px;
   }
-  
+
   .premio-img {
     height: 80px;
   }
-  
+
   .premio-contenido {
     padding: 20px;
   }
-  
+
   .premio-titulo {
     font-size: 18px;
   }
-  
+
   .sellos-linea {
     gap: 8px;
   }
-  
+
   .sello-punto {
     width: 26px;
     height: 26px;
@@ -252,30 +242,29 @@
     max-width: 100%;
     min-height: 200px;
   }
-  
+
   .premio-imagen {
     height: 80px;
   }
-  
+
   .premio-img {
     height: 60px;
   }
-  
+
   .premio-contenido {
     padding: 15px;
   }
-  
+
   .premio-titulo {
     font-size: 16px;
   }
-  
+
   .sellos-linea {
     gap: 6px;
   }
-  
+
   .sello-punto {
     width: 24px;
     height: 24px;
   }
 }
-

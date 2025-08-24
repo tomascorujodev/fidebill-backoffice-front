@@ -92,24 +92,25 @@ export default function ViewPremios() {
                         </div>
                     </div>
                 ) : (
-                    <div className="row g-3">
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(38rem, 2fr))",
+                    }}>
                         {premios && premios.map(premio => (
-                            <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={premio.idPremio}>
-                                <CardPremio
-                                    id={premio.idPremio}
-                                    nombrePremio={premio.nombre}
-                                    descripcion={premio.descripcion}
-                                    sellosRequeridos={premio.sellos}
-                                    dias={premio.dias}
-                                    fechaInicio={premio.fechaInicio}
-                                    fechaFin={premio.fechaFin}
-                                    sucursales={premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
-                                    urlImagen={premio.urlImagen}
-                                    eliminar={setEliminar}
-                                />
-                            </div>
+                            <CardPremio
+                                key={premio.idPremio}
+                                id={premio.idPremio}
+                                nombre={premio.nombre}
+                                descripcion={premio.descripcion}
+                                sellos={premio.sellos}
+                                dias={premio.dias}
+                                fechaInicio={premio.fechaInicio}
+                                fechaFin={premio.fechaFin}
+                                sucursales={premio.usuariosEmpresa > 0 && premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
+                                urlImagen={premio.urlImagen}
+                                eliminar={setEliminar}
+                            />
                         ))}
-
                     </div>
 
                 )

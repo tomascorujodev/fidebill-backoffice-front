@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { GET, POST } from "../services/Fetch";
 import Card from "../components/Card";
+import BuscarCliente from "../components/BuscarCliente.jsx";
 import Button from "../components/Button";
 import "../assets/css/ViewPuntos.css";
 import imprimirComprobante from "../utils/imprimirComprobante";
@@ -76,44 +77,6 @@ export default function ViewPuntos() {
       );
     }
   }, [mensaje]);
-
-  async function buscarCliente() {
-    if (documento.length < 4) {
-      setMensaje("Ingrese al menos 4 números");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      let response = await GET("clientes/buscarclientepordocumento", { busqueda: documento });
-      if (!response) {
-        setMensaje(CheckOnline());
-      } else {
-        switch (response.status) {
-          case 200:
-            let client = await response.json();
-            setCliente(client);
-            break;
-          case 204:
-            setMensaje("No se encontró ningún cliente, verifique el DNI");
-            break;
-          case 401:
-            setMensaje("Sus credenciales expiraron, por favor, vuelva a iniciar sesion.");
-            break;
-          case 500:
-            setMensaje("Hubo un problema en el servidor. Por favor, contacte con un administrador");
-            break;
-          default:
-            setMensaje("Hubo un problema. Por favor, contacte con un administrador");
-            break;
-        }
-      }
-    } catch (error) {
-      setMensaje("Hubo un problema al intentar obtener el cliente");
-      setCliente(null);
-      setIsLoading(false);
-    }
-    setIsLoading(false);
-  }
 
   async function imprimirCompra() {
     let cuerpo;
@@ -208,28 +171,7 @@ export default function ViewPuntos() {
   return (
     <div className="container mt-2">
       <div style={{ boxShadow: "rgb(0 0 0 / 40%) 0px 1rem 2rem" }} className="card-rounded">
-        <h2>Gestión de Puntos</h2>
-        <br />
-        <label htmlFor="documento" className="form-label">
-          Documento del Cliente
-        </label>
-        <div className="d-flex mb-4">
-          <input
-            type="text"
-            className="form-control w-75"
-            id="documento"
-            value={documento}
-            onChange={e => setDocumento(e.target.value)}
-          />
-          <button
-            style={{ width: "25%", minHeight: "2rem", maxHeight: "4rem" }}
-            className="btn btn-primary ms-2 center"
-            onClick={buscarCliente}
-            disabled={isLoading}
-          >
-            Buscar Cliente
-          </button>
-        </div>
+        <BuscarCliente titulo={"Gestión de Puntos"} setCliente={setCliente} setMensaje={setMensaje} isLoading={isLoading} setIsLoading={setIsLoading}/>
         {cliente && (
           <span>
             <h5 className="card-title mb-4">

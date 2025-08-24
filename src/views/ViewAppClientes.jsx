@@ -5,6 +5,7 @@ import Carousel from "../components/Carousel";
 import "react-color-palette/css";
 import { useNavigate } from "react-router-dom";
 import { SketchPicker } from "react-color";
+import CheckOnline from "../utils/CheckOnline";
 
 export default function ViewAppClientes() {
   const [action, setAction] = useState(() => () => { });

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { GET, PATCHFormData } from "../services/Fetch";
+import { GET, PATCHFormData } from "../../services/Fetch";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../components/CheckInput";
-import CardBenefit from "../components/CardBenefit";
+import CheckInput from "../../components/CheckInput";
+import CardBenefit from "../../components/CardBenefit";
 import { useLocation, useNavigate } from "react-router-dom";
-import { convertirFechaIngles } from "../utils/ConvertirFechas";
+import { convertirFechaIngles } from "../../utils/ConvertirFechas";
 
 export default function ViewModificarBeneficio() {
   const location = new URLSearchParams(useLocation().search)
@@ -268,7 +268,7 @@ export default function ViewModificarBeneficio() {
             className="mb-4"
             style={{
               display: "grid",
-              gridTemplateColumns: "250px 1fr 1fr 1fr 1fr 1fr",
+              gridTemplateColumns: "210px 1fr 1fr 1fr 1fr 1fr",
               gridTemplateRows: "90px 90px 110px 90px 110px 90px 140px 90px 90px",
               gap: "16px",
             }}
@@ -400,12 +400,12 @@ export default function ViewModificarBeneficio() {
               </div>
             </div>
 
-            <div style={{ gridColumn: "2 / 3", gridRow: "8", paddingRight: "16px" }} className="mb-3">
+            <div style={{ minWidth: "170px", gridColumn: "2 / 3", gridRow: "8" }} className="mb-3">
               <input type="file" className="form-control" accept="image/png, image/jpeg, image/svg+xml" onChange={handleUploadImage} />
             </div>
 
-            <div style={{ gridColumn: "3 / 4", gridRow: "8", display: "flex", justifyContent: "center" }} className="mb-3">
-              <button style={{ width: "200px", height: "40px" }} className="btn btn-danger" name="EliminarImagen" onClick={() => { setEliminarImagen(true); setUrlImagen(null); }}>Eliminar imagen</button>
+            <div style={{ gridColumn: "3", gridRow: "8", display: "flex", justifyContent: "center" }} className="mb-3">
+              <button style={{ width: "160px", height: "40px" }} className="btn btn-danger" name="EliminarImagen" onClick={() => { setEliminarImagen(true); setUrlImagen(null); }}>Eliminar imagen</button>
             </div>
 
             <div style={{ gridColumn: "5", gridRow: "2", paddingLeft: "16px" }}>

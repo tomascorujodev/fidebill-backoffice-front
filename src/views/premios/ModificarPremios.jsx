@@ -3,11 +3,12 @@ import { GET, POSTFormData } from "../../services/Fetch.js";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../../components/CheckInput.jsx";
 import jwtDecode from "../../utils/jwtDecode.jsx";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CardPremio from "../../components/CardPremio.jsx";
 
 export default function ModificarPremio() {
-    const { premioId } = useParams();
+    let [params] = useSearchParams();
+    let id = params?.get("id");
     const [isLoading, setIsLoading] = useState(false);
     const [nombrePremio, setNombrePremio] = useState("");
     const [descripcion, setDescripcion] = useState("");
@@ -28,71 +29,6 @@ export default function ModificarPremio() {
     const [isConfirmation, setIsConfirmation] = useState(false);
     const [updated, setUpdated] = useState(false);
     const navigate = useNavigate();
-
-    async function cargaPremio() {
-        if (!premioId) return;
-        setIsLoading(true);
-        const res = await GET(`premios/obtener/${premioId}`);
-        if (res) {
-            switch (res.status) {
-                case 200:
-                    const data = await res.json();
-                    setNombrePremio(data.Nombre || "");
-                    setDescripcion(data.Descripcion || "");
-                    setSellosRequeridos(data.Sellos || 5);
-                    setDias(data.Dias || [false, false, false, false, false, false, false]);
-                    if (data.FechaInicio) {
-                        setHabilitarFechaInicio(true);
-                        setFechaInicio(data.FechaInicio.split("T")[0]); // iso date yyyy-mm-dd
-                    } else {
-                        setHabilitarFechaInicio(false);
-                        setFechaInicio("");
-                    }
-                    if (data.FechaFin) {
-                        setHabilitarFechaFin(true);
-                        setFechaFin(data.FechaFin.split("T")[0]);
-                    } else {
-                        setHabilitarFechaFin(false);
-                        setFechaFin("");
-                    }
-                    if (data.UrlImagen) {
-                        setUrlImagen(data.UrlImagen);
-                        setImagenPremio(null);
-                    } else {
-                        setUrlImagen(null);
-                        setImagenPremio(null);
-                    }
-                    if (!data.Sucursales || data.Sucursales.length === 0) {
-                        setSucursales(["Todas"]);
-                    } else {
-                        const sucursalesAsignadas = [];
-                        data.Sucursales.forEach((idSucursal) => {
-                            const suc = sucursalesConId?.find((s) => s.idUsuarioEmpresa === idSucursal);
-                            if (suc) sucursalesAsignadas.push(suc.direccionLocal);
-                        });
-                        setSucursales(sucursalesAsignadas.length > 0 ? sucursalesAsignadas : ["Todas"]);
-                    }
-                    break;
-                case 404:
-                    setMessage("El premio no existe");
-                    setShowModal(true);
-                    break;
-                case 401:
-                    setMessage("Sesión expirada");
-                    setShowModal(true);
-                    setTimeout(() => navigate("/"), 3000);
-                    break;
-                default:
-                    setMessage("Error al cargar premio");
-                    setShowModal(true);
-                    break;
-            }
-        } else {
-            setMessage(navigator.onLine ? "El servidor no responde. Intente más tarde." : "Se perdió la conexión a internet");
-            setShowModal(true);
-        }
-        setIsLoading(false);
-    }
 
     useEffect(() => {
         async function cargaLocales() {
@@ -129,8 +65,73 @@ export default function ModificarPremio() {
     }, [navigate]);
 
     useEffect(() => {
-        if (sucursalesConId) cargaPremio();
-    }, [sucursalesConId]);
+        console.log(id)
+        if (!id) return;
+        async function cargaPremio() {
+            setIsLoading(true);
+            const res = await GET(`premios/buscar/${id}`);
+            if (res) {
+                switch (res.status) {
+                    case 200:
+                        const data = await res.json();
+                        setNombrePremio(data.Nombre || "");
+                        setDescripcion(data.Descripcion || "");
+                        setSellosRequeridos(data.Sellos || 5);
+                        setDias(data.Dias || [false, false, false, false, false, false, false]);
+                        if (data.FechaInicio) {
+                            setHabilitarFechaInicio(true);
+                            setFechaInicio(data.FechaInicio.split("T")[0]);
+                        } else {
+                            setHabilitarFechaInicio(false);
+                            setFechaInicio("");
+                        }
+                        if (data.FechaFin) {
+                            setHabilitarFechaFin(true);
+                            setFechaFin(data.FechaFin.split("T")[0]);
+                        } else {
+                            setHabilitarFechaFin(false);
+                            setFechaFin("");
+                        }
+                        if (data.UrlImagen) {
+                            setUrlImagen(data.UrlImagen);
+                            setImagenPremio(null);
+                        } else {
+                            setUrlImagen(null);
+                            setImagenPremio(null);
+                        }
+                        if (!data.Sucursales || data.Sucursales.length === 0) {
+                            setSucursales(["Todas"]);
+                        } else {
+                            const sucursalesAsignadas = [];
+                            data.Sucursales.forEach((idSucursal) => {
+                                const suc = sucursalesConId?.find((s) => s.idUsuarioEmpresa === idSucursal);
+                                if (suc) sucursalesAsignadas.push(suc.direccionLocal);
+                            });
+                            setSucursales(sucursalesAsignadas.length > 0 ? sucursalesAsignadas : ["Todas"]);
+                        }
+                        break;
+                    case 404:
+                        setMessage("El premio no existe");
+                        setShowModal(true);
+                        break;
+                    case 401:
+                        setMessage("Sesión expirada");
+                        setShowModal(true);
+                        setTimeout(() => navigate("/"), 3000);
+                        break;
+                    default:
+                        setMessage("Error al cargar premio");
+                        setShowModal(true);
+                        break;
+                }
+            } else {
+                setMessage(navigator.onLine ? "El servidor no responde. Intente más tarde." : "Se perdió la conexión a internet");
+                setShowModal(true);
+            }
+            setIsLoading(false);
+        }
+        cargaPremio();
+    }, [id]);
 
     function handleChangeDays(e) {
         const newDias = [...dias];
@@ -150,14 +151,12 @@ export default function ModificarPremio() {
         }
     }
 
-    // Eliminar sucursal
     function handleRemoveSucursal(e) {
         const sucursalAEliminar = e.target.name;
         setSucursales(sucursales.filter((s) => s !== sucursalAEliminar));
         setSucursalesDisponibles([...sucursalesDisponibles, sucursalAEliminar]);
     }
 
-    // Subir imagen
     function handleUploadImage(e) {
         let archivo = e.target.files[0];
         if (archivo && ["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)) {
@@ -180,7 +179,6 @@ export default function ModificarPremio() {
         }
     }
 
-    // Enviar formulario para modificar
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -194,8 +192,8 @@ export default function ModificarPremio() {
             setShowModal(true);
             return;
         }
-        if (sellosRequeridos < 1 || sellosRequeridos > 50) {
-            setMessage("Los sellos requeridos deben estar entre 1 y 50");
+        if (sellosRequeridos < 1 || sellosRequeridos > 15) {
+            setMessage("Los sellos requeridos deben estar entre 1 y 15");
             setShowModal(true);
             return;
         }
@@ -256,7 +254,7 @@ export default function ModificarPremio() {
             }
 
             const premioData = {
-                Id: premioId,
+                Id: id,
                 Nombre: nombrePremio,
                 Descripcion: descripcion,
                 Sellos: sellosRequeridos,
@@ -320,8 +318,8 @@ export default function ModificarPremio() {
                 className="card-rounded"
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "250px 1fr 1fr 1fr 1fr 1fr",
-                    gridTemplateRows: "90px 90px 110px 90px 110px 90px 140px 90px 90px 90px",
+                    gridTemplateColumns: "250px 1fr 1fr 40px 1fr",
+                    gridTemplateRows: "90px 90px 110px 90px 80px 90px 140px 90px 90px 90px",
                     gap: "16px",
                 }}
             >
@@ -380,7 +378,7 @@ export default function ModificarPremio() {
                     <input
                         type="number"
                         min="1"
-                        max="50"
+                        max="15"
                         className="form-control"
                         style={{ width: "100px" }}
                         id="sellosRequeridos"
@@ -388,22 +386,17 @@ export default function ModificarPremio() {
                         onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
                         disabled={updated}
                     />
-                    <span className="ms-2 text-muted">(1-50)</span>
+                    <span className="ms-2 text-muted">(1-15)</span>
                 </div>
 
-                <div style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }} className="mb-3">
-                    <div className="mb-3">
-                        <label className="form-label">Días disponibles:</label>
-                        <div className="d-flex gap-2">
-                            <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} checked={dias[0]} disabled={updated} />
-                            <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} checked={dias[1]} disabled={updated} />
-                            <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} checked={dias[2]} disabled={updated} />
-                            <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} checked={dias[3]} disabled={updated} />
-                            <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} checked={dias[4]} disabled={updated} />
-                            <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} checked={dias[5]} disabled={updated} />
-                            <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} checked={dias[6]} disabled={updated} />
-                        </div>
-                    </div>
+                <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>
+                    <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} checked={dias[0]} disabled={updated} />
+                    <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} checked={dias[1]} disabled={updated} />
+                    <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} checked={dias[2]} disabled={updated} />
+                    <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} checked={dias[3]} disabled={updated} />
+                    <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} checked={dias[4]} disabled={updated} />
+                    <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} checked={dias[5]} disabled={updated} />
+                    <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} checked={dias[6]} disabled={updated} />
                 </div>
 
                 <div
@@ -532,7 +525,15 @@ export default function ModificarPremio() {
                 </div>
 
                 <div style={{ gridColumn: "5", gridRow: "2 / 9", paddingLeft: "16px" }}>
-                    <CardPremio urlImagen={urlImagen} nombrePremio={nombrePremio} descripcion={descripcion} sellosRequeridos={sellosRequeridos} />
+                    <CardPremio urlImagen={urlImagen}
+                        nombre={nombrePremio}
+                        descripcion={descripcion}
+                        sellos={sellosRequeridos}
+                        dias={dias}
+                        fechaInicio={habilitarFechaInicio ? fechaInicio : null}
+                        fechaFin={habilitarFechaFin ? fechaFin : null}
+                        sucursales={sucursales}
+                    />
                 </div>
 
                 <div
