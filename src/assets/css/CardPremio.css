@@ -8,6 +8,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   margin: 15px auto;
+  padding: 0px;
 }
 
 .premio-card-horizontal:hover {
@@ -15,21 +16,17 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Imagen del premio */
 .premio-imagen {
   position: relative;
   width: 120px;
-  min-width: 120px;
   background: linear-gradient(135deg, #efecf3 20%, #722828 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
 }
 
 .premio-img {
   width: 100%;
-  height: 90px;
   object-fit: contain;
   border-radius: 8px;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
@@ -66,10 +63,10 @@
 .premio-contenido {
   display: flex;
   max-width: 460px;
-  padding-inline: 20px;
-  padding-block: 15px;
+  padding-inline: 16px;
+  padding-block: 10px;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
   justify-content: space-between;
 }
 
@@ -98,28 +95,25 @@
 
 .premio-descripcion {
   color: #666;
-  font-size: 15px;
-  max-height: 42px;
+  font-size: 14px;
+  height: 48px;
+  overflow: auto;
   margin: 0;
 }
 
 .premio-info {
   display: flex;
+  flex: 1;
+  height: 80px;
   flex-direction: row;
-  gap: 30px;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  gap: 5px;
+  overflow: auto;
   font-size: 12px;
 }
 
 .info-label {
   color: #888;
   font-weight: 600;
-  min-width: auto;
 }
 
 .info-valor {
@@ -127,11 +121,17 @@
   font-weight: 500;
 }
 
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .sellos-entrada {
   display: flex;
   background-color: #f8f9fa;
   border-radius: 8px;
-  padding: 12px;
+  padding: 8px;
   border: 2px solid #e9ecef;
 }
 

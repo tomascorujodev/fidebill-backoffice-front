@@ -5,6 +5,7 @@ import CheckInput from "../../components/CheckInput.jsx";
 import jwtDecode from "../../utils/jwtDecode.jsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CardPremio from "../../components/CardPremio.jsx";
+import CheckOnline from "../../utils/CheckOnline.jsx";
 
 export default function ModificarPremio() {
     let [params] = useSearchParams();
@@ -56,7 +57,7 @@ export default function ModificarPremio() {
                         break;
                 }
             } else {
-                setMessage(navigator.onLine ? "El servidor no responde. Intente más tarde." : "Se perdió la conexión a internet");
+                setMessage(CheckOnline());
                 setShowModal(true);
             }
         }
@@ -65,45 +66,38 @@ export default function ModificarPremio() {
     }, [navigate]);
 
     useEffect(() => {
-        console.log(id)
         if (!id) return;
-        async function cargaPremio() {
-            setIsLoading(true);
-            const res = await GET(`premios/buscar/${id}`);
-            if (res) {
-                switch (res.status) {
+        (async () => {
+            try {
+                setIsLoading(true);
+                let res = await GET(`premios/buscar/${id}`);
+                switch (res?.status) {
                     case 200:
-                        const data = await res.json();
-                        setNombrePremio(data.Nombre || "");
-                        setDescripcion(data.Descripcion || "");
-                        setSellosRequeridos(data.Sellos || 5);
-                        setDias(data.Dias || [false, false, false, false, false, false, false]);
-                        if (data.FechaInicio) {
+                        res = await res?.json();
+                        setNombrePremio(res?.nombre);
+                        setDescripcion(res?.descripcion)
+                        setSellosRequeridos(res?.sellos);
+                        setDias(res?.dias);
+                        if (res?.fechaInicio) {
                             setHabilitarFechaInicio(true);
-                            setFechaInicio(data.FechaInicio.split("T")[0]);
+                            setFechaInicio(res?.fechaInicio.split("T")[0]);
                         } else {
                             setHabilitarFechaInicio(false);
-                            setFechaInicio("");
                         }
-                        if (data.FechaFin) {
+                        if (res?.fechaFin) {
                             setHabilitarFechaFin(true);
-                            setFechaFin(data.FechaFin.split("T")[0]);
+                            setFechaFin(res?.fechaFin.split("T")[0]);
                         } else {
                             setHabilitarFechaFin(false);
-                            setFechaFin("");
                         }
-                        if (data.UrlImagen) {
-                            setUrlImagen(data.UrlImagen);
-                            setImagenPremio(null);
-                        } else {
-                            setUrlImagen(null);
-                            setImagenPremio(null);
-                        }
-                        if (!data.Sucursales || data.Sucursales.length === 0) {
+                        setUrlImagen(res?.urlImagen);
+                        setImagenPremio(null);
+
+                        if (!res?.sucursales || res?.sucursales?.length === 0) {
                             setSucursales(["Todas"]);
                         } else {
                             const sucursalesAsignadas = [];
-                            data.Sucursales.forEach((idSucursal) => {
+                            res.sucursales?.forEach((idSucursal) => {
                                 const suc = sucursalesConId?.find((s) => s.idUsuarioEmpresa === idSucursal);
                                 if (suc) sucursalesAsignadas.push(suc.direccionLocal);
                             });
@@ -120,17 +114,18 @@ export default function ModificarPremio() {
                         setTimeout(() => navigate("/"), 3000);
                         break;
                     default:
-                        setMessage("Error al cargar premio");
+                        setMessage(CheckOnline());
                         setShowModal(true);
                         break;
                 }
-            } else {
-                setMessage(navigator.onLine ? "El servidor no responde. Intente más tarde." : "Se perdió la conexión a internet");
+            } catch {
+                setMessage("Ha ocurrido un problema en la aplicación. Por favor, intente más tarde.");
                 setShowModal(true);
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
         }
-        cargaPremio();
+        )()
     }, [id]);
 
     function handleChangeDays(e) {
@@ -390,13 +385,13 @@ export default function ModificarPremio() {
                 </div>
 
                 <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>
-                    <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} checked={dias[0]} disabled={updated} />
-                    <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} checked={dias[1]} disabled={updated} />
-                    <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} checked={dias[2]} disabled={updated} />
-                    <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} checked={dias[3]} disabled={updated} />
-                    <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} checked={dias[4]} disabled={updated} />
-                    <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} checked={dias[5]} disabled={updated} />
-                    <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} checked={dias[6]} disabled={updated} />
+                    <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} value={dias[0]} />
+                    <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} value={dias[1]} />
+                    <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} value={dias[2]} />
+                    <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} value={dias[3]} />
+                    <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} value={dias[4]} />
+                    <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} value={dias[5]} />
+                    <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} value={dias[6]} />
                 </div>
 
                 <div

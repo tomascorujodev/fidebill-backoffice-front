@@ -100,17 +100,10 @@ export default function CardPremio({
         </p>
 
         <div className="premio-info">
-          <div className="info-item">
             <span className="info-label">📅 Días:</span>
             <span className="info-valor">{formatDiasTexto()}</span>
-          </div>
-
-          <div className="info-item">
             <span className="info-label">⏰ Vigencia:</span>
             <span className="info-valor">{formatVigencia()}</span>
-          </div>
-
-          <div className="info-item">
             <span className="info-label">🏪 Sucursales:</span>
             <span className="info-valor">
               {sucursales ?
@@ -118,7 +111,6 @@ export default function CardPremio({
                 : "Todas"
               }
             </span>
-          </div>
         </div>
 
         {renderSellosEntrada()}
