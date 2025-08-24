@@ -158,6 +158,7 @@ export default function ViewModificarBeneficio() {
         imagenPromocion,
         {
           IdBeneficio: location.get("id"),
+          Titulo: titulo,
           Tipo: tipo,
           Descripcion: descripcion,
           Dias: dias,
