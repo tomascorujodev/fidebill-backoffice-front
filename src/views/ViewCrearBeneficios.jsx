@@ -127,7 +127,7 @@ export default function ViewCrearBeneficios() {
         });
       }
       let response = await POSTFormData(
-        "beneficios/cargar",
+        "beneficios/cargarbeneficio",
         imagenPromocion,
         {
           Titulo: titulo,
@@ -285,7 +285,7 @@ export default function ViewCrearBeneficios() {
         />
         <select
           style={{
-            gridColumn: "2 / 4",
+            gridColumn: "2 / 3",
             gridRow: "3",
             display: "flex",
             height: "40px",

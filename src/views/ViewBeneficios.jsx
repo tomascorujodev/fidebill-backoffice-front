@@ -15,7 +15,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
 
     useEffect(() => {
         async function obtenerBeneficios() {
-            let result = await GET("beneficios/obtener")
+            let result = await GET("beneficios/obtenerbeneficios")
             if (!result) {
                 if (navigator.onLine) {
                     setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo")
@@ -28,7 +28,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
             switch (result.status) {
                 case 200:
                     result = await result.json();
-                    setBeneficios(result);
+                    setBeneficios(result.beneficiosAgrupados);
                     break;
                 case 204:
                     setMessage("Aun no tiene beneficios cargados. Publique beneficios para que sus clientes puedan aprovechar todas las promociones que tienen disponibles!🥳🥳🥳")
@@ -111,7 +111,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                         gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))",
                     }}>
                         {
-                            beneficios &&
+                            (beneficios && beneficios.length > 0) &&
                             beneficios.map(beneficio => (
                                 <CardBenefit key={beneficio.idBeneficio} id={beneficio.idBeneficio} descripcion={beneficio.descripcion} titulo={beneficio.direccionLocal}
                                     tipo={beneficio.tipo}
