@@ -248,16 +248,18 @@ export default function FormAgregarCliente() {
             </div>
             :
             <>
-              <button
-                style={{
-                  marginTop: "0px",
-                  marginBottom: "10px",
-                }}
-                type="submit"
-                className="btn btn-success w-25 mt-3 custom-button"
-              >
-                Agregar Cliente
-              </button>
+              <div className="d-flex justify-content-end">
+                <button
+                  style={{
+                    marginTop: "0px",
+                    marginBottom: "10px",
+                  }}
+                  type="submit"
+                  className="btn btn-success w-25 mt-3 custom-button"
+                >
+                  Agregar Cliente
+                </button>
+              </div>
             </>
           }
         </form>

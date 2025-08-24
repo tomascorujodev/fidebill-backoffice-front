@@ -53,42 +53,47 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
     }, [reload])
 
     async function eliminarBeneficio() {
-        setLoading(true)
-        let result = await DELETE("beneficios/eliminarbeneficio", { IdBeneficio: eliminar })
-        setEliminar(null);
-        if (!result) {
-            if (navigator.onLine) {
-                setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo. Si el problema persiste comuniquese con un administrador")
-            } else {
-                setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
+        try {
+
+            setLoading(true)
+            let result = await DELETE("beneficios/eliminar", { IdBeneficio: eliminar })
+            setEliminar(null);
+            if (!result) {
+                if (navigator.onLine) {
+                    setMessage("Ha ocurrido un problema. Por favor, espere unos instantes y vuelva a intentarlo. Si el problema persiste comuniquese con un administrador")
+                } else {
+                    setMessage("Ups... no hay conexion a internet. Verifique la red y vuelva a intentarlo.")
+                }
+                setLoading(false);
+                return;
             }
+            switch (result.status) {
+                case 200:
+                    setMessage("El beneficio se ha eliminado correctamente");
+                    setReload(reload + 1);
+                    break;
+                case 204:
+                    setMessage("No se encontró el beneficio a eliminar. Si el problema persiste, por favor, contacte con un administrador.")
+                    break;
+                case 401:
+                    localStorage.clear();
+                    setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
+                    setTimeout(() => {
+                        window.location.replace("/admin")
+                    }, 4000)
+                    break;
+                case 500:
+                    setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                    break;
+                default:
+                    setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
+                    break;
+            }
+        } catch {
+            setMessage("Ha ocurrido un error. Si el problema persiste, por favor, contacte con un administrados");
+        } finally {
             setLoading(false);
-            return;
         }
-        switch (result.status) {
-            case 200:
-                result = await result.json();
-                setMessage("El beneficio se ha eliminado correctamente");
-                setReload(reload+1);
-                break;
-            case 204:
-                setMessage("No se encontró el beneficio a eliminar. Si el problema persiste, por favor, contacte con un administrador.")
-                break;
-            case 401:
-                localStorage.clear();
-                setMessage("Ups... parece que tus credenciales expiraron. Por favor, inicie sesion nuevamente");
-                setTimeout(() => {
-                    window.location.replace("/admin")
-                }, 4000)
-                break;
-            case 500:
-                setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
-                break;
-            default:
-                setMessage("Ha ocurrido un problema en el servidor. Aguardenos unos minutos y vuelva a intentarlo");
-                break;
-        }
-        setLoading(false);
     }
 
     return (
@@ -106,7 +111,7 @@ export default function ViewBeneficios({ setIsLoggedIn }) {
                         gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))",
                     }}>
                         {
-                            beneficios &&
+                            (beneficios && beneficios.length > 0) &&
                             beneficios.map(beneficio => (
                                 <CardBenefit key={beneficio.idBeneficio} id={beneficio.idBeneficio} descripcion={beneficio.descripcion} titulo={beneficio.direccionLocal}
                                     tipo={beneficio.tipo}

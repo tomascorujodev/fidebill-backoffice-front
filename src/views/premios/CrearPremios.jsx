@@ -1,58 +1,81 @@
-import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../services/Fetch";
+import { useEffect, useState, useReducer } from "react";
+import { GET, POSTFormData } from "../../services/Fetch.js";
 import { Modal, Button } from "react-bootstrap";
-import CheckInput from "../components/CheckInput";
-import jwtDecode from "../utils/jwtDecode";
-import CardBenefit from "../components/CardBenefit";
+import CheckInput from "../../components/CheckInput.jsx";
+import jwtDecode from "../../utils/jwtDecode.jsx";
 import { useNavigate } from "react-router-dom";
+import CardPremio from "../../components/CardPremio.jsx";
 
-export default function ViewCrearBeneficios() {
+
+export default function CrearPremios() {
   const [isLoading, setIsLoading] = useState(false);
-  const [titulo, setTitulo] = useState("");
-  const [tipo, setTipo] = useState("");
-  const [created, setCreated] = useState(false);
+  const [nombrePremio, setNombrePremio] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [sellosRequeridos, setSellosRequeridos] = useState(5);
   const [dias, setDias] = useState([false, false, false, false, false, false, false]);
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [habilitarFechaInicio, setHabilitarFechaInicio] = useState(true);
   const [habilitarFechaFin, setHabilitarFechaFin] = useState(true);
-  const [imagenPromocion, setImagenPromocion] = useState(null);
+  const [imagenPremio, setImagenPremio] = useState(null);
   const [urlImagen, setUrlImagen] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
-  const [porcentajeReintegro, setPorcentajeReintegro] = useState(3);
   const [sucursales, setSucursales] = useState(["Todas"]);
   const [sucursalesConId, setSucursalesConId] = useState(null);
   const [sucursalesDisponibles, setSucursalesDisponibles] = useState([]);
   const [selectedSucursal, setSelectedSucursal] = useState("");
   const [isConfirmation, setIsConfirmation] = useState(false);
+  const [created, setCreated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function cargaInicial() {
       let locales = await GET("beneficios/obtenerlocales");
       if (locales) {
-        locales = await locales.json();
-        setSucursalesConId(locales);
-        let tmp = [];
-        locales.map((local) => {
-          tmp.push(local.direccionLocal);
-        });
-        setSucursalesDisponibles(tmp);
+        switch (locales.status) {
+          case 200:
+            locales = await locales.json();
+            setSucursalesConId(locales);
+            let tmp = [];
+            locales?.map((local) => {
+              tmp.push(local.direccionLocal);
+            });
+            setSucursalesDisponibles(tmp);
+            break;
+          case 204:
+            setMessage("No hay sucursales disponibles para su empresa");
+            setShowModal(true);
+            break;
+          case 401:
+            setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+            setTimeout(() => {
+              navigate("/");
+            }, 3000);
+            setShowModal(true);
+            break;
+          case 500:
+            setMessage("Error al cargar las sucursales. Por favor, contacte con un administrador");
+            setShowModal(true);
+            break;
+          default:
+            setMessage("Error desconocido al cargar las sucursales");
+            setShowModal(true);
+            break;
+        }
       } else {
         if (navigator.onLine) {
           setMessage(
             "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con un administrador"
           );
         } else {
-          setMessage("Se perdio la conexion a internet");
+          setMessage("Se perdió la conexión a internet");
         }
         setShowModal(true);
       }
     }
     cargaInicial();
-  }, []);
+  }, [navigate]);
 
   function handleChangeDays(e) {
     const newDias = [...dias];
@@ -62,11 +85,25 @@ export default function ViewCrearBeneficios() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!titulo.trim()) {
-      setMessage("El título es obligatorio");
+
+    if (!nombrePremio.trim()) {
+      setMessage("El nombre del premio es obligatorio");
       setShowModal(true);
       return;
     }
+
+    if (!descripcion.trim()) {
+      setMessage("La descripción del premio es obligatoria");
+      setShowModal(true);
+      return;
+    }
+
+    if (sellosRequeridos < 1 || sellosRequeridos > 50) {
+      setMessage("Los sellos requeridos deben estar entre 1 y 50");
+      setShowModal(true);
+      return;
+    }
+
     if (habilitarFechaInicio && !fechaInicio) {
       setMessage("La fecha de inicio aun no ha sido establecida");
       setShowModal(true);
@@ -103,10 +140,11 @@ export default function ViewCrearBeneficios() {
 
     if (!isConfirmation) {
       setIsConfirmation(true);
-      setMessage("Está a punto de crear una publicación visible para sus clientes. Por favor, verifique que todos los datos sean correctos antes de continuar. ¿Desea publicar?");
+      setMessage("Está a punto de crear un premio visible para sus clientes. Los clientes podrán canjear este premio al acumular los sellos requeridos. ¿Desea publicar?");
       setShowModal(true);
-      return
+      return;
     }
+
     setIsConfirmation(false);
     setIsLoading(true);
     try {
@@ -126,26 +164,40 @@ export default function ViewCrearBeneficios() {
           });
         });
       }
+
+      const premioData = {
+        Nombre: nombrePremio,
+        Descripcion: descripcion,
+        Sellos: sellosRequeridos,
+        Dias: dias,
+        FechaInicio: habilitarFechaInicio ? fechaInicio : null,
+        FechaFin: habilitarFechaFin ? fechaFin : null,
+        Sucursales: tmp
+      };
+
       let response = await POSTFormData(
-        "beneficios/cargarbeneficio",
-        imagenPromocion,
-        {
-          Titulo: titulo,
-          Tipo: tipo,
-          Descripcion: descripcion,
-          Dias: dias,
-          PorcentajeReintegro:
-            tipo === "Reintegro de puntos" && porcentajeReintegro,
-          FechaInicio: habilitarFechaInicio ? fechaInicio : null,
-          FechaFin: habilitarFechaFin ? fechaFin : null,
-          Sucursales: tmp,
-        }
+        "premios/cargar",
+        imagenPremio,
+        premioData
       );
+
       if (response) {
         switch (response.status) {
           case 200:
-            setMessage("La promocion se ha cargado correctamente.");
+            setMessage("El premio se ha creado correctamente.");
             setCreated(true);
+            setNombrePremio("");
+            setDescripcion("");
+            setSellosRequeridos(5);
+            setDias([false, false, false, false, false, false, false]);
+            setFechaInicio("");
+            setFechaFin("");
+            setHabilitarFechaInicio(true);
+            setHabilitarFechaFin(true);
+            setImagenPremio(null);
+            setUrlImagen(null);
+            setSucursales(["Todas"]);
+            setSelectedSucursal("");
             break;
           case 400:
             setMessage(
@@ -153,7 +205,10 @@ export default function ViewCrearBeneficios() {
             );
             break;
           case 401:
-            navigate("/")
+            setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
+            setTimeout(() => {
+              navigate("/");
+            }, 3000);
             break;
           case 500:
             setMessage(
@@ -161,8 +216,12 @@ export default function ViewCrearBeneficios() {
             );
             break;
           default:
-            response = await response.json();
-            setMessage(response.message);
+            try {
+              const errorData = await response.json();
+              setMessage(errorData.message || "Error desconocido");
+            } catch {
+              setMessage("Error al procesar la respuesta del servidor");
+            }
             break;
         }
       } else {
@@ -171,16 +230,16 @@ export default function ViewCrearBeneficios() {
             "El servidor no responde. Por favor vuelva a intentarlo en unos minutos. Si el problema persiste contáctese con un administrador"
           );
         } else {
-          setMessage("Se perdio la conexion a internet");
+          setMessage("Se perdió la conexión a internet");
         }
       }
       setShowModal(true);
-    } catch {
+    } catch (error) {
+      console.error("Error al crear premio:", error);
       setMessage(
-        "¡ups! Hubo un error al intentar procesar su peticion. Por favor intentelo nuevamente, y si el error persiste, contacte con un administrador."
+        "¡Ups! Hubo un error al intentar procesar su petición. Por favor inténtelo nuevamente, y si el error persiste, contacte con un administrador."
       );
       setShowModal(true);
-      setIsLoading(false);
     }
     setIsLoading(false);
   }
@@ -189,12 +248,12 @@ export default function ViewCrearBeneficios() {
     let archivo = e.target.files[0];
     if (archivo && ["image/jpeg", "image/png", "image/svg+xml"].includes(archivo.type)) {
       if (archivo.size <= 1048576) {
-        setImagenPromocion(archivo);
+        setImagenPremio(archivo);
         setUrlImagen(URL.createObjectURL(archivo));
       } else {
         setMessage("La imagen excede el tamaño máximo permitido de 1MB");
         setShowModal(true);
-        setImagenPromocion(null);
+        setImagenPremio(null);
         setUrlImagen(null);
         e.target.value = null;
       }
@@ -202,7 +261,7 @@ export default function ViewCrearBeneficios() {
       setMessage("El formato de archivo no es compatible");
       setShowModal(true);
       setUrlImagen(null);
-      setImagenPromocion(null);
+      setImagenPremio(null);
       e.target.value = "";
     }
   }
@@ -241,15 +300,17 @@ export default function ViewCrearBeneficios() {
         className="card-rounded"
         style={{
           display: "grid",
-          gridTemplateColumns: "250px 1fr 1fr 0.2fr 1fr 0.1fr",
-          gridTemplateRows: "120px 90px 110px 90px 110px 90px 140px 90px 90px",
+          gridTemplateColumns: "250px 1fr 1fr 80px 1fr 1fr",
+          gridTemplateRows: "90px 100px 120px 100px 120px 100px 150px 100px 100px 100px",
+          gap: "28px"
         }}
       >
-        <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Beneficios</h2>
-        <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Titulo(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Tipo(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Descripcion(*)</h4>
-        <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Fecha</h4>
+        <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Premios</h2>
+        <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Nombre(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Descripción(*)</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Sellos</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Días</h4>
+        <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Fechas</h4>
         <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Sucursales</h4>
         <h4 style={{ gridColumn: "1", gridRow: "8", paddingRight: "16px" }}>Imagen</h4>
 
@@ -257,20 +318,23 @@ export default function ViewCrearBeneficios() {
           style={{
             gridColumn: "4",
             gridRow: "1 / span 8",
-            borderLeft: "1px solid gray",
+            borderLeft: "2px solid #e0e0e0",
             height: "auto",
             alignSelf: "stretch",
             justifySelf: "center",
           }}
         ></div>
 
-        <div style={{ gridColumn: "5", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
-          <h4>Vista Previa</h4>
-          <p style={{ color: "gray", fontSize: "12px" }}>
-            📌 Recomendación: Para una mejor visualización, suba imágenes con
-            una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
+        <div style={{ gridColumn: "5 / 7", gridRow: "1", alignSelf: "start", paddingLeft: "20px", paddingBottom: "24px" }}>
+          <h4 style={{ color: "#333", marginBottom: "16px", fontSize: "20px" }}>Vista Previa</h4>
+          <p style={{ color: "#666", fontSize: "14px", marginBottom: "18px", lineHeight: "1.4" }}>
+            📌 Los clientes podrán canjear este premio al acumular <strong>{sellosRequeridos}</strong> sellos.
+          </p>
+          <p style={{ color: "#666", fontSize: "13px", marginBottom: "24px", lineHeight: "1.4" }}>
+            💡 Recomendación: Para una mejor visualización, suba imágenes con una relación de aspecto 4:3 (Ejemplo: 1200x900, 800x600, 400x300).
           </p>
         </div>
+
         <input
           style={{
             gridColumn: "2 / 4",
@@ -279,70 +343,56 @@ export default function ViewCrearBeneficios() {
             height: "40px",
           }}
           className="form-control"
-          id="Titulo"
-          value={titulo}
-          onChange={(e) => setTitulo(e.target.value)}
+          type="text"
+          maxLength="100"
+          placeholder="Ej: Descuento 50% en pizza"
+          value={nombrePremio}
+          onChange={(e) => setNombrePremio(e.target.value)}
         />
-        <select
-          style={{
-            gridColumn: "2 / 3",
-            gridRow: "3",
-            display: "flex",
-            height: "40px",
-          }}
-          className="form-control"
-          id="Tipo"
-          value={tipo}
-          onChange={(e) => setTipo(e.target.value)}
-        >
-          <option value="">Selecciona una opción</option>
-          <option value="Reintegro de puntos">Reintegro de puntos</option>
-          <option value="Promocion">Promoción</option>
-        </select>
-        {tipo === "Reintegro de puntos" && (
-          <span
-            style={{
-              gridColumn: "3",
-              gridRow: "3",
-              display: "flex",
-              height: "40px",
-              width: "100px",
-              alignItems: "center",
-            }}
-            className="d-flex flex-row align-content-center"
-          >
-            <span style={{ marginInline: "8px" }}>%</span>
-            <input
-              style={{ width: "70px" }}
-              type="number"
-              min="3"
-              max="100"
-              className="form-control"
-              id="PorcentajeReintegro"
-              value={porcentajeReintegro}
-              onChange={(e) => setPorcentajeReintegro(e.target.value)}
-            />
-          </span>
-        )}
-        <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3">
+
+        <div style={{ gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }} className="mb-3">
           <textarea
             style={{ maxHeight: "95px" }}
             className="form-control"
-            maxLength="1500"
-            id="Descripcion"
+            maxLength="500"
+            placeholder="Describe el premio que recibirán los clientes..."
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
           />
         </div>
-        <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>
-          <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} />
-          <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} />
-          <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} />
-          <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} />
-          <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} />
-          <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} />
-          <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} />
+
+        <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3 d-flex align-items-center">
+          <label htmlFor="sellosRequeridos" className="me-3">
+            Sellos requeridos:
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="50"
+            className="form-control"
+            style={{ width: "100px" }}
+            id="sellosRequeridos"
+            value={sellosRequeridos}
+            onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
+          />
+          <span className="ms-2 text-muted">(1-50)</span>
         </div>
+
+        <div style={{ gridColumn: "2 / 4", gridRow: "5", paddingRight: "16px" }} className="mb-3">
+          <div className="mb-3">
+            <label className="form-label">Días disponibles:</label>
+            <div className="d-flex gap-2">
+              <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} />
+              <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} />
+              <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} />
+              <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} />
+              <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} />
+              <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} />
+              <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} />
+            </div>
+          </div>
+        </div>
+
         <div
           style={{ gridColumn: "2 / 4", gridRow: "6", paddingRight: "16px" }}
           className="mb-3 d-flex align-content-center"
@@ -386,8 +436,9 @@ export default function ViewCrearBeneficios() {
             />
           </div>
         </div>
+
         <div
-          style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "150px", paddingRight: "16px" }}
+          style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "120px", paddingRight: "16px" }}
           className="mb-3"
         >
           <select
@@ -399,40 +450,42 @@ export default function ViewCrearBeneficios() {
             <option value="" disabled>
               Seleccione una sucursal
             </option>
-            {sucursalesDisponibles.map((sucursal, index) => (
+            {sucursalesDisponibles && sucursalesDisponibles.map((sucursal, index) => (
               <option key={index} value={sucursal}>
                 {sucursal}
               </option>
             ))}
           </select>
           <div className="mt-2 border p-2" style={{ minHeight: "50px" }}>
-            {sucursales.map((sucursal, index) => (
-              <span
-                key={index}
-                style={{ fontSize: "14px" }}
-                className="badge bg-light text-dark me-2 mb-2"
-              >
-                {sucursal}{" "}
-                <button
-                  name={sucursal}
-                  type="button"
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#e06971",
-                    fontSize: "20px",
-                  }}
-                  onMouseEnter={(e) => (e.target.style.color = "#ff0000")}
-                  onMouseLeave={(e) => (e.target.style.color = "#dc3545")}
-                  className="btn btn-sm btn-danger ms-2"
-                  onClick={(e) => handleRemoveSucursal(e)}
+            {sucursales &&
+              sucursales?.map((sucursal, index) => (
+                <span
+                  key={index}
+                  style={{ fontSize: "14px" }}
+                  className="badge bg-light text-dark me-2 mb-2"
                 >
-                  X
-                </button>
-              </span>
-            ))}
+                  {sucursal}{" "}
+                  <button
+                    name={sucursal}
+                    type="button"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#e06971",
+                      fontSize: "20px",
+                    }}
+                    onMouseEnter={(e) => (e.target.style.color = "#ff0000")}
+                    onMouseLeave={(e) => (e.target.style.color = "#dc3545")}
+                    className="btn btn-sm btn-danger ms-2"
+                    onClick={(e) => handleRemoveSucursal(e)}
+                  >
+                    X
+                  </button>
+                </span>
+              ))}
           </div>
         </div>
+
         <div style={{ gridColumn: "2 / 3", gridRow: "8", paddingRight: "16px" }} className="mb-3">
           <input
             type="file"
@@ -441,26 +494,34 @@ export default function ViewCrearBeneficios() {
             onChange={handleUploadImage}
           />
         </div>
+
         <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
-          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPromocion(null) }} disabled={created}>Eliminar imagen</button>
+          <button className="btn btn-danger" onClick={() => { setUrlImagen(null); setImagenPremio(null) }} disabled={created}>Eliminar imagen</button>
         </div>
-        <div style={{ gridColumn: "5", gridRow: "2" }} className="mb-3">
-          <CardBenefit
-            descripcion={descripcion}
-            titulo={titulo}
-            tipo={tipo}
+        <div style={{ 
+          gridColumn: "5 / 7", 
+          gridRow: "2 / span 6", 
+          paddingLeft: "20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingTop: "20px"
+        }}>
+          <CardPremio 
+            urlImagen={urlImagen} 
+            nombrePremio={nombrePremio} 
+            descripcion={descripcion} 
+            sellosRequeridos={sellosRequeridos}
             dias={dias}
-            porcentajeReintegro={
-              tipo === "Reintegro de puntos" && porcentajeReintegro
-            }
-            fechaInicio={habilitarFechaInicio && fechaInicio}
-            fechaFin={habilitarFechaFin && fechaFin}
+            fechaInicio={habilitarFechaInicio ? fechaInicio : null}
+            fechaFin={habilitarFechaFin ? fechaFin : null}
             sucursales={sucursales}
-            urlImagen={urlImagen}
           />
         </div>
+
         <div
-          className="d-flex aling-content-center justify-content-center"
+          className="d-flex aling-content-center justify-content-end"
           style={{ gridColumn: "3", gridRow: "9" }}
         >
           {
@@ -471,20 +532,19 @@ export default function ViewCrearBeneficios() {
               :
               <button
                 style={{
-                  gridColumn: "6",
-                  gridRow: "9",
                   width: "170px",
                   height: "40px",
                 }}
-                className="btn btn-success mt-1"
+                className="btn btn-success"
                 onClick={handleSubmit}
                 disabled={created}
               >
-                Crear Beneficio
+                Crear Premio
               </button>
           }
         </div>
       </div>
+
       {
         isLoading ?
           <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -497,7 +557,7 @@ export default function ViewCrearBeneficios() {
             </Modal.Body>
           </Modal>
           :
-          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false) }}>
+          <Modal show={showModal} onHide={() => { setShowModal(false); setIsConfirmation(false); setCreated(false); }}>
             <Modal.Header closeButton>
               <Modal.Title>{isConfirmation ? "Confirmación" : created ? "Aviso" : "Error"}</Modal.Title>
             </Modal.Header>
@@ -519,4 +579,4 @@ export default function ViewCrearBeneficios() {
       }
     </div>
   );
-}
+} 

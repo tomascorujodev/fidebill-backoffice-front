@@ -15,7 +15,15 @@ import ViewModificarBeneficio from "./views/ViewModificarBeneficio";
 import ViewCrearBeneficios from "./views/ViewCrearBeneficios";
 import ViewBeneficios from "./views/ViewBeneficios";
 import ViewAppClientes from "./views/ViewAppClientes";
+import ViewFunciones from "./views/ViewFunciones";
+import ViewGestionCatalogo from "./views/ViewGestionCatalogo";
+import ViewGestionPremios from "./views/ViewGestionPremios";
 import jwtDecode from "./utils/jwtDecode";
+import VerPremios from "./views/premios/VerPremios.jsx";
+import CrearPremios from "./views/premios/CrearPremios.jsx";
+import ModificarPremio from "./views/premios/ModificarPremios.jsx";
+import CrearCatalogo from "./views/catalogo/CrearCatalogo.jsx";
+import ViewSellos from "./views/premios/ViewSellos.jsx";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -45,21 +53,40 @@ function App() {
             <Route element={<BackOffice />}>
               <Route path="/*" element={<ViewMenu></ViewMenu>}></Route>
               <Route path="/appclientes" element={<ViewAppClientes></ViewAppClientes>}></Route>
+              <Route path="/funciones" element={<ViewFunciones></ViewFunciones>}></Route>
               <Route path="cliente" element={<ViewClientes></ViewClientes>}></Route>
               <Route path="cliente/agregar-cliente" element={<FormAgregarCliente></FormAgregarCliente>} />
               <Route path="cliente/modificar-cliente/:id" element={<FormModificarCliente></FormModificarCliente>} />
               <Route path="compras" element={<ViewCompras></ViewCompras>}></Route>
-              <Route path="canjes" element={<ViewCanjes></ViewCanjes>}></Route>
+              <Route path="canjes" element={<ViewCanjes></ViewCanjes>} />
               <Route path="puntos" element={<ViewPuntos />} />
-              {
-                tokenDecoded?.rol &&
-                <>
-                  <Route path="beneficios/crearbeneficio" element={<ViewCrearBeneficios />} />
-                  <Route path="beneficios/verbeneficios" element={<ViewBeneficios />} />
-                  <Route path="beneficios/modificarbeneficio" element={<ViewModificarBeneficio />} />
-                </>
-              }
+              <Route path="premios">
+                <Route path="sellos" element={<ViewSellos />} />
+                <Route path="historial" element={<ViewGestionPremios />} />
+              </Route>
+              <Route path="gestion-premios" element={<ViewGestionCatalogo />} />
               <Route path="ayuda" element={<ViewSoporte />} />
+              {
+                tokenDecoded?.rol && (
+                  <>
+                    <Route path="beneficios">
+                      <Route path="crear" element={<ViewCrearBeneficios />} />
+                      <Route path="ver" element={<ViewBeneficios />} />
+                      <Route path="modificar" element={<ViewModificarBeneficio />} />
+                    </Route>
+
+                    <Route path="premios">
+                      <Route path="crear" element={<CrearPremios />} />
+                      <Route path="ver" element={<VerPremios />} />
+                      <Route path="modificar" element={<ModificarPremio />} />
+                    </Route>
+
+                    <Route path="catalogos">
+                      <Route path="crear" element={<CrearCatalogo />}></Route>
+                    </Route>
+                  </>
+                )
+              }
             </Route>
             :
             <>

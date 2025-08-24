@@ -59,7 +59,7 @@ export default async function imprimirComprobante({ documento, nombre, apellido,
 
         doc.text("--------------------------------", 2, counter);
         counter += 8;
-        doc.text(`PUNTOS ACUMULADOS: ${puntos}`, 2, counter);
+        doc.text(`PUNTOS ACUMULADOS: ${puntos.toFixed(2)}`, 2, counter);
         counter += 8;
         doc.text("--------------------------------", 2, counter);
         counter += 8;
