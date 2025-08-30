@@ -97,8 +97,8 @@ export default function CrearPremios() {
       return;
     }
 
-    if (sellosRequeridos < 1 || sellosRequeridos > 50) {
-      setMessage("Los sellos requeridos deben estar entre 1 y 50");
+    if (sellosRequeridos < 1 || sellosRequeridos > 15) {
+      setMessage("Los sellos requeridos deben estar entre 1 y 15");
       setShowModal(true);
       return;
     }
@@ -366,15 +366,15 @@ export default function CrearPremios() {
           </label>
           <input
             type="number"
-            min="1"
-            max="50"
+            min="2"
+            max="15"
             className="form-control"
             style={{ width: "100px" }}
             id="sellosRequeridos"
             value={sellosRequeridos}
-            onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
+            onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 2)}
           />
-          <span className="ms-2 text-muted">(1-50)</span>
+          <span className="ms-2 text-muted">(2-15)</span>
         </div>
 
         <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>

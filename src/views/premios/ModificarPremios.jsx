@@ -372,7 +372,7 @@ export default function ModificarPremio() {
                     </label>
                     <input
                         type="number"
-                        min="1"
+                        min="2"
                         max="15"
                         className="form-control"
                         style={{ width: "100px" }}
@@ -381,7 +381,7 @@ export default function ModificarPremio() {
                         onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
                         disabled={updated}
                     />
-                    <span className="ms-2 text-muted">(1-15)</span>
+                    <span className="ms-2 text-muted">(2-15)</span>
                 </div>
 
                 <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>

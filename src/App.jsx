@@ -63,6 +63,15 @@ function App() {
               <Route path="premios">
                 <Route path="sellos" element={<ViewSellos />} />
                 <Route path="historial" element={<ViewGestionPremios />} />
+                {
+                  tokenDecoded?.rol && (
+                    <>
+                      <Route path="crear" element={<CrearPremios />} />
+                      <Route path="ver" element={<VerPremios />} />
+                      <Route path="modificar" element={<ModificarPremio />} />
+                    </>
+                  )
+                }
               </Route>
               <Route path="gestion-premios" element={<ViewGestionCatalogo />} />
               <Route path="ayuda" element={<ViewSoporte />} />
@@ -74,13 +83,6 @@ function App() {
                       <Route path="ver" element={<ViewBeneficios />} />
                       <Route path="modificar" element={<ViewModificarBeneficio />} />
                     </Route>
-
-                    <Route path="premios">
-                      <Route path="crear" element={<CrearPremios />} />
-                      <Route path="ver" element={<VerPremios />} />
-                      <Route path="modificar" element={<ModificarPremio />} />
-                    </Route>
-
                     <Route path="catalogos">
                       <Route path="crear" element={<CrearCatalogo />}></Route>
                     </Route>
