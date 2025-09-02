@@ -106,7 +106,7 @@ export default function ViewPremios() {
                                 dias={premio.dias}
                                 fechaInicio={premio.fechaInicio}
                                 fechaFin={premio.fechaFin}
-                                sucursales={premio.usuariosEmpresa > 0 && premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
+                                sucursales={premio?.usuariosEmpresa && premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
                                 urlImagen={premio.urlImagen}
                                 eliminar={setEliminar}
                             />

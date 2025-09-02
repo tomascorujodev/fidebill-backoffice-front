@@ -1,13 +1,13 @@
 .premio-card-horizontal {
   display: flex;
-  width: 580px;
-  height: 280px;
+  min-width: 580px;
+  min-height: 280px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
-  margin: 15px auto;
+  margin: 20px;
   padding: 0px;
 }
 
@@ -181,10 +181,18 @@
   transition: all 0.3s ease;
 }
 
-.sello-punto.pendiente {
+.sello-punto {
   background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
   color: #999;
   border: 2px solid #d0d0d0;
+  font-size: 1.2rem;
+}
+
+.sello-punto.mas {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: 2px solid #28a745;
+  transform: scale(1.1);
 }
 
 .sello-punto.completado {
