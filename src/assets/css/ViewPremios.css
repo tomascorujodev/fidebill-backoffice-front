@@ -1,22 +1,37 @@
-.card-rounded {
-  display: grid;
-  grid-template-columns: 200px 1.5fr 0.6fr 20px 1fr 1fr;
-  grid-template-rows: 90px 80px 90px 100px 80px 100px 150px 100px 100px 100px;
-  gap: 28px;
+/* CardPremio.css */
+
+.premio-card-horizontal {
+  display: flex;
+  flex-direction: row; /* horizontal por defecto */
+  gap: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
 }
 
+/* Imagen y contenido */
+.premio-imagen {
+  flex: 0 0 150px; /* ancho fijo de la imagen */
+}
+.premio-contenido {
+  flex: 1; /* ocupa el resto del espacio */
+  padding: 12px;
+}
 
-
-@media (max-width: 1900px) {
-  .card-rounded {
-    grid-template-columns: 200px 1.5fr 0.6fr 20px;
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .premio-card-horizontal {
+    flex-direction: column; /* vertical cuando no entra */
+    align-items: center;
   }
-
-  .card-rounded .vista-previa {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    padding-left: 0;
-    padding-top: 20px;
-    border-top: 2px solid #e0e0e0;
+  .premio-imagen {
+    width: 100%;
+    max-width: 300px;
+  }
+  .premio-contenido {
+    width: 100%;
+    padding: 8px;
   }
 }

@@ -92,10 +92,7 @@ export default function ViewPremios() {
                         </div>
                     </div>
                 ) : (
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(38rem, 2fr))",
-                    }}>
+                    <div className="d-flex flex-wrap justify-content-center">
                         {premios && premios.map(premio => (
                             <CardPremio
                                 key={premio.idPremio}
@@ -112,7 +109,6 @@ export default function ViewPremios() {
                             />
                         ))}
                     </div>
-
                 )
             }
 
