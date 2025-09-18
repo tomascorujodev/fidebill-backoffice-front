@@ -351,43 +351,44 @@ export default function CrearPremios() {
               </div>
             </div>
 
-            <div className="row mb-3">
-              <div className="col-12 col-md-6">
-                <label className="form-label">Fecha de Inicio</label>
-                <div className="d-flex align-items-center gap-2">
+            <div className="mb-3 d-flex flex-wrap gap-3">
+              <div>
+                <label>
                   <input
                     type="checkbox"
+                    className="me-2"
                     checked={habilitarFechaInicio}
                     onChange={() =>
                       setHabilitarFechaInicio(!habilitarFechaInicio)
                     }
                   />
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={fechaInicio}
-                    onChange={(e) => setFechaInicio(e.target.value)}
-                    disabled={!habilitarFechaInicio}
-                  />
-                </div>
+                  Fecha de Inicio</label>
+                <input
+                  type="date"
+                  className="form-control mt-1"
+                  value={fechaInicio}
+                  onChange={(e) => setFechaInicio(e.target.value)}
+                  disabled={!habilitarFechaInicio}
+                />
               </div>
 
-              <div className="col-12 col-md-6">
-                <label className="form-label">Fecha de Fin</label>
-                <div className="d-flex align-items-center gap-2">
+              <div>
+                <label>
                   <input
                     type="checkbox"
                     checked={habilitarFechaFin}
+                    className="me-2"
                     onChange={() => setHabilitarFechaFin(!habilitarFechaFin)}
                   />
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={fechaFin}
-                    onChange={(e) => setFechaFin(e.target.value)}
-                    disabled={!habilitarFechaFin}
-                  />
-                </div>
+                  Fecha de Fin
+                </label>
+                <input
+                  type="date"
+                  className="form-control mt-1"
+                  value={fechaFin}
+                  onChange={(e) => setFechaFin(e.target.value)}
+                  disabled={!habilitarFechaFin}
+                />
               </div>
             </div>
 
@@ -528,6 +529,6 @@ export default function CrearPremios() {
             </Modal.Footer>
           </Modal>
       }
-    </div>
+    </div >
   );
 } 

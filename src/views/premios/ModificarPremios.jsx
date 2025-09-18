@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GET, POSTFormData } from "../../services/Fetch.js";
+import { GET, PATCHFormData, POSTFormData } from "../../services/Fetch.js";
 import { Modal, Button } from "react-bootstrap";
 import CheckInput from "../../components/CheckInput.jsx";
 import jwtDecode from "../../utils/jwtDecode.jsx";
@@ -32,40 +32,6 @@ export default function ModificarPremio() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function cargaLocales() {
-            const localesResponse = await GET("beneficios/obtenerlocales");
-            if (localesResponse) {
-                switch (localesResponse.status) {
-                    case 200:
-                        const locales = await localesResponse.json();
-                        setSucursalesConId(locales);
-                        const direcciones = locales.map((l) => l.direccionLocal);
-                        setSucursalesDisponibles(direcciones.length > 0 ? direcciones : ["Todas"]);
-                        break;
-                    case 204:
-                        setMessage("No hay sucursales disponibles para su empresa");
-                        setShowModal(true);
-                        break;
-                    case 401:
-                        setMessage("Sus credenciales han expirado. Por favor, inicie sesión nuevamente.");
-                        setShowModal(true);
-                        setTimeout(() => navigate("/"), 3000);
-                        break;
-                    default:
-                        setMessage("Error al cargar las sucursales");
-                        setShowModal(true);
-                        break;
-                }
-            } else {
-                setMessage(CheckOnline());
-                setShowModal(true);
-            }
-        }
-
-        cargaLocales();
-    }, [navigate]);
-
-    useEffect(() => {
         if (!id) return;
         (async () => {
             try {
@@ -93,16 +59,36 @@ export default function ModificarPremio() {
                         setUrlImagen(res?.urlImagen);
                         setImagenPremio(null);
 
-                        if (!res?.sucursales || res?.sucursales?.length === 0) {
+                        if (!res?.usuariosEmpresa || res?.usuariosEmpresa?.length === 0) {
                             setSucursales(["Todas"]);
                         } else {
-                            const sucursalesAsignadas = [];
-                            res.sucursales?.forEach((idSucursal) => {
-                                const suc = sucursalesConId?.find((s) => s.idUsuarioEmpresa === idSucursal);
-                                if (suc) sucursalesAsignadas.push(suc.direccionLocal);
+                            let locales = await GET("beneficios/obtenerlocales");
+                            locales = await locales.json();
+                            setSucursalesConId(locales);
+                            let sucursalesAsignadas = [];
+                            res.usuariosEmpresa?.forEach((sucursal) => {
+                                sucursalesAsignadas.push(sucursal.nombreUsuarioEmpresa)
                             });
-                            setSucursales(sucursalesAsignadas.length > 0 ? sucursalesAsignadas : ["Todas"]);
+                            let tmp = [];
+                            locales.map(local => {
+                                let flag = false;
+                                sucursalesAsignadas.map(nombreUsuarioEmpresa => {
+                                    if (local.direccionLocal === nombreUsuarioEmpresa) {
+                                        flag = true;
+                                    }
+                                })
+                                if (!flag) {
+                                    tmp.push(local.direccionLocal);
+                                }
+                            })
+                            if (sucursalesAsignadas.length === 0) { sucursalesAsignadas.push("Todas") };
+                            setSucursales(sucursalesAsignadas);
+                            if (sucursalesAsignadas != "Todas") {
+                                tmp.push("Todas");
+                            }
+                            setSucursalesDisponibles(tmp);
                         }
+
                         break;
                     case 404:
                         setMessage("El premio no existe");
@@ -118,7 +104,8 @@ export default function ModificarPremio() {
                         setShowModal(true);
                         break;
                 }
-            } catch {
+            } catch (err) {
+                console.log(err);
                 setMessage("Ha ocurrido un problema en la aplicación. Por favor, intente más tarde.");
                 setShowModal(true);
             } finally {
@@ -217,6 +204,11 @@ export default function ModificarPremio() {
             setShowModal(true);
             return;
         }
+        if (sucursales.length === 0) {
+            setMessage("Debe seleccionar al menos una sucursal para aplicar su beneficio");
+            setShowModal(true);
+            return;
+        }
 
         if (!isConfirmation) {
             setIsConfirmation(true);
@@ -249,7 +241,7 @@ export default function ModificarPremio() {
             }
 
             const premioData = {
-                Id: id,
+                IdPremio: id,
                 Nombre: nombrePremio,
                 Descripcion: descripcion,
                 Sellos: sellosRequeridos,
@@ -259,7 +251,7 @@ export default function ModificarPremio() {
                 Sucursales: sucursalesIds,
             };
 
-            const response = await POSTFormData("premios/modificar", imagenPremio, premioData);
+            const response = await PATCHFormData("premios/modificar", imagenPremio, premioData);
 
             if (response) {
                 switch (response.status) {
@@ -309,249 +301,207 @@ export default function ModificarPremio() {
 
     return (
         <div className="container">
-            <div
-                className="card-rounded"
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "250px 1fr 1fr 40px 1fr",
-                    gridTemplateRows: "90px 90px 110px 90px 80px 90px 140px 90px 90px 90px",
-                    gap: "16px",
-                }}
-            >
-                <h2 style={{ gridColumn: "1", gridRow: "1", paddingRight: "16px" }}>Modificar Premio</h2>
-                <h4 style={{ gridColumn: "1", gridRow: "2", paddingRight: "16px" }}>Nombre(*)</h4>
-                <h4 style={{ gridColumn: "1", gridRow: "3", paddingRight: "16px" }}>Descripción(*)</h4>
-                <h4 style={{ gridColumn: "1", gridRow: "4", paddingRight: "16px" }}>Sellos</h4>
-                <h4 style={{ gridColumn: "1", gridRow: "5", paddingRight: "16px" }}>Días</h4>
-                <h4 style={{ gridColumn: "1", gridRow: "6", paddingRight: "16px" }}>Fechas</h4>
-                <h4 style={{ gridColumn: "1", gridRow: "7", paddingRight: "16px" }}>Sucursales</h4>
-                <h4 style={{ gridColumn: "1", gridRow: "8", paddingRight: "16px" }}>Imagen</h4>
+            <div className="card-rounded p-3">
+                <div className="row g-4">
+                    <div className="col-12 col-xl-6">
+                        <h2 className="mb-4">Modificar Premio</h2>
 
-                <div
-                    style={{
-                        gridColumn: "4",
-                        gridRow: "1 / span 8",
-                        borderLeft: "1px solid gray",
-                        height: "auto",
-                        alignSelf: "stretch",
-                        justifySelf: "center",
-                    }}
-                ></div>
-
-                <div style={{ gridColumn: "5", gridRow: "1", alignSelf: "start", paddingLeft: "16px" }}>
-                    <h4>Vista Previa</h4>
-                    <p style={{ color: "gray", fontSize: "12px" }}>
-                        📌 Los clientes podrán canjear este premio al acumular {sellosRequeridos} sellos.
-                    </p>
-                </div>
-
-                <input
-                    style={{ gridColumn: "2 / 4", gridRow: "2", display: "flex", height: "40px" }}
-                    className="form-control"
-                    type="text"
-                    maxLength="100"
-                    placeholder="Ej: Descuento 50% en pizza"
-                    value={nombrePremio}
-                    onChange={(e) => setNombrePremio(e.target.value)}
-                    disabled={updated}
-                />
-
-                <textarea
-                    style={{ maxHeight: "95px", gridColumn: "2 / 4", gridRow: "3", paddingRight: "16px" }}
-                    className="form-control"
-                    maxLength="500"
-                    placeholder="Describe el premio que recibirán los clientes..."
-                    value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
-                    disabled={updated}
-                />
-
-                <div style={{ gridColumn: "2 / 4", gridRow: "4", paddingRight: "16px" }} className="mb-3 d-flex align-items-center">
-                    <label htmlFor="sellosRequeridos" className="me-3">
-                        Sellos requeridos:
-                    </label>
-                    <input
-                        type="number"
-                        min="2"
-                        max="15"
-                        className="form-control"
-                        style={{ width: "100px" }}
-                        id="sellosRequeridos"
-                        value={sellosRequeridos}
-                        onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
-                        disabled={updated}
-                    />
-                    <span className="ms-2 text-muted">(2-15)</span>
-                </div>
-
-                <div style={{ gridColumn: "2 / 5", gridRow: "5", paddingRight: "16px" }}>
-                    <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} value={dias[0]} />
-                    <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} value={dias[1]} />
-                    <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} value={dias[2]} />
-                    <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} value={dias[3]} />
-                    <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} value={dias[4]} />
-                    <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} value={dias[5]} />
-                    <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} value={dias[6]} />
-                </div>
-
-                <div
-                    style={{ gridColumn: "2 / 4", gridRow: "6", paddingRight: "16px" }}
-                    className="mb-3 d-flex align-content-center"
-                >
-                    <div>
-                        <label htmlFor="CheckFechaInicio" className="pe-4">
-                            Fecha de Inicio
-                        </label>
-                        <input
-                            type="checkbox"
-                            id="CheckFechaInicio"
-                            checked={habilitarFechaInicio}
-                            onChange={() => setHabilitarFechaInicio(!habilitarFechaInicio)}
-                            disabled={updated}
-                        />
-                        <input
-                            type="date"
-                            className="form-control"
-                            id="FechaInicio"
-                            value={fechaInicio}
-                            onChange={(e) => setFechaInicio(e.target.value)}
-                            disabled={!habilitarFechaInicio || updated}
-                        />
-                    </div>
-
-                    <div className="d-flex p-3 mt-3">-</div>
-
-                    <div>
-                        <label htmlFor="CheckFechaFin" className="pe-4">
-                            Fecha de Fin
-                        </label>
-                        <input
-                            type="checkbox"
-                            id="CheckFechaFin"
-                            checked={habilitarFechaFin}
-                            onChange={() => setHabilitarFechaFin(!habilitarFechaFin)}
-                            disabled={updated}
-                        />
-                        <input
-                            type="date"
-                            className="form-control"
-                            value={fechaFin}
-                            onChange={(e) => setFechaFin(e.target.value)}
-                            disabled={!habilitarFechaFin || updated}
-                        />
-                    </div>
-                </div>
-
-                <div
-                    style={{ gridColumn: "2 / 4", gridRow: "7", maxHeight: "120px", paddingRight: "16px" }}
-                    className="mb-3"
-                >
-                    <select
-                        className="form-control"
-                        id="Sucursales"
-                        value={selectedSucursal}
-                        onChange={handleSelectSucursal}
-                        disabled={updated}
-                    >
-                        <option value="" disabled>
-                            Seleccione una sucursal
-                        </option>
-                        {sucursalesDisponibles &&
-                            sucursalesDisponibles.map((sucursal, index) => (
-                                <option key={index} value={sucursal}>
-                                    {sucursal}
-                                </option>
-                            ))}
-                    </select>
-                    <div className="mt-2 border p-2" style={{ minHeight: "50px", overflowY: "auto" }}>
-                        {sucursales &&
-                            sucursales.map((sucursal, index) => (
-                                <span
-                                    key={index}
-                                    style={{ fontSize: "14px" }}
-                                    className="badge bg-light text-dark me-2 mb-2"
-                                >
-                                    {sucursal}{" "}
-                                    {!updated && (
-                                        <button
-                                            name={sucursal}
-                                            type="button"
-                                            style={{
-                                                background: "transparent",
-                                                border: "none",
-                                                color: "#e06971",
-                                                fontSize: "20px",
-                                                cursor: "pointer",
-                                            }}
-                                            onMouseEnter={(e) => (e.target.style.color = "#ff0000")}
-                                            onMouseLeave={(e) => (e.target.style.color = "#dc3545")}
-                                            className="btn btn-sm btn-danger ms-2"
-                                            onClick={handleRemoveSucursal}
-                                        >
-                                            X
-                                        </button>
-                                    )}
-                                </span>
-                            ))}
-                    </div>
-                </div>
-
-                <div style={{ gridColumn: "2 / 3", gridRow: "8", paddingRight: "16px" }} className="mb-3">
-                    <input
-                        type="file"
-                        className="form-control"
-                        accept="image/png, image/jpeg, image/svg+xml"
-                        onChange={handleUploadImage}
-                        disabled={updated}
-                    />
-                </div>
-
-                <div style={{ gridColumn: "3 / 4", gridRow: "8" }} className="mb-3 mx-4">
-                    <button
-                        className="btn btn-danger"
-                        onClick={() => {
-                            setUrlImagen(null);
-                            setImagenPremio(null);
-                        }}
-                        disabled={updated}
-                    >
-                        Eliminar imagen
-                    </button>
-                </div>
-
-                <div style={{ gridColumn: "5", gridRow: "2 / 9", paddingLeft: "16px" }}>
-                    <CardPremio urlImagen={urlImagen}
-                        nombre={nombrePremio}
-                        descripcion={descripcion}
-                        sellos={sellosRequeridos}
-                        dias={dias}
-                        fechaInicio={habilitarFechaInicio ? fechaInicio : null}
-                        fechaFin={habilitarFechaFin ? fechaFin : null}
-                        sucursales={sucursales}
-                    />
-                </div>
-
-                <div
-                    className="d-flex align-content-center justify-content-end"
-                    style={{ gridColumn: "5", gridRow: "9" }}
-                >
-                    {isLoading ? (
-                        <div className="spinner-border mt-4 mr-4" role="status">
-                            <span className="visually-hidden">Cargando...</span>
+                        <div className="mb-3">
+                            <label className="form-label">Nombre(*)</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                maxLength="100"
+                                placeholder="Ej: Descuento 50% en pizza"
+                                value={nombrePremio}
+                                onChange={(e) => setNombrePremio(e.target.value)}
+                                disabled={updated}
+                            />
                         </div>
-                    ) : (
-                        !updated && (
-                            <button
-                                style={{ width: "170px", height: "40px" }}
-                                className="btn btn-success"
-                                onClick={handleSubmit}
+
+                        <div className="mb-3">
+                            <label className="form-label">Descripción(*)</label>
+                            <textarea
+                                className="form-control"
+                                maxLength="500"
+                                placeholder="Describe el premio que recibirán los clientes..."
+                                value={descripcion}
+                                onChange={(e) => setDescripcion(e.target.value)}
+                                disabled={updated}
+                            />
+                        </div>
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <label htmlFor="sellosRequeridos" className="me-3">Sellos requeridos:</label>
+                            <input
+                                type="number"
+                                min="2"
+                                max="15"
+                                className="form-control"
+                                style={{ width: "100px" }}
+                                id="sellosRequeridos"
+                                value={sellosRequeridos}
+                                onChange={(e) => setSellosRequeridos(parseInt(e.target.value) || 1)}
+                                disabled={updated}
+                            />
+                            <span className="ms-2 text-muted">(2-15)</span>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Días</label>
+                            <div className="d-flex flex-wrap gap-2">
+                                <CheckInput dia={"L"} name={"0"} evento={handleChangeDays} value={dias[0]} />
+                                <CheckInput dia={"M"} name={"1"} evento={handleChangeDays} value={dias[1]} />
+                                <CheckInput dia={"X"} name={"2"} evento={handleChangeDays} value={dias[2]} />
+                                <CheckInput dia={"J"} name={"3"} evento={handleChangeDays} value={dias[3]} />
+                                <CheckInput dia={"V"} name={"4"} evento={handleChangeDays} value={dias[4]} />
+                                <CheckInput dia={"S"} name={"5"} evento={handleChangeDays} value={dias[5]} />
+                                <CheckInput dia={"D"} name={"6"} evento={handleChangeDays} value={dias[6]} />
+                            </div>
+                        </div>
+
+                        <div className="mb-3 d-flex flex-wrap gap-3">
+                            <div>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={habilitarFechaInicio}
+                                        onChange={() => setHabilitarFechaInicio(!habilitarFechaInicio)}
+                                        disabled={updated}
+                                        className="me-2"
+                                    />
+                                    Fecha de Inicio
+                                </label>
+                                <input
+                                    type="date"
+                                    className="form-control mt-1"
+                                    value={fechaInicio}
+                                    onChange={(e) => setFechaInicio(e.target.value)}
+                                    disabled={!habilitarFechaInicio || updated}
+                                />
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={habilitarFechaFin}
+                                        onChange={() => setHabilitarFechaFin(!habilitarFechaFin)}
+                                        disabled={updated}
+                                        className="me-2"
+                                    />
+                                    Fecha de Fin
+                                </label>
+                                <input
+                                    type="date"
+                                    className="form-control mt-1"
+                                    value={fechaFin}
+                                    onChange={(e) => setFechaFin(e.target.value)}
+                                    disabled={!habilitarFechaFin || updated}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mb-3">
+                            <label>Sucursales</label>
+                            <select
+                                className="form-control"
+                                value={selectedSucursal}
+                                onChange={handleSelectSucursal}
+                                disabled={updated}
                             >
-                                Actualizar Premio
-                            </button>
-                        )
-                    )}
+                                <option value="" disabled>Seleccione una sucursal</option>
+                                {sucursalesDisponibles.map((s, i) => (
+                                    <option key={i} value={s}>{s}</option>
+                                ))}
+                            </select>
+                            <div className="mt-2 border p-2" style={{ minHeight: "50px", overflowY: "auto" }}>
+                                {sucursales.map((s, i) => (
+                                    <span key={i} className="badge bg-light text-dark me-2 mb-2">
+                                        {s}{" "}
+                                        {!updated && (
+                                            <button
+                                                name={s}
+                                                type="button"
+                                                style={{ background: "transparent", border: "none", color: "#e06971", fontSize: "20px", cursor: "pointer" }}
+                                                onMouseEnter={(e) => e.target.style.color = "#ff0000"}
+                                                onMouseLeave={(e) => e.target.style.color = "#dc3545"}
+                                                onClick={handleRemoveSucursal}
+                                            >
+                                                X
+                                            </button>
+                                        )}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="row mb-3">
+                            <div className="col-12 col-md-8">
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    accept="image/png, image/jpeg, image/svg+xml"
+                                    onChange={handleUploadImage}
+                                    disabled={updated}
+                                />
+                            </div>
+                            <div className="col-12 col-md-4 mt-2 mt-md-0">
+                                <button
+                                    className="btn btn-danger w-100"
+                                    onClick={() => {
+                                        setUrlImagen(null);
+                                        setImagenPremio(null);
+                                    }}
+                                    disabled={updated}
+                                >
+                                    Eliminar imagen
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="d-flex justify-content-end">
+                            {isLoading ? (
+                                <div className="spinner-border" role="status">
+                                    <span className="visually-hidden">Cargando...</span>
+                                </div>
+                            ) : (
+                                !updated && (
+                                    <button className="btn btn-success" style={{ width: "170px" }} onClick={handleSubmit}>
+                                        Actualizar Premio
+                                    </button>
+                                )
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-12 col-xl-6 d-flex justify-content-center">
+                        <div>
+                            <h4 className="mb-3">Vista Previa</h4>
+                            <p className="text-muted">
+                                📌 Los clientes podrán canjear este premio al acumular{" "}
+                                <strong>{sellosRequeridos}</strong> sellos.
+                            </p>
+                            <p className="text-muted">
+                                💡 Recomendación: Suba imágenes con relación 4:3 (ej: 1200x900).
+                            </p>
+                            <CardPremio
+                                urlImagen={urlImagen}
+                                nombre={nombrePremio}
+                                descripcion={descripcion}
+                                sellos={sellosRequeridos}
+                                dias={dias}
+                                fechaInicio={habilitarFechaInicio ? fechaInicio : null}
+                                fechaFin={habilitarFechaFin ? fechaFin : null}
+                                sucursales={sucursales}
+                            />
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
+
 
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>

@@ -175,7 +175,7 @@ export default function ViewSellos() {
                   sellosAcumulados={premio?.sellosAcumulados}
                   fechaInicio={premio?.fechaInicio}
                   fechaFin={premio?.fechaFin}
-                  sucursales={premio?.usuariosEmpresa && premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
+                  sucursales={premio?.usuariosEmpresa?.length === 0 ? ["Todas"] : premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
                   urlImagen={premio?.urlImagen}
                   canjearPremio={canjearPremio}
                 />
