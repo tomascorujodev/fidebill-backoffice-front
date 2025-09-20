@@ -304,7 +304,7 @@ export default function CrearPremios() {
               <input
                 className="form-control"
                 type="text"
-                maxLength="100"
+                maxLength="50"
                 placeholder="Ej: Descuento 50% en pizza"
                 value={nombrePremio}
                 onChange={(e) => setNombrePremio(e.target.value)}
@@ -492,10 +492,8 @@ export default function CrearPremios() {
               />
             </div>
           </div>
-
         </div>
       </div>
-
 
       {
         isLoading ?
