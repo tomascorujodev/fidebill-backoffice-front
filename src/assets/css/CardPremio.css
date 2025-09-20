@@ -1,8 +1,9 @@
 .premio-card-horizontal {
   display: flex;
-  min-width: 580px;
+  position: relative;
+  width: 580px;
   max-width: 580px;
-  min-height: 280px;
+  min-height: 310px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -78,6 +79,7 @@
 }
 
 .premio-titulo {
+  width: 87%;
   margin: 0;
   font-size: 20px;
   color: #333;
@@ -85,6 +87,9 @@
 }
 
 .premio-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: #ff4757;
   color: white;
   padding: 4px 8px;
@@ -97,6 +102,7 @@
 .premio-descripcion {
   color: #666;
   font-size: 14px;
+  height: 95px;
   height: 48px;
   overflow: auto;
   margin: 0;
@@ -104,9 +110,10 @@
 
 .premio-info {
   display: flex;
-  flex: 1;
-  height: 80px;
+  width: 100%;
   flex-direction: row;
+  gap: 10px;
+  margin-block: 2px;
   gap: 5px;
   overflow: auto;
   font-size: 12px;
@@ -133,6 +140,7 @@
   background-color: #f8f9fa;
   border-radius: 8px;
   padding: 8px;
+  margin-top: 8px;
   border: 2px solid #e9ecef;
 }
 
@@ -209,8 +217,15 @@
   font-weight: bold;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
+  .premio-titulo {
+    width: 100%;
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+    font-weight: 700;
+  }
+
   .premio-card-horizontal {
     flex-direction: column;
     max-width: 100%;
@@ -243,37 +258,5 @@
   .sello-punto {
     width: 26px;
     height: 26px;
-  }
-}
-
-@media (max-width: 480px) {
-  .premio-card-horizontal {
-    max-width: 100%;
-    min-height: 200px;
-  }
-
-  .premio-imagen {
-    height: 80px;
-  }
-
-  .premio-img {
-    height: 60px;
-  }
-
-  .premio-contenido {
-    padding: 15px;
-  }
-
-  .premio-titulo {
-    font-size: 16px;
-  }
-
-  .sellos-linea {
-    gap: 6px;
-  }
-
-  .sello-punto {
-    width: 24px;
-    height: 24px;
   }
 }

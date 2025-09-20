@@ -1,8 +1,6 @@
-/* CardPremio.css */
-
 .premio-card-horizontal {
   display: flex;
-  flex-direction: row; /* horizontal por defecto */
+  flex-direction: row;
   gap: 16px;
   margin-bottom: 16px;
   border: 1px solid #ddd;
@@ -11,19 +9,17 @@
   background-color: #fff;
 }
 
-/* Imagen y contenido */
 .premio-imagen {
-  flex: 0 0 150px; /* ancho fijo de la imagen */
+  flex: 0 0 150px;
 }
 .premio-contenido {
-  flex: 1; /* ocupa el resto del espacio */
+  flex: 1;
   padding: 12px;
 }
 
-/* Media query para pantallas pequeñas */
 @media (max-width: 768px) {
   .premio-card-horizontal {
-    flex-direction: column; /* vertical cuando no entra */
+    flex-direction: column;
     align-items: center;
   }
   .premio-imagen {

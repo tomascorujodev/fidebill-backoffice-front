@@ -102,22 +102,21 @@ export default function CardPremio({
         <p className="premio-descripcion">
           {descripcion || "Describe aquí el premio que recibirán los clientes..."}
         </p>
-
-        <div className="premio-info">
-          <span className="info-label">📅 Días:</span>
-          <span className="info-valor">{formatDiasTexto()}</span>
-          <span className="info-label">⏰ Vigencia:</span>
-          <span className="info-valor">{formatVigencia()}</span>
-          <span className="info-label">🏪 Sucursales:</span>
-          <span className="info-valor">
-            {sucursales ?
-              sucursales?.join(", ")
-              : "Todas"
-            }
-          </span>
+        <div className="d-flex flex-column justify-content-between">
+          <div className="d-flex flex-column justify-content-center">
+            <div className="premio-info">
+              <span className="info-label">Días:</span>
+              <span className="info-valor">{formatDiasTexto()}</span>
+              <span className="info-label">Vigencia:</span>
+              <span className="info-valor">{formatVigencia()}</span>
+            </div>
+            <div className="premio-info">
+              <span className="info-label">Sucursales:</span>
+              <span className="info-valor">{sucursales ? sucursales?.join(", ") : "Todas"}</span>
+            </div>
+          </div>
+          {renderSellosEntrada()}
         </div>
-
-        {renderSellosEntrada()}
       </div>
     </div>
   );
