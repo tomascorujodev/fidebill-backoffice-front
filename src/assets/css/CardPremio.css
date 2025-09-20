@@ -65,6 +65,7 @@
 .premio-contenido {
   display: flex;
   max-width: 460px;
+  width: 100%;
   padding-inline: 16px;
   padding-block: 10px;
   flex-direction: column;
