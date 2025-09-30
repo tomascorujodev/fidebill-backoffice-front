@@ -92,10 +92,7 @@ export default function ViewPremios() {
                         </div>
                     </div>
                 ) : (
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(38rem, 2fr))",
-                    }}>
+                    <div className="d-flex flex-wrap justify-content-center">
                         {premios && premios.map(premio => (
                             <CardPremio
                                 key={premio.idPremio}
@@ -106,13 +103,12 @@ export default function ViewPremios() {
                                 dias={premio.dias}
                                 fechaInicio={premio.fechaInicio}
                                 fechaFin={premio.fechaFin}
-                                sucursales={premio.usuariosEmpresa > 0 && premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
+                                sucursales={premio?.usuariosEmpresa?.length === 0 ? ["Todas"] : premio.usuariosEmpresa.map(s => s.nombreUsuarioEmpresa)}
                                 urlImagen={premio.urlImagen}
                                 eliminar={setEliminar}
                             />
                         ))}
                     </div>
-
                 )
             }
 

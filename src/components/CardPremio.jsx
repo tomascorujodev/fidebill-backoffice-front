@@ -14,7 +14,8 @@ export default function CardPremio({
   fechaInicio = null,
   fechaFin = null,
   sucursales = null,
-  eliminar = () => { }
+  eliminar = () => { },
+  canjearPremio = null
 }) {
   const navigate = useNavigate();
   const token = jwtDecode(sessionStorage.getItem("token"));
@@ -23,31 +24,36 @@ export default function CardPremio({
   const fechaFinFormateada = convertirFecha(fechaFin);
 
   const renderSellosEntrada = () => {
-    const totalSellos = sellos;
-
     return (
-      <div className="sellos-entrada">
-        <div className="sellos-linea">
-          <div className="sellos-centrar">
-            {Array.from({ length: totalSellos }, (_, index) => (
-              <div
-                key={index}
-                className={`sello-punto ${index < sellosAcumulados ? "completado" : "pendiente"}`}
-                title={`Sello ${index + 1}`}
-              >
-                {index < sellosAcumulados ? "✓" : ""}
-              </div>
-            ))}
+      sellos !== sellosAcumulados ?
+        <div className="sellos-entrada">
+          <div className="sellos-linea">
+            <div className="sellos-centrar">
+              {Array.from({ length: sellos }, (_, index) => (
+                <button
+                  key={`${id}-${index}`}
+                  className={`${((index <= sellosAcumulados && typeof canjearPremio === "function") || index < sellosAcumulados) ? "mas" : ""} sello-punto`}
+                  onClick={() => canjearPremio(id)}
+                  title={`sello ${index}`}
+                  disabled={!(index === sellosAcumulados)}
+                >
+                  {index === sellosAcumulados && (typeof canjearPremio === "function") ? "+" : ""}
+                  {index < sellosAcumulados ? "✓" : ""}
+                </button>
+              ))}
+            </div>
           </div>
+          <span className="sellos-progreso">
+            {sellosAcumulados}/{sellos}
+          </span>
         </div>
-        <span className="sellos-progreso">
-          {sellosAcumulados}/{totalSellos}
-        </span>
-      </div>
+        :
+        <div className="d-flex justify-content-end">
+          <button className="btn btn-success justify-content-end" onClick={() => canjearPremio(id)}> Canjear Premio </button>
+        </div>
     );
   };
 
-  // Función para formatear los días como texto compacto
   const formatDiasTexto = () => {
     const diasNombres = ["L", "M", "X", "J", "V", "S", "D"];
     const diasSeleccionados = dias
@@ -59,14 +65,12 @@ export default function CardPremio({
     return diasSeleccionados.join(" • ");
   };
 
-  // Función para formatear la vigencia de forma compacta
   const formatVigencia = () => {
     if (!fechaInicioFormateada && !fechaFinFormateada) return "Sin vencimiento";
     if (!fechaInicioFormateada) return `Hasta ${fechaFinFormateada}`;
     if (!fechaFinFormateada) return `Desde ${fechaInicioFormateada}`;
     return `${fechaInicioFormateada} - ${fechaFinFormateada}`;
   };
-
   return (
     <div className="premio-card-horizontal">
       <div className="premio-imagen">
@@ -98,22 +102,21 @@ export default function CardPremio({
         <p className="premio-descripcion">
           {descripcion || "Describe aquí el premio que recibirán los clientes..."}
         </p>
-
-        <div className="premio-info">
-            <span className="info-label">📅 Días:</span>
-            <span className="info-valor">{formatDiasTexto()}</span>
-            <span className="info-label">⏰ Vigencia:</span>
-            <span className="info-valor">{formatVigencia()}</span>
-            <span className="info-label">🏪 Sucursales:</span>
-            <span className="info-valor">
-              {sucursales ?
-                sucursales?.join(", ")
-                : "Todas"
-              }
-            </span>
+        <div className="d-flex flex-column justify-content-between">
+          <div className="d-flex flex-column justify-content-center">
+            <div className="premio-info">
+              <span className="info-label">Días:</span>
+              <span className="info-valor">{formatDiasTexto()}</span>
+              <span className="info-label">Vigencia:</span>
+              <span className="info-valor">{formatVigencia()}</span>
+            </div>
+            <div className="premio-info">
+              <span className="info-label">Sucursales:</span>
+              <span className="info-valor">{sucursales ? sucursales?.join(", ") : "Todas"}</span>
+            </div>
+          </div>
+          {renderSellosEntrada()}
         </div>
-
-        {renderSellosEntrada()}
       </div>
     </div>
   );

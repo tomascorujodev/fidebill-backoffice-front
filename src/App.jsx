@@ -16,14 +16,13 @@ import ViewCrearBeneficios from "./views/beneficios/ViewCrearBeneficios";
 import ViewBeneficios from "./views/beneficios/ViewBeneficios";
 import ViewAppClientes from "./views/ViewAppClientes";
 import ViewFunciones from "./views/ViewFunciones";
-import ViewGestionCatalogo from "./views/ViewGestionCatalogo";
-import ViewGestionPremios from "./views/ViewGestionPremios";
 import jwtDecode from "./utils/jwtDecode";
 import VerPremios from "./views/premios/VerPremios.jsx";
 import CrearPremios from "./views/premios/CrearPremios.jsx";
 import ModificarPremio from "./views/premios/ModificarPremios.jsx";
 import CrearCatalogo from "./views/catalogo/CrearCatalogo.jsx";
 import ViewSellos from "./views/premios/ViewSellos.jsx";
+import ViewPremiosCanjeados from "./views/premios/ViewPremiosCanjeados.jsx";
 
 function App() {
   const [isLogedIn, setIsLoggedIn] = useState(false);
@@ -62,9 +61,17 @@ function App() {
               <Route path="puntos" element={<ViewPuntos />} />
               <Route path="premios">
                 <Route path="sellos" element={<ViewSellos />} />
-                <Route path="historial" element={<ViewGestionPremios />} />
+                <Route path="historial" element={<ViewPremiosCanjeados />} />
+                {
+                  tokenDecoded?.rol && (
+                    <>
+                      <Route path="crear" element={<CrearPremios />} />
+                      <Route path="ver" element={<VerPremios />} />
+                      <Route path="modificar" element={<ModificarPremio />} />
+                    </>
+                  )
+                }
               </Route>
-              <Route path="gestion-premios" element={<ViewGestionCatalogo />} />
               <Route path="ayuda" element={<ViewSoporte />} />
               {
                 tokenDecoded?.rol && (
@@ -74,13 +81,6 @@ function App() {
                       <Route path="ver" element={<ViewBeneficios />} />
                       <Route path="modificar" element={<ViewModificarBeneficio />} />
                     </Route>
-
-                    <Route path="premios">
-                      <Route path="crear" element={<CrearPremios />} />
-                      <Route path="ver" element={<VerPremios />} />
-                      <Route path="modificar" element={<ModificarPremio />} />
-                    </Route>
-
                     <Route path="catalogos">
                       <Route path="crear" element={<CrearCatalogo />}></Route>
                     </Route>

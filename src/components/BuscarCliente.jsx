@@ -20,6 +20,7 @@ export default function BuscarCliente({ titulo, setCliente, setMensaje, isLoadin
                     case 200:
                         let client = await response.json();
                         setCliente(client);
+                        setDocumento("");
                         break;
                     case 204:
                         setMensaje("No se encontró ningún cliente, verifique el DNI");

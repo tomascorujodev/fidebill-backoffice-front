@@ -1,37 +1,32 @@
-/* Layout principal del backoffice */
 .backoffice-layout {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
-/* Contenido principal */
 .main-content {
   display: flex;
   min-height: 100vh;
 }
 
-/* Área de contenido */
 .content-area {
   flex: 1;
-  margin-left: 270px; /* Espacio para el sidebar */
-  margin-top: 80px; /* Espacio para el navbar */
+  margin-left: 270px;
+  margin-top: 80px;
   padding-block: 20px;
   background: #ffffff;
   border-radius: 15px 0 0 0;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   min-height: calc(100vh - 80px);
-  width: calc(100vw - 280px); /* Ancho completo menos el sidebar */
+  width: calc(100vw - 280px);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .content-area {
     margin-left: 0;
-    margin-top: 70px; /* Navbar más pequeño en móviles */
+    margin-top: 70px;
     border-radius: 0;
   }
   
-  /* En móviles, mantener el container estándar de Bootstrap */
   .container {
     max-width: 100% !important;
     padding-left: 15px !important;
@@ -39,13 +34,11 @@
   }
 }
 
-/* Estilos globales para mejorar la apariencia */
 body {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-family: "Poppins", sans-serif;
 }
 
-/* Container personalizado más ancho para aprovechar todo el espacio */
 .container {
   max-width: none !important;
   width: 100% !important;
@@ -55,25 +48,21 @@ body {
   margin-right: 0 !important;
 }
 
-/* Ajuste específico para el content-area */
 .content-area .container {
   width: 100% !important;
   max-width: none !important;
 }
 
-/* Asegurar que el contenido use todo el ancho disponible */
 .content-area .container > * {
   width: 100% !important;
   max-width: none !important;
 }
 
-/* Ajuste para las cards que usan grid */
 .content-area .card-rounded {
   width: 100% !important;
   max-width: none !important;
 }
 
-/* Mejoras para las cards */
 .card-rounded {
   background: #ffffff;
   border: 2px solid #e0e0e0;
@@ -83,19 +72,16 @@ body {
   max-width: none !important;
 }
 
-/* Ajustes para formularios y vistas que usan grid */
 .card-rounded[style*="display: grid"] {
   width: 100% !important;
   max-width: none !important;
 }
 
-/* Estilos para botones */
 .btn {
   border-radius: 8px;
   font-weight: 500;
 }
 
-/* Estilos para inputs */
 .form-control {
   border-radius: 8px;
   border: 2px solid #e0e0e0;
@@ -107,7 +93,6 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(12, 45, 94, 0.25);
 }
 
-/* Estilos para tablas */
 .table {
   border-radius: 10px;
   overflow: hidden;
@@ -121,7 +106,6 @@ body {
   font-weight: 600;
 }
 
-/* Estilos para modales */
 .modal-content {
   border-radius: 15px;
   border: none;
@@ -134,7 +118,6 @@ body {
   border-radius: 15px 15px 0 0;
 }
 
-/* Estilos para paginación */
 .pagination .page-link {
   border-radius: 6px;
   margin: 0 2px;
@@ -154,7 +137,6 @@ body {
   border-color: #0c2d5e;
 }
 
-/* Scrollbar personalizado */
 ::-webkit-scrollbar {
   width: 8px;
 }
