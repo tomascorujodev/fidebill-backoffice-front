@@ -21,6 +21,7 @@ export default function ModificarPremio() {
     const [habilitarFechaFin, setHabilitarFechaFin] = useState(true);
     const [imagenPremio, setImagenPremio] = useState(null);
     const [urlImagen, setUrlImagen] = useState(null);
+    const [eliminarImagen, setEliminarImagen] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [message, setMessage] = useState("");
     const [sucursalesConId, setSucursalesConId] = useState(null);
@@ -249,6 +250,7 @@ export default function ModificarPremio() {
                 FechaInicio: habilitarFechaInicio ? fechaInicio : null,
                 FechaFin: habilitarFechaFin ? fechaFin : null,
                 Sucursales: sucursalesIds,
+                EliminarImagen: eliminarImagen
             };
 
             const response = await PATCHFormData("premios/modificar", imagenPremio, premioData);
@@ -452,6 +454,7 @@ export default function ModificarPremio() {
                                     onClick={() => {
                                         setUrlImagen(null);
                                         setImagenPremio(null);
+                                        setEliminarImagen(true);
                                     }}
                                     disabled={updated}
                                 >
