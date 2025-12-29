@@ -389,7 +389,7 @@ export default function ViewAppClientes() {
                   <Spinner />
                   :
                   <div className="d-flex justify-content-between mb-3">
-                    <button name="imagen3" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen3 && "disabled"}`} onClick={(e) => { setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 3 del carrusel?"); setAction(e); }}>
+                    <button name="3" className={`btn btn-danger p-1 me-3 mt-2 ${!imageLoaded.imagen3 && "disabled"}`} onClick={(e) => { setShowDeleteModal(true); setMessage("¿Está seguro de que desea quitar la imagen 3 del carrusel?"); setAction(e); }}>
                       Eliminar imagen
                     </button>
                     <button name="imagen3" className={`btn btn-success me-3 mt-2 ${!imagenes.imagen3 && "disabled"}`} onClick={uploadImage}>
